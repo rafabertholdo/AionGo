@@ -9,7 +9,7 @@ const (
 	spiritOfNatureQuestID      int32 = 1183
 	spiritOfNatureStartNPCID   int32 = 730012
 	spiritOfNatureFirstNPCID   int32 = 730013
-	spiritOfNatureSecondNPCID int32 = 730014
+	spiritOfNatureSecondNPCID  int32 = 730014
 	spiritOfNatureFirstItemID  int32 = 182200550
 	spiritOfNatureSecondItemID int32 = 182200565
 )

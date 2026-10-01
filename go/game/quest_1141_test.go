@@ -18,7 +18,7 @@ func TestBelbuasTreasureOfferAndBarrelReward(t *testing.T) {
 	p := wrathchild(s)
 	p.Race = "ELYOS"
 	p.level = template.MinLevel
-	p.Exp = d.ExpStart(p.level)
+	p.Exp = 0
 	p.cube = nil
 	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
 	p.seen = map[int32]*object{}

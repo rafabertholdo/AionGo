@@ -15,7 +15,7 @@ func delicateMandrakeTestFixture(t *testing.T, status string) (*Server, *player,
 	p := wrathchild(s)
 	p.Race, p.Class = "ELYOS", "SORCERER"
 	p.level = 12
-	p.Exp = d.ExpStart(p.level)
+	p.Exp = 0
 	p.cube = []*store.Item{}
 	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
 	p.seen = map[int32]*object{}
@@ -50,7 +50,7 @@ func TestDelicateMandrakeStartAndInventoryGuard(t *testing.T) {
 		t.Fatalf("pre-accept dialog = %x", packets.last(smDialogWindow))
 	}
 	for len(p.cube) < p.cubeLimit() {
-		p.cube = append(p.cube, nil)
+		p.cube = append(p.cube, &store.Item{UniqueID: int32(len(p.cube)) + 0x60000, ItemID: data.Kinah, Count: 1})
 	}
 	if !c.delicateMandrakeDialog(start, script, 1002) || p.quest(delicateMandrakeQuestID) != nil || s.countItems(p, delicateMandrakeWorkItemID) != 0 || packets.last(smSystemMessage) == nil {
 		t.Fatal("full inventory accepted the quest without its timer work item")

@@ -5,7 +5,7 @@
 FROM golang:1.25 AS build
 WORKDIR /src
 COPY go/ .
-RUN --mount=type=cache,target=/go/pkg/mod CGO_ENABLED=0 go build -trimpath -ldflags=-s -o /out/ ./cmd/...
+RUN --mount=type=cache,target=/go/pkg/mod CGO_ENABLED=0 GOMAXPROCS=2 go build -p 1 -trimpath -ldflags=-s -o /out/ ./cmd/...
 
 FROM scratch AS login
 COPY --from=build /out/loginserver /loginserver

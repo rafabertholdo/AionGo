@@ -2,13 +2,13 @@ package game
 
 import (
 	"bufio"
-	"fmt"
-	"strings"
-	"sync"
 	"encoding/binary"
 	"encoding/hex"
+	"fmt"
 	"log/slog"
 	"net"
+	"strings"
+	"sync"
 
 	"aionlightning/crypt"
 	"aionlightning/wire"

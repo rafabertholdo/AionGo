@@ -79,7 +79,7 @@ func TestHeadlessStoneStatueObjectItemAndMovieReward(t *testing.T) {
 		!bytes.Equal(packets.last(smPlayMovie), playMovie(headlessStoneStatueMovieID).Data) {
 		t.Fatalf("reward NPC did not consume the work item and start movie 16: item=%d movie=%x", s.countItems(p, headlessStoneStatueWorkItemID), packets.last(smPlayMovie))
 	}
-	if c.headlessStoneStatueMovieEnd(headlessStoneStatueMovieID + 1) || p.quest(headlessStoneStatueQuestID).Status != "REWARD" {
+	if c.headlessStoneStatueMovieEnd(headlessStoneStatueMovieID+1) || p.quest(headlessStoneStatueQuestID).Status != "REWARD" {
 		t.Fatal("wrong movie completed the quest")
 	}
 	beforeExp := p.Exp

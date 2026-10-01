@@ -8,12 +8,12 @@ import (
 )
 
 const (
-	headlessStoneStatueQuestID      int32  = 1170
-	headlessStoneStatueBodyNPCID    int32  = 730000
-	headlessStoneStatueHeadNPCID    int32  = 700033
-	headlessStoneStatueWorkItemID   int32  = 182200504
-	headlessStoneStatueMovieID      uint16 = 16
-	headlessStoneStatueRewardExp    int64  = 8410
+	headlessStoneStatueQuestID    int32  = 1170
+	headlessStoneStatueBodyNPCID  int32  = 730000
+	headlessStoneStatueHeadNPCID  int32  = 700033
+	headlessStoneStatueWorkItemID int32  = 182200504
+	headlessStoneStatueMovieID    uint16 = 16
+	headlessStoneStatueRewardExp  int64  = 8410
 )
 
 func (c *conn) headlessStoneStatueDialog(o *object, script *data.QuestScript, dialogID int32) bool {

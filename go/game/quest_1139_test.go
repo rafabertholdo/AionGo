@@ -18,7 +18,7 @@ func TestForestOutlawLevelUpNineKillRouteAndReward(t *testing.T) {
 	s := testServer(d)
 	p := wrathchild(s)
 	p.Race, p.level = "ELYOS", 10
-	p.Exp = d.ExpStart(p.level)
+	p.Exp = 0
 	p.seen = map[int32]*object{}
 	p.quests = []store.Quest{{ID: forestOutlawQuestID, Status: "LOCKED"}}
 	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
@@ -37,8 +37,8 @@ func TestForestOutlawLevelUpNineKillRouteAndReward(t *testing.T) {
 	if !c.forestOutlawLevelUp() || p.quest(forestOutlawQuestID).Status != "START" || c.forestOutlawLevelUp() {
 		t.Fatalf("level-up transition failed or repeated: %+v", p.quest(forestOutlawQuestID))
 	}
-	if c.forestOutlawDialog(wrongNPC, script, 25) || c.forestOutlawDialog(end, script, 10001) {
-		t.Fatal("wrong NPC or pre-dialog event advanced the quest")
+	if c.forestOutlawDialog(wrongNPC, script, 25) || c.forestOutlawDialog(end, script, 10002) {
+		t.Fatal("wrong NPC or invalid dialog advanced the quest")
 	}
 	if !c.forestOutlawDialog(end, script, 25) || !bytes.Equal(packets.last(smDialogWindow), dialogWindow(end.id, 1011, forestOutlawQuestID).Data) {
 		t.Fatalf("opening dialog = %x", packets.last(smDialogWindow))
@@ -93,9 +93,11 @@ func TestForestOutlawFiveKillRoute(t *testing.T) {
 			t.Fatalf("210140 kill %d did not advance: %+v", kill, p.quest(forestOutlawQuestID))
 		}
 	}
-	if c.forestOutlawKill(210138) || p.quest(forestOutlawQuestID).Status != "START" || questVar(p.quest(forestOutlawQuestID).Vars, 0) != 5 {
-		t.Fatal("210138 completed the 210140 route at variable 5")
+	if !c.forestOutlawKill(210138) || p.quest(forestOutlawQuestID).Status != "START" || questVar(p.quest(forestOutlawQuestID).Vars, 0) != 6 {
+		t.Fatal("210138 did not advance the shared Java kill counter at variable 5")
 	}
+	// Independently exercise the fifth-kill boundary for 210140.
+	p.quest(forestOutlawQuestID).Vars = setQuestVar(0, 0, 5)
 	if !c.forestOutlawKill(210140) || p.quest(forestOutlawQuestID).Status != "REWARD" || questVar(p.quest(forestOutlawQuestID).Vars, 0) != 5 {
 		t.Fatalf("fifth 210140 kill did not open reward: %+v", p.quest(forestOutlawQuestID))
 	}

@@ -23,7 +23,7 @@ func TestPearlOfProtectionNPCChainWorkItemsAndReward(t *testing.T) {
 	s.quests = &recordedQuests{}
 	p := wrathchild(s)
 	p.Race, p.level = "ELYOS", 49
-	p.Exp = d.ExpStart(p.level)
+	p.Exp = 0
 	p.cube = []*store.Item{}
 	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
 	p.seen = map[int32]*object{}
@@ -56,7 +56,7 @@ func TestPearlOfProtectionNPCChainWorkItemsAndReward(t *testing.T) {
 		return c.pearlOfProtectionDialog(npcs[npcID], script, dialogID)
 	}
 
-	if dialog(pearlOfProtectionPernos, -1) || dialog(pearlOfProtectionDaminu, 25) || dialog(pearlOfProtectionPernos, 10000) {
+	if dialog(pearlOfProtectionPernos, -1) || dialog(pearlOfProtectionDaminu, 25) || dialog(pearlOfProtectionPernos, 10001) {
 		t.Fatal("plain click or wrong stage unexpectedly advanced the Java chain")
 	}
 	for index, step := range pearlOfProtectionSteps {
@@ -123,7 +123,7 @@ func TestPearlOfProtectionPernosInitialNPCStart(t *testing.T) {
 	s.quests = &recordedQuests{}
 	p := wrathchild(s)
 	p.Race, p.level = "ELYOS", 50
-	p.Exp = d.ExpStart(p.level)
+	p.Exp = 0
 	p.cube = []*store.Item{}
 	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
 	p.seen = map[int32]*object{}

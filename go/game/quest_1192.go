@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	verteronReinforcementsQuestID      int32 = 1192
-	verteronReinforcementsStartNPCID    int32 = 203098
-	verteronReinforcementsFirstNPCID    int32 = 203701
-	verteronReinforcementsSecondNPCID   int32 = 203833
+	verteronReinforcementsQuestID     int32 = 1192
+	verteronReinforcementsStartNPCID  int32 = 203098
+	verteronReinforcementsFirstNPCID  int32 = 203701
+	verteronReinforcementsSecondNPCID int32 = 203833
 )
 
 func (c *conn) verteronReinforcementsDialog(o *object, script *data.QuestScript, dialogID int32) bool {

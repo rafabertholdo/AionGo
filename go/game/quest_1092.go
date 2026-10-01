@@ -164,17 +164,17 @@ func (c *conn) spawnJosnackDilemmaNPC(source *object) bool {
 		return false
 	}
 	spawn := &object{
-		id:       c.s.ids.nextID(),
-		worldID:  josnackDilemmaMapID,
-		instance: josnackDilemmaInstanceID,
-		x:        source.x,
-		y:        source.y,
-		z:        source.z,
-		heading:  source.heading,
-		homeX:    source.x,
-		homeY:    source.y,
-		homeZ:    source.z,
-		npc:      template,
+		id:        c.s.ids.nextID(),
+		worldID:   josnackDilemmaMapID,
+		instance:  josnackDilemmaInstanceID,
+		x:         source.x,
+		y:         source.y,
+		z:         source.z,
+		heading:   source.heading,
+		homeX:     source.x,
+		homeY:     source.y,
+		homeZ:     source.z,
+		npc:       template,
 		noRespawn: true,
 	}
 	c.s.initNpc(spawn)

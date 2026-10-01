@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	pearlOfProtectionQuestID int32 = 1098
-	pearlOfProtectionPernos  int32 = 790001
-	pearlOfProtectionDaminu  int32 = 730008
-	pearlOfProtectionLodas   int32 = 730019
-	pearlOfProtectionArbolu  int32 = 730133
-	pearlOfProtectionKhidia  int32 = 203183
-	pearlOfProtectionTumblusen int32 = 203989
+	pearlOfProtectionQuestID    int32 = 1098
+	pearlOfProtectionPernos     int32 = 790001
+	pearlOfProtectionDaminu     int32 = 730008
+	pearlOfProtectionLodas      int32 = 730019
+	pearlOfProtectionArbolu     int32 = 730133
+	pearlOfProtectionKhidia     int32 = 203183
+	pearlOfProtectionTumblusen  int32 = 203989
 	pearlOfProtectionAtropos    int32 = 798155
 	pearlOfProtectionAphesius   int32 = 204549
 	pearlOfProtectionJucleas    int32 = 203752
@@ -140,10 +140,10 @@ func (c *conn) pearlOfProtectionDialog(o *object, script *data.QuestScript, dial
 				}
 				c.send(dialogWindow(o.id, 5, pearlOfProtectionQuestID))
 				return true
-		case dialogID >= 8 && dialogID <= 17:
-			// Java delegates every remaining reward choice to defaultQuestEndDialog,
-			// whose fixed reward path completes only for choice 17.
-			c.finishQuestReward(script, o.id, 17, 0)
+			case dialogID >= 8 && dialogID <= 17:
+				// Java delegates every remaining reward choice to defaultQuestEndDialog,
+				// whose fixed reward path completes only for choice 17.
+				c.finishQuestReward(script, o.id, 17, 0)
 				return true
 			default:
 				return false
