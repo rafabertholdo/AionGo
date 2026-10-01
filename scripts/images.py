@@ -31,7 +31,7 @@ def references(manifest, role, revision):
 def build_command(manifest, role, revision, context):
     spec = manifest["images"][role]
     command = ["container", "build", "--platform", manifest["platform"],
-               "--progress", "plain", "--cpus", "4", "--memory", "4G",
+               "--progress", "plain", "--cpus", "2", "--memory", "4G",
                "-f", str(context / spec["dockerfile"]),
                "-t", references(manifest, role, revision)[0],
                "--label", "org.opencontainers.image.source=https://github.com/rafabertholdo/AionGo",
@@ -79,13 +79,6 @@ def main():
                 subprocess.run(["container", "image", "push", "--disable-progress-updates", reference], check=True)
         return
     subprocess.run(["git", "diff", "--exit-code", "HEAD"], cwd=ROOT, check=True, stdout=subprocess.DEVNULL)
-    # Work around Apple's builder serving stale source. Only reset the builder;
-    # never touch game containers or persistent database volumes.
-    subprocess.run(["pkill", "-f", "container-runtime-linux.*containers/buildkit"], check=False)
-    import time
-    time.sleep(2)
-    subprocess.run(["container", "delete", "--force", "buildkit"], check=False,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     output = ROOT / ".build"
     output.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="images-", dir=output) as directory:
@@ -99,6 +92,13 @@ def main():
         else:
             (context / "panel-assets").mkdir()
         for role in roles:
+            # Reset before every build: Apple's persistent builder can retain
+            # stale contexts or crash on the next role. Game containers are kept.
+            subprocess.run(["pkill", "-f", "container-runtime-linux.*containers/buildkit"], check=False)
+            import time
+            time.sleep(2)
+            subprocess.run(["container", "delete", "--force", "buildkit"], check=False,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             subprocess.run(build_command(manifest, role, revision, context), check=True)
             versioned, source = references(manifest, role, revision)
             subprocess.run(["container", "image", "tag", versioned, source], check=True)

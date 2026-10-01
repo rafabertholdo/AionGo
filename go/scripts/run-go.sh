@@ -20,10 +20,10 @@ if [[ ! -d "$data_dir" ]]; then
     exit 1
 fi
 
-exec container run --rm --arch arm64 --memory 4G --cpus 4 \
+exec container run --rm --arch arm64 --memory 4G --cpus 2 \
     -v go-cache:/go \
     -v go-build-cache:/root/.cache/go-build \
     -v "$module_dir:/repo" \
     -v "$data_dir:/data/static_data" \
-    -w /repo -e AION_DATA=/data/static_data \
+    -w /repo -e AION_DATA=/data/static_data -e GOMAXPROCS=2 \
     golang:1.25 "/usr/local/go/bin/$go_command" "$@"
