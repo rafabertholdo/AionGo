@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<npc_templates xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="npcs.xsd">
+	<npc_template hpgauge="3" tribe="GENERAL" srange="20" rank="NORMAL" npc_type="NON_ATTACKABLE" height="1.0" name="teleport statue" name_id="350737" level="3" npc_id="730264">
+		<stats power="11" accuracy="11" maxXp="104" mdef="11" pdef="11" crit="11" run_speed_fight="0.0" magic_accuracy="11" parry="11" block="100" evasion="11" fly_speed="0.0" run_speed="0.0" walk_speed="0.0" maxHp="121"/>
+	</npc_template>
+	<npc_template npc_id="203834" level="40" name="nestor" name_id="351326" npc_type="NON_ATTACKABLE" height="2.0" title_id="350470" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="10" arange="2" arank="1000" hpgauge="3" state="6">
+		<stats maxMp="2828" maxHp="9426" maxXp="20552" block="70" parry="70" mdef="70" pdef="70" crit="70" power="70" evasion="70" accuracy="70" magic_accuracy="70" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114100294</item>
+			<item>111100277</item>
+			<item>125001508</item>
+			<item>113100276</item>
+			<item>112100256</item>
+			<item>110100298</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="203901" level="45" name="telemachus" name_id="351700" npc_type="NON_ATTACKABLE" height="0.85" title_id="350503" rank="LEGENDARY" race="ELYOS" tribe="GUARD" srange="20" arange="2" arank="1000" hpgauge="27" state="6">
+		<stats maxMp="2057919" maxHp="6859729" maxXp="440709" block="139" parry="139" mdef="139" pdef="139" crit="139" power="139" evasion="139" accuracy="139" magic_accuracy="139" walk_speed="1.5" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600312</item>
+			<item>111600321</item>
+			<item>113600313</item>
+			<item>100000046</item>
+			<item>112600306</item>
+			<item>110600341</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="203927" level="45" name="adelphie" name_id="351726" npc_type="NON_ATTACKABLE" height="1.0" title_id="350440" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="10" arange="2" arank="1000" hpgauge="3" state="85">
+		<stats maxMp="3564" maxHp="11878" maxXp="27751" block="77" parry="77" mdef="77" pdef="77" crit="77" power="77" evasion="77" accuracy="77" magic_accuracy="77" walk_speed="1.5" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114100294</item>
+			<item>111100277</item>
+			<item>113100276</item>
+			<item>112100256</item>
+			<item>110100294</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="203941" level="45" name="paion" name_id="351740" npc_type="NON_ATTACKABLE" height="1.2" rank="ELITE" race="ELYOS" tribe="GUARD" srange="15" arange="2" arank="1000" hpgauge="14" state="70">
+		<stats maxMp="38277" maxHp="127590" maxXp="44466" block="93" parry="93" mdef="93" pdef="93" crit="93" power="93" evasion="93" accuracy="93" magic_accuracy="93" walk_speed="1.5" run_speed="6.0" run_speed_fight="8.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114500320</item>
+			<item>111500316</item>
+			<item>125000638</item>
+			<item>113500308</item>
+			<item>100000385</item>
+			<item>112500300</item>
+			<item>110500325</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="203943" level="45" name="turiel" name_id="351742" npc_type="NON_ATTACKABLE" height="1.0" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="10" arange="2" arank="1000" hpgauge="3" state="70">
+		<stats maxMp="3564" maxHp="11878" maxXp="27751" block="77" parry="77" mdef="77" pdef="77" crit="77" power="77" evasion="77" accuracy="77" magic_accuracy="77" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114100294</item>
+			<item>111100277</item>
+			<item>113100276</item>
+			<item>100000385</item>
+			<item>112100256</item>
+			<item>110100294</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="203961" level="45" name="nikias" name_id="351760" npc_type="NON_ATTACKABLE" height="1.0" title_id="350430" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="10" arange="2" arank="1000" hpgauge="3" state="6">
+		<stats maxMp="3564" maxHp="11878" maxXp="27751" block="77" parry="77" mdef="77" pdef="77" crit="77" power="77" evasion="77" accuracy="77" magic_accuracy="77" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114100294</item>
+			<item>111100277</item>
+			<item>113100276</item>
+			<item>112100256</item>
+			<item>110100294</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="203995" level="45" name="hylas" name_id="351784" npc_type="NON_ATTACKABLE" height="1.2" rank="ELITE" race="ELYOS" tribe="GUARD" srange="15" arange="2" arank="1000" hpgauge="14" state="85">
+		<stats maxMp="34798" maxHp="115991" maxXp="45329" block="93" parry="93" mdef="93" pdef="93" crit="93" power="93" evasion="93" accuracy="93" magic_accuracy="93" walk_speed="1.5" run_speed="6.0" run_speed_fight="8.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114500320</item>
+			<item>111500316</item>
+			<item>125000638</item>
+			<item>113500308</item>
+			<item>100000065</item>
+			<item>112500300</item>
+			<item>110500325</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="204006" level="43" name="demokritos" name_id="351794" npc_type="NON_ATTACKABLE" height="1.2" rank="ELITE" race="ELYOS" tribe="GUARD" srange="10" arange="4" arank="1000" hpgauge="14" state="85">
+		<stats maxMp="27050" maxHp="90164" maxXp="40601" block="89" parry="89" mdef="89" pdef="89" crit="89" power="89" evasion="89" accuracy="89" magic_accuracy="89" walk_speed="1.5" run_speed="6.0" run_speed_fight="8.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114300302</item>
+			<item>111300276</item>
+			<item>113300288</item>
+			<item>100200092</item>
+			<item>112300259</item>
+			<item>100200092</item>
+			<item>110300301</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="204014" level="45" name="ophelia" name_id="351802" npc_type="NON_ATTACKABLE" height="1.0" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="10" arange="2" arank="1000" hpgauge="3" state="70">
+		<stats maxMp="3564" maxHp="11878" maxXp="27751" block="77" parry="77" mdef="77" pdef="77" crit="77" power="77" evasion="77" accuracy="77" magic_accuracy="77" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114100294</item>
+			<item>111100277</item>
+			<item>113100276</item>
+			<item>100000385</item>
+			<item>112100256</item>
+			<item>110100294</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="260202" level="50" name="fortress mage" name_id="306870" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="ASMODIANS" tribe="GENERALDA_ALIDR" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600508</item>
+			<item>111600522</item>
+			<item>125200004</item>
+			<item>113600517</item>
+			<item>100600028</item>
+			<item>112600504</item>
+			<item>110600552</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="260203" level="50" name="fortress mage" name_id="306871" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="DRAKAN" tribe="GENERALDR_ALIDA" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>100500284</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="260383" level="50" name="fortress mage" name_id="308512" npc_type="ATTACKABLE" height="1.2" rank="ELITE" race="ASMODIANS" tribe="GUARD_DARK" srange="10" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600136</item>
+			<item>111600135</item>
+			<item>125200001</item>
+			<item>113600128</item>
+			<item>100600029</item>
+			<item>112600123</item>
+			<item>110600142</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="263203" level="50" name="fortress mage" name_id="306906" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="ASMODIANS" tribe="GENERALDA_ALIDR" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600508</item>
+			<item>111600522</item>
+			<item>125200004</item>
+			<item>113600517</item>
+			<item>100600028</item>
+			<item>112600504</item>
+			<item>110600552</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="263504" level="50" name="fortress mage" name_id="306943" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="DRAKAN" tribe="GENERALDR_ALIDA" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>100500284</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="264703" level="50" name="fortress mage" name_id="307014" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="ASMODIANS" tribe="GENERALDA_ALIDR" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600508</item>
+			<item>111600522</item>
+			<item>125200004</item>
+			<item>113600517</item>
+			<item>100600028</item>
+			<item>112600504</item>
+			<item>110600552</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="264704" level="50" name="fortress mage" name_id="307015" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="DRAKAN" tribe="GENERALDR_ALIDA" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>100500284</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="266502" level="50" name="fortress mage" name_id="307193" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="ELYOS" tribe="GENERAL_ADADR" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600506</item>
+			<item>111600520</item>
+			<item>125200003</item>
+			<item>113600515</item>
+			<item>100600028</item>
+			<item>112600502</item>
+			<item>110600550</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="266503" level="50" name="fortress mage" name_id="307194" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="ASMODIANS" tribe="GENERALDA_ALIDR" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600508</item>
+			<item>111600522</item>
+			<item>125200004</item>
+			<item>113600517</item>
+			<item>100600028</item>
+			<item>112600504</item>
+			<item>110600552</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="266504" level="50" name="fortress mage" name_id="307195" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="DRAKAN" tribe="GENERALDR_ALIDA" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>100500284</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="266682" level="50" name="fortress mage" name_id="307229" npc_type="ATTACKABLE" height="1.2" rank="ELITE" race="ELYOS" tribe="GUARD" srange="10" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600136</item>
+			<item>111600135</item>
+			<item>125200001</item>
+			<item>113600128</item>
+			<item>100600029</item>
+			<item>112600123</item>
+			<item>110600142</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="268002" level="50" name="fortress mage" name_id="307265" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="ELYOS" tribe="GENERAL_ADADR" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600506</item>
+			<item>111600520</item>
+			<item>125200003</item>
+			<item>113600515</item>
+			<item>100600028</item>
+			<item>112600502</item>
+			<item>110600550</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="268003" level="50" name="fortress mage" name_id="307266" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="ASMODIANS" tribe="GENERALDA_ALIDR" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600508</item>
+			<item>111600522</item>
+			<item>125200004</item>
+			<item>113600517</item>
+			<item>100600028</item>
+			<item>112600504</item>
+			<item>110600552</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="268004" level="50" name="fortress mage" name_id="307267" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="DRAKAN" tribe="GENERALDR_ALIDA" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>100500284</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="269202" level="50" name="fortress mage" name_id="307301" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="ELYOS" tribe="GENERAL_ADADR" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600506</item>
+			<item>111600520</item>
+			<item>125200003</item>
+			<item>113600515</item>
+			<item>100600028</item>
+			<item>112600502</item>
+			<item>110600550</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="269204" level="50" name="fortress mage" name_id="307303" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="DRAKAN" tribe="GENERALDR_ALIDA" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>100500284</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="270102" level="50" name="fortress mage" name_id="307337" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="ELYOS" tribe="GENERAL_ADADR" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600506</item>
+			<item>111600520</item>
+			<item>125200003</item>
+			<item>113600515</item>
+			<item>100600028</item>
+			<item>112600502</item>
+			<item>110600550</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="270104" level="50" name="fortress mage" name_id="307339" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="DRAKAN" tribe="GENERALDR_ALIDA" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>100500284</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="271002" level="50" name="fortress mage" name_id="307373" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="ELYOS" tribe="GENERAL_ADADR" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600506</item>
+			<item>111600520</item>
+			<item>125200003</item>
+			<item>113600515</item>
+			<item>100600028</item>
+			<item>112600502</item>
+			<item>110600550</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="271004" level="50" name="fortress mage" name_id="307375" npc_type="ATTACKABLE" height="1.05" rank="ELITE" race="DRAKAN" tribe="GENERALDR_ALIDA" srange="20" arange="37" arank="1000" hpgauge="12">
+		<stats maxMp="28076" maxHp="93586" maxXp="55529" block="102" parry="102" mdef="102" pdef="102" crit="102" power="102" evasion="102" accuracy="102" magic_accuracy="102" walk_speed="1.457" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+		<equipment>
+			<item>100500284</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="730266" level="1" name="sanctum teleport statue" name_id="371452" npc_type="PORTAL" height="2.0" rank="NORMAL" tribe="GENERAL" srange="20" hpgauge="3">
+		<stats maxHp="172" maxXp="119" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="0.0" run_speed="0.0" run_speed_fight="0.0" fly_speed="0.0"/>
+	</npc_template>
+	<npc_template npc_id="798500" level="50" name="mysteris" name_id="351490" npc_type="NON_ATTACKABLE" height="1.8" title_id="350427" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="14614" maxXp="111" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114100294</item>
+			<item>111100277</item>
+			<item>125000634</item>
+			<item>113100276</item>
+			<item>112100256</item>
+			<item>110100300</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798501" level="50" name="chatia" name_id="351491" npc_type="NON_ATTACKABLE" height="2.1" title_id="350315" rank="NORMAL" race="ELYOS" tribe="GUARD" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="14614" maxXp="102" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.3" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114600309</item>
+			<item>111600318</item>
+			<item>113600310</item>
+			<item>100000043</item>
+			<item>112600303</item>
+			<item>110600338</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798502" level="50" name="tanoria" name_id="351492" npc_type="NON_ATTACKABLE" height="2.1" title_id="350316" rank="NORMAL" race="ELYOS" tribe="GUARD" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="14614" maxXp="119" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.3" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114300307</item>
+			<item>111300281</item>
+			<item>113300293</item>
+			<item>100200095</item>
+			<item>112300263</item>
+			<item>100200095</item>
+			<item>110300306</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798503" level="50" name="pilitas" name_id="351493" npc_type="NON_ATTACKABLE" height="2.1" title_id="350317" rank="NORMAL" race="ELYOS" tribe="GUARD" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="14614" maxXp="104" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.3" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114100301</item>
+			<item>111100284</item>
+			<item>113100283</item>
+			<item>100500017</item>
+			<item>112100261</item>
+			<item>110100345</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798504" level="50" name="arathias" name_id="351494" npc_type="NON_ATTACKABLE" height="2.1" title_id="350318" rank="NORMAL" race="ELYOS" tribe="GUARD" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="14614" maxXp="118" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.3" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114500330</item>
+			<item>111500326</item>
+			<item>113500318</item>
+			<item>100000066</item>
+			<item>112500308</item>
+			<item>110500335</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798505" level="45" name="salvius" name_id="351495" npc_type="NON_ATTACKABLE" height="1.8" title_id="370019" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="11878" maxXp="113" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114500316</item>
+			<item>111500312</item>
+			<item>113500304</item>
+			<item>110500321</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798506" level="45" name="elmaia" name_id="351496" npc_type="NON_ATTACKABLE" height="1.8" title_id="370020" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="11878" maxXp="112" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114500316</item>
+			<item>111500312</item>
+			<item>113500304</item>
+			<item>100200547</item>
+			<item>110500321</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798507" level="45" name="gracus" name_id="351497" npc_type="NON_ATTACKABLE" height="2.1" title_id="370109" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="11878" maxXp="114" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.3" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114500331</item>
+			<item>111500327</item>
+			<item>113500319</item>
+			<item>112500309</item>
+			<item>110500336</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798508" level="45" name="tororite" name_id="351498" npc_type="NON_ATTACKABLE" height="2.1" title_id="370110" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="11878" maxXp="107" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.3" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114500331</item>
+			<item>111500327</item>
+			<item>113500319</item>
+			<item>112500309</item>
+			<item>110500336</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798509" level="45" name="papinius" name_id="351499" npc_type="NON_ATTACKABLE" height="1.8" title_id="370111" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="11878" maxXp="117" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114600312</item>
+			<item>111600321</item>
+			<item>113600313</item>
+			<item>100000076</item>
+			<item>112600306</item>
+			<item>110600341</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798510" level="45" name="ecocia" name_id="351500" npc_type="NON_ATTACKABLE" height="1.8" title_id="370112" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="11878" maxXp="100" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114600312</item>
+			<item>111600321</item>
+			<item>113600313</item>
+			<item>112600306</item>
+			<item>110600341</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798511" level="50" name="peidolas" name_id="351502" npc_type="NON_ATTACKABLE" height="2.1" title_id="370125" rank="NORMAL" race="ELYOS" tribe="GUARD" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="14614" maxXp="114" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.3" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114100294</item>
+			<item>111100277</item>
+			<item>113100276</item>
+			<item>100100766</item>
+			<item>112100256</item>
+			<item>115000733</item>
+			<item>110101142</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798512" level="50" name="niotia" name_id="351503" npc_type="NON_ATTACKABLE" height="2.1" title_id="370125" rank="NORMAL" race="ELYOS" tribe="GUARD" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="14614" maxXp="112" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.3" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114100294</item>
+			<item>111100277</item>
+			<item>113100276</item>
+			<item>100100766</item>
+			<item>112100256</item>
+			<item>115000733</item>
+			<item>110101143</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798513" level="55" name="machiah" name_id="351504" npc_type="NON_ATTACKABLE" height="1.8" title_id="370220" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="18756" maxXp="101" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114100696</item>
+			<item>113100677</item>
+			<item>112100628</item>
+			<item>110100753</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798600" level="50" name="eremitia" name_id="351501" npc_type="NON_ATTACKABLE" height="1.8" title_id="370181" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3" state="6">
+		<stats maxHp="14614" maxXp="100" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114101074</item>
+			<item>111101033</item>
+			<item>113101046</item>
+			<item>112100992</item>
+			<item>110101138</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798601" level="55" name="konopas" name_id="351526" npc_type="NON_ATTACKABLE" height="1.8" title_id="350410" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="18756" maxXp="113" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114300708</item>
+			<item>111300669</item>
+			<item>113300692</item>
+			<item>112300627</item>
+			<item>110300709</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798602" level="55" name="falshon" name_id="351527" npc_type="NON_ATTACKABLE" height="1.8" title_id="370017" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="18756" maxXp="115" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114500316</item>
+			<item>111500312</item>
+			<item>113500304</item>
+			<item>100200902</item>
+			<item>112500296</item>
+			<item>110500321</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798603" level="55" name="mopsus" name_id="351528" npc_type="NON_ATTACKABLE" height="1.8" title_id="370018" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxHp="18756" maxXp="118" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114500316</item>
+			<item>111500312</item>
+			<item>113500304</item>
+			<item>112500296</item>
+			<item>110500321</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="700361" level="1" name="indratu legion abyss gate" name_id="371070" npc_type="PORTAL" height="1.0" rank="NORMAL" tribe="FIELD_OBJECT_ALL" hpgauge="3">
+ 		<stats maxMp="52" maxHp="172" maxXp="100" block="11" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="0.0" run_speed="0.0" run_speed_fight="0.0" fly_speed="0.0"/>
+ 	</npc_template>
+	<npc_template hpgauge="3" tribe="FIELD_OBJECT_DARK" rank="NORMAL" npc_type="USEITEM" height="1.0" name="pagimkin's corpse" name_id="350878" level="1" npc_id="700233">
+		<stats power="11" accuracy="11" maxXp="100" mdef="11" pdef="11" crit="11" run_speed_fight="0.0" magic_accuracy="11" parry="11" block="11" evasion="11" fly_speed="0.0" run_speed="0.0" walk_speed="0.0" maxMp="52" maxHp="172"/>
+	</npc_template>
+	<npc_template npc_id="204649" level="45" name="reaper squad" name_id="352053" npc_type="NON_ATTACKABLE" height="1.0" rank="ELITE" race="ELYOS" tribe="PROTECTGUARD_LIGHT" srange="10" arange="37" arank="1000" hpgauge="14">
+		<stats maxMp="38277" maxHp="127590" maxXp="44466" block="93" parry="93" mdef="93" pdef="93" crit="93" power="93" evasion="93" accuracy="93" magic_accuracy="93" walk_speed="1.3" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>114100294</item>
+			<item>111100277</item>
+			<item>113100276</item>
+			<item>100000042</item>
+			<item>112100256</item>
+			<item>115000308</item>
+			<item>110100330</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798467" level="55" name="cature" name_id="352649" npc_type="NON_ATTACKABLE" height="1.0" title_id="350412" rank="NORMAL" race="ASMODIANS" tribe="GENERAL_DARK" srange="20" arange="37" arank="1000" hpgauge="14">
+		<stats maxHp="189845" maxXp="107" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>100000592</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="798455" level="40" name="juvik" name_id="352642" npc_type="NON_ATTACKABLE" height="1.0" title_id="350420" rank="NORMAL" race="ASMODIANS" tribe="GENERAL_DARK" srange="20" arange="37" arank="1000" hpgauge="3">
+		<stats maxHp="138" maxXp="106" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+	</npc_template>
+	<npc_template npc_id="798454" level="40" name="ivar" name_id="352641" npc_type="NON_ATTACKABLE" height="1.0" title_id="350420" rank="NORMAL" race="ASMODIANS" tribe="GENERAL_DARK" srange="20" arange="37" arank="1000" hpgauge="3">
+		<stats maxHp="144" maxXp="112" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="7.0" fly_speed="0.0"/>
+	</npc_template>
+	<npc_template npc_id="798466" level="55" name="baleria" name_id="352648" npc_type="NON_ATTACKABLE" height="1.0" title_id="350412" rank="NORMAL" race="ASMODIANS" tribe="GENERAL_DARK" srange="20" arange="37" arank="1000" hpgauge="14">
+		<stats maxHp="142" maxXp="109" block="100" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.2" fly_speed="0.0"/>
+		<equipment>
+			<item>100000592</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="730069" level="1" name="fire temple entrance" name_id="350876" npc_type="PORTAL" height="1.0" rank="NORMAL" tribe="FIELD_OBJECT_ALL" srange="20" hpgauge="3">
+		<stats maxMp="52" maxHp="172" maxXp="100" block="11" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="0.0" run_speed="0.0" run_speed_fight="0.0" fly_speed="0.0"/>
+	</npc_template>
+	<npc_template npc_id="204832" level="50" name="lethe" name_id="353350" npc_type="NON_ATTACKABLE" height="0.9" rank="NORMAL" race="ELYOS" tribe="GUARD" srange="20" arange="2" arank="1000" hpgauge="3">
+		<stats maxMp="4385" maxHp="14614" maxXp="41633" block="85" parry="85" mdef="85" pdef="85" crit="85" power="85" evasion="85" accuracy="85" magic_accuracy="85" walk_speed="1.9" run_speed="6.0" run_speed_fight="5.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114300007</item>
+			<item>111300007</item>
+			<item>100000036</item>
+			<item>110300007</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="203191" level="5" name="poppy" name_id="351086" npc_type="NON_ATTACKABLE" height="1.3" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="10" arange="2" arank="1000" hpgauge="3">
+ 		<stats maxMp="167" maxHp="556" maxXp="374" block="17" parry="17" mdef="17" pdef="17" crit="17" power="17" evasion="17" accuracy="17" magic_accuracy="17" walk_speed="0.59" run_speed="4.2" run_speed_fight="4.2" fly_speed="0.0"/>
+ 	</npc_template>	
+	<npc_template npc_id="210317" level="14" name="lightningfoot tuka" name_id="300261" npc_type="ATTACKABLE" height="1.2" rank="NORMAL" race="BROWNIE" tribe="MONSTER" srange="6" arange="20" arank="1000" hpgauge="3">
+		<stats maxMp="465" maxHp="1550" maxXp="1961" block="31" parry="31" mdef="31" pdef="31" crit="31" power="31" evasion="31" accuracy="31" magic_accuracy="31" walk_speed="0.82" run_speed="7.0" run_speed_fight="5.0" fly_speed="0.0"/>
+		<equipment>
+			<item>101700008</item>
+			<item>163000001</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="212878" level="36" name="chalice guard denlavis" name_id="306767" npc_type="NON_ATTACKABLE" height="1.0" rank="ELITE" race="ELYOS" tribe="LIGHT_DENLABIS" srange="8" arange="2" arank="1000" hpgauge="13">
+		<stats maxMp="18395" maxHp="61314" maxXp="183942" block="76" parry="76" mdef="76" pdef="76" crit="76" power="76" evasion="76" accuracy="76" magic_accuracy="76" walk_speed="1.457" run_speed="6.0" run_speed_fight="14.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114600115</item>
+			<item>111600113</item>
+			<item>113600106</item>
+			<item>100000029</item>
+			<item>112600102</item>
+			<item>110600120</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="213797" level="23" name="nimble aramis" name_id="315833" npc_type="ATTACKABLE" height="0.5" rank="NORMAL" race="BROWNIE" tribe="AGGRESSIVESINGLEMONSTER" srange="6" arange="2" arank="100" hpgauge="3">
+ 		<stats maxMp="1050" maxHp="3499" maxXp="5551" block="44" parry="44" mdef="44" pdef="44" crit="44" power="44" evasion="44" accuracy="44" magic_accuracy="44" walk_speed="2.97" run_speed="9.5" run_speed_fight="6.5" fly_speed="0.0"/>
+ 	</npc_template>
+	<npc_template npc_id="263598" level="40" name="tevenaz" name_id="312821" npc_type="NON_ATTACKABLE" height="1.0" rank="NORMAL" race="ASMODIANS" tribe="GENERAL_DARK" srange="10" arange="2" arank="1000" hpgauge="5">
+		<stats maxMp="6896" maxHp="22986" maxXp="53742" block="70" parry="70" mdef="70" pdef="70" crit="70" power="70" evasion="70" accuracy="70" magic_accuracy="70" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114100308</item>
+			<item>111100291</item>
+			<item>113100290</item>
+			<item>100600029</item>
+			<item>112100266</item>
+			<item>110100352</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="263267" level="40" name="lirhel" name_id="311940" npc_type="NON_ATTACKABLE" height="1.0" rank="NORMAL" race="ASMODIANS" tribe="GENERAL_DARK" srange="10" arange="2" arank="1000" hpgauge="5">
+		<stats maxMp="6896" maxHp="22986" maxXp="28916" block="70" parry="70" mdef="70" pdef="70" crit="70" power="70" evasion="70" accuracy="70" magic_accuracy="70" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.0" fly_speed="0.0"/>
+		<equipment>
+			<item>112100256</item>
+			<item>114100294</item>
+			<item>113100276</item>
+			<item>111100277</item>
+			<item>110100333</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="264769" level="40" name="gudharten" name_id="311944" npc_type="NON_ATTACKABLE" height="1.0" rank="NORMAL" race="ASMODIANS" tribe="GENERAL_DARK" srange="10" arange="2" arank="1000" hpgauge="3">
+		<stats maxMp="2988" maxHp="9960" maxXp="20552" block="70" parry="70" mdef="70" pdef="70" crit="70" power="70" evasion="70" accuracy="70" magic_accuracy="70" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.0" fly_speed="0.0"/>
+		<equipment>
+			<item>112100256</item>
+			<item>114100294</item>
+			<item>113100276</item>
+			<item>111100277</item>
+			<item>110100333</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="271067" level="50" name="keabarah" name_id="312824" npc_type="NON_ATTACKABLE" height="1.0" rank="NORMAL" race="ELYOS" tribe="GENERAL" srange="10" arange="2" arank="1000" hpgauge="5">
+		<stats maxMp="9204" maxHp="30679" maxXp="38399" block="85" parry="85" mdef="85" pdef="85" crit="85" power="85" evasion="85" accuracy="85" magic_accuracy="85" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114100300</item>
+			<item>111100283</item>
+			<item>113100282</item>
+			<item>100600021</item>
+			<item>112100260</item>
+			<item>110100344</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="270166" level="50" name="herder" name_id="312831" npc_type="NON_ATTACKABLE" height="1.0" rank="NORMAL" race="ASMODIANS" tribe="GENERAL_DARK" srange="10" arange="2" arank="1000" hpgauge="5">
+		<stats maxMp="9204" maxHp="30679" maxXp="40824" block="85" parry="85" mdef="85" pdef="85" crit="85" power="85" evasion="85" accuracy="85" magic_accuracy="85" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114100308</item>
+			<item>111100291</item>
+			<item>113100290</item>
+			<item>100600029</item>
+			<item>112100266</item>
+			<item>110100352</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="268052" level="50" name="hildebrant" name_id="311948" npc_type="NON_ATTACKABLE" height="1.0" rank="NORMAL" race="ASMODIANS" tribe="GENERAL_DARK" srange="10" arange="2" arank="1000" hpgauge="5">
+		<stats maxMp="9204" maxHp="30679" maxXp="40420" block="85" parry="85" mdef="85" pdef="85" crit="85" power="85" evasion="85" accuracy="85" magic_accuracy="85" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.0" fly_speed="0.0"/>
+		<equipment>
+			<item>112100256</item>
+			<item>114100294</item>
+			<item>113100276</item>
+			<item>111100277</item>
+			<item>110100333</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="268081" level="50" name="lifton" name_id="312823" npc_type="NON_ATTACKABLE" height="1.0" rank="NORMAL" race="ASMODIANS" tribe="GENERAL_DARK" srange="10" arange="2" arank="1000" hpgauge="5">
+		<stats maxMp="9204" maxHp="30679" maxXp="42541" block="85" parry="85" mdef="85" pdef="85" crit="85" power="85" evasion="85" accuracy="85" magic_accuracy="85" walk_speed="1.5" run_speed="6.0" run_speed_fight="4.0" fly_speed="0.0"/>
+		<equipment>
+			<item>114100308</item>
+			<item>111100291</item>
+			<item>113100290</item>
+			<item>100600029</item>
+			<item>112100266</item>
+			<item>110100352</item>
+		</equipment>
+	</npc_template>
+	<npc_template npc_id="214577" level="50" name="titirunerk the two faced" name_id="318056" npc_type="ATTACKABLE" height="0.85" rank="NORMAL" race="DEMIHUMANOID" tribe="MONSTER" srange="8" arange="2" arank="1000" hpgauge="5">
+		<stats maxMp="5184" maxHp="17277" maxXp="42441" block="85" parry="85" mdef="85" pdef="85" crit="85" power="85" evasion="85" accuracy="85" magic_accuracy="85" walk_speed="1.5" run_speed="6.0" run_speed_fight="5.0" fly_speed="0.0"/>
+	</npc_template>
+	<npc_template npc_id="700536" level="1" name="heavy stone door" name_id="371277" npc_type="PORTAL" height="1.0" rank="NORMAL" tribe="FIELD_OBJECT_ALL" hpgauge="3">
+		<stats maxMp="52" maxHp="172" maxXp="105" block="11" parry="11" mdef="11" pdef="11" crit="11" power="11" evasion="11" accuracy="11" magic_accuracy="11" walk_speed="0.0" run_speed="0.0" run_speed_fight="0.0" fly_speed="0.0"/>
+	</npc_template>
+</npc_templates>

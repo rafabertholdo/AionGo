@@ -1,0 +1,1223 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<skill_data xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="skills.xsd">
+	<skill_template skill_id="173" name="STR_SKILL_WA_ShieldStance_G1" nameId="572707" stack="SKILL_WA_SHIELDSTANCE" lvl="1" skilltype="PHYSICAL" skillsubtype="BUFF" tslot="NOSHOW" activation="TOGGLE" cooldown="120" duration="0" cancel_rate="10" skillset_exception="1">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<statboost effectid="101731" e="1" hoptype="SKILLLV" hopb="114">
+				<change stat="BLOCK" func="ADD" value="500"/>
+			</statboost>
+			<statboost effectid="101732" e="2">
+				<change stat="PHYSICAL_DEFENSE" func="PERCENT" value="10"/>
+			</statboost>
+			<statboost effectid="101734" e="3">
+				<change stat="STUN_RESISTANCE" func="ADD" value="500"/>
+			</statboost>
+		</effects>
+	</skill_template>
+	<skill_template skill_id="524" name="STR_SKILL_KN_HighShieldStance_G1" nameId="582701" stack="SKILL_KN_HIGHSHIELDSTANCE" lvl="1" skilltype="PHYSICAL" skillsubtype="BUFF" tslot="NOSHOW" activation="TOGGLE" cooldown="120" duration="0" cancel_rate="10" skillset_exception="1">
+        <setproperties>
+            <firsttarget value="ME"/>
+            <firsttargetrange value="1"/>
+            <targetrange value="ONLYONE"/>
+            <targetrelation value="FRIEND"/>
+        </setproperties>
+        <effects>
+            <statboost effectid="105241" e="1" hoptype="SKILLLV" hopb="368">
+                <change stat="BLOCK" func="ADD" value="1000"/>
+            </statboost>
+            <statboost effectid="101732" e="2">
+                <change stat="PHYSICAL_DEFENSE" func="PERCENT" value="15"/>
+            </statboost>
+            <statboost effectid="101733" e="3">
+                <change stat="ATTACK_SPEED" func="PERCENT" value="50"/>
+            </statboost>
+			<statboost effectid="101734" e="4">
+                <change stat="STUN_RESISTANCE" func="ADD" value="1000"/>
+            </statboost>
+			<statboost effectid="107031" e="5">
+                <change stat="STAGGER_RESISTANCE" func="ADD" value="1000"/>
+            </statboost>
+            <statboost effectid="107032" e="6">
+                <change stat="STUMBLE_RESISTANCE" func="ADD" value="1000"/>
+            </statboost>
+            <statboost effectid="107033" e="7" hoptype="SKILLLV">
+                <change stat="SPIN_RESISTANCE" func="ADD" value="1000"/>
+            </statboost>
+			<statboost effectid="107033" e="8" hoptype="SKILLLV">
+                <change stat="OPENAREIAL_RESISTANCE" func="ADD" value="1000"/>
+            </statboost>
+        </effects>
+    </skill_template>
+	<skill_template skill_id="1564" name="STR_SKILL_WI_FlameSeal_G1" nameId="581449" stack="SKILL_WI_FLAMESEAL" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="100" duration="0" cancel_rate="20" skillset_exception="2">
+		<startconditions>
+			<mp value="102" delta="5"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<statup duration="1800000" effectid="115641" e="1" hoptype="SKILLLV" hopb="367">
+				<change stat="BOOST_MAGICAL_SKILL" func="ADD" delta="2" value="40"/>
+			</statup>
+		</effects>
+		<actions>
+			<mpuse value="102" delta="5"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1565" name="STR_SKILL_WI_FlameSeal_G2" nameId="581455" stack="SKILL_WI_FLAMESEAL" lvl="2" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="100" duration="0" cancel_rate="20" skillset_exception="2">
+		<startconditions>
+			<mp value="169" delta="4"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<statup duration="1800000" effectid="115641" e="1" hoptype="SKILLLV" hopb="555">
+				<change stat="BOOST_MAGICAL_SKILL" func="ADD" delta="2" value="80"/>
+			</statup>
+		</effects>
+		<actions>
+			<mpuse value="169" delta="4"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1566" name="STR_SKILL_WI_FrozenSeal_G1" nameId="581457" stack="SKILL_WI_FROZENSEAL" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="100" duration="0" cancel_rate="20" skillset_exception="2">
+		<startconditions>
+			<mp value="157" delta="3"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<reflector value="20" delta="1" radius="30" duration="1800000" effectid="153" e="1" hoptype="SKILLLV" hopb="512"/>
+			<provoker skill_id="8471" provoke_type="ATTACKED" provoke_target="OPPONENT" prob2="100" duration="1800000" effectid="115662" e="2" element="WIND"/>
+		</effects>
+		<actions>
+			<mpuse value="157" delta="3"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1574" name="STR_SKILL_WI_WizardrySeal_G1" nameId="581503" stack="SKILL_WI_WIZARDRYSEAL" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="100" duration="0" cancel_rate="20" skillset_exception="2">
+		<startconditions>
+			<mp value="87" delta="2"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<statup duration="1800000" effectid="115741" e="1" hoptype="SKILLLV" hopb="290">
+				<change stat="REGEN_MP" func="ADD" delta="0" value="21"/>
+			</statup>
+			<statup duration="1800000" effectid="115742" e="2">
+				<change stat="FIRE_RESISTANCE" func="ADD" delta="0" value="20"/>
+			</statup>
+			<statup duration="1800000" effectid="115743" e="3" hoptype="SKILLLV">
+				<change stat="WATER_RESISTANCE" func="ADD" delta="0" value="20"/>
+			</statup>
+		</effects>
+		<actions>
+			<mpuse value="87" delta="2"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1575" name="STR_SKILL_WI_WizardrySeal_G2" nameId="581509" stack="SKILL_WI_WIZARDRYSEAL" lvl="2" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="100" duration="0" cancel_rate="20" skillset_exception="2">
+		<startconditions>
+			<mp value="118" delta="4"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<statup duration="1800000" effectid="115741" e="1" hoptype="SKILLLV" hopb="426">
+				<change stat="REGEN_MP" func="ADD" delta="0" value="33"/>
+			</statup>
+			<statup duration="1800000" effectid="115742" e="2">
+				<change stat="FIRE_RESISTANCE" func="ADD" delta="0" value="25"/>
+			</statup>
+			<statup duration="1800000" effectid="115743" e="3" hoptype="SKILLLV">
+				<change stat="WATER_RESISTANCE" func="ADD" delta="0" value="25"/>
+			</statup>
+		</effects>
+		<actions>
+			<mpuse value="118" delta="4"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1576" name="STR_SKILL_WI_WizardrySeal_G3" nameId="581511" stack="SKILL_WI_WIZARDRYSEAL" lvl="3" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="100" duration="0" cancel_rate="20" skillset_exception="2">
+		<startconditions>
+			<mp value="163" delta="4"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<statup duration="1800000" effectid="115741" e="1" hoptype="SKILLLV" hopb="586">
+				<change stat="REGEN_MP" func="ADD" delta="0" value="45"/>
+			</statup>
+			<statup duration="1800000" effectid="115742" e="2">
+				<change stat="FIRE_RESISTANCE" func="ADD" delta="0" value="30"/>
+			</statup>
+			<statup duration="1800000" effectid="115743" e="3" hoptype="SKILLLV">
+				<change stat="WATER_RESISTANCE" func="ADD" delta="0" value="30"/>
+			</statup>
+		</effects>
+		<actions>
+			<mpuse value="163" delta="4"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1586" name="STR_SKILL_WI_FrozenSeal_G2" nameId="584511" stack="SKILL_WI_FROZENSEAL" lvl="2" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="100" duration="0" cancel_rate="20" skillset_exception="2">
+		<startconditions>
+			<mp value="206" delta="4"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<reflector value="40" delta="1" radius="30" duration="1800000" effectid="153" e="1" hoptype="SKILLLV" hopb="672"/>
+			<provoker skill_id="8526" provoke_type="ATTACKED" provoke_target="OPPONENT" prob2="100" duration="1800000" effectid="115662" e="2" element="WIND"/>
+		</effects>
+		<actions>
+			<mpuse value="206" delta="4"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1590" name="STR_SKILL_WI_FlameSeal_G3" nameId="584527" stack="SKILL_WI_FLAMESEAL" lvl="3" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="100" duration="0" cancel_rate="20" skillset_exception="2">
+		<startconditions>
+			<mp value="216" delta="3"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<statup duration="1800000" effectid="115641" e="1" hoptype="SKILLLV" hopb="696">
+				<change stat="BOOST_MAGICAL_SKILL" func="ADD" delta="2" value="100"/>
+			</statup>
+		</effects>
+		<actions>
+			<mpuse value="216" delta="3"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1596" name="STR_SKILL_WI_WizardrySeal_G4" nameId="584541" stack="SKILL_WI_WIZARDRYSEAL" lvl="4" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="100" duration="0" cancel_rate="20" skillset_exception="2">
+		<startconditions>
+			<mp value="214" delta="3"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<statup duration="1800000" effectid="115741" e="1" hoptype="SKILLLV" hopb="733">
+				<change stat="REGEN_MP" func="ADD" delta="0" value="56"/>
+			</statup>
+			<statup duration="1800000" effectid="115742" e="2">
+				<change stat="FIRE_RESISTANCE" func="ADD" delta="0" value="35"/>
+			</statup>
+			<statup duration="1800000" effectid="115743" e="3" hoptype="SKILLLV">
+				<change stat="WATER_RESISTANCE" func="ADD" delta="0" value="35"/>
+			</statup>
+		</effects>
+		<actions>
+			<mpuse value="214" delta="3"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="2210" name="STR_SKILL_WI_FrozenSeal_G3" nameId="591121" stack="SKILL_WI_FROZENSEAL" lvl="3" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="100" duration="0" cancel_rate="20" skillset_exception="2">
+		<startconditions>
+			<mp value="267" delta="5"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<reflector value="60" delta="1" radius="30" duration="1800000" effectid="153" e="1" hoptype="SKILLLV" hopb="780"/>
+			<provoker skill_id="8526" provoke_type="ATTACKED" provoke_target="OPPONENT" prob2="100" duration="1800000" effectid="115662" e="2" element="WIND"/>
+		</effects>
+		<actions>
+			<mpuse value="267" delta="5"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="625" name="STR_SKILL_RA_TrackerMind_G1" nameId="590145" stack="SKILL_RA_TRACKERMIND" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="NOSHOW" activation="TOGGLE" cooldown="10" duration="0" cancel_rate="20">
+        <setproperties>
+            <firsttarget value="ME"/>
+            <firsttargetrange value="1"/>
+            <targetrange value="ONLYONE"/>
+            <targetrelation value="FRIEND"/>
+        </setproperties>
+        <effects>
+            <weaponstatup weapon="BOW" effectid="106251" e="1" hoptype="SKILLLV" hopb="726">
+                <change stat="PHYSICAL_ATTACK" func="PERCENT" delta="0" value="10"/>
+            </weaponstatup>
+			<changemp value="10" percent="true" effectid="173" e="2"/>
+        </effects>
+    </skill_template>
+	<skill_template skill_id="1032" name="STR_SKILL_PR_HealersHand_G1" nameId="590285" stack="SKILL_PR_HEALERSHAND" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="NOSHOW" activation="TOGGLE" cooldown="10" duration="0" cancel_rate="20">
+        <setproperties>
+            <firsttarget value="ME"/>
+            <firsttargetrange value="1"/>
+            <targetrange value="ONLYONE"/>
+            <targetrelation value="FRIEND"/>
+        </setproperties>
+        <effects>
+            <statup effectid="110321" e="1" hoptype="SKILLLV" hopb="760">
+                <change stat="HEAL_BOOST" func="ADD" delta="0" value="250"/>
+            </statup>
+			<changemp value="10" percent="true" effectid="173" e="2"/>
+        </effects>
+    </skill_template>
+	<skill_template skill_id="1163" name="STR_SKILL_PR_GraceofGod_G1" nameId="582467" stack="SKILL_PR_GRACEOFGOD" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="1800" duration="0" cancel_rate="20">
+        <setproperties>
+            <firsttarget value="ME"/>
+            <targetrange value="ONLYONE"/>
+            <targetrelation value="FRIEND"/>
+        </setproperties>
+		<effects>
+            <changemp value="-100" percent="true" duration="12000" effectid="173" e="1" hoptype="SKILLLV" hopb="338"/>
+        </effects>
+    </skill_template>
+	<skill_template skill_id="1556" name="STR_SKILL_WI_ArcaneWisdom_G1" nameId="581421" stack="SKILL_WI_ARCANEWISDOM" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="300" duration="0" cancel_rate="20">
+        <setproperties>
+            <firsttarget value="ME"/>
+            <firsttargetrange value="1"/>
+            <targetrange value="ONLYONE" maxcount="1"/>
+            <targetrelation value="FRIEND"/>
+        </setproperties>
+		<effects>
+            <changemp value="-50" percent="true" duration="15000" effectid="173" e="1" hoptype="SKILLLV" hopb="338"/>
+        </effects>
+    </skill_template>
+    <skill_template skill_id="1968" name="STR_SKILL_ALL_ShockReflect_G1" nameId="590013" stack="SKILL_ALL_SHOCKREFLECT" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="600" duration="0" cancel_rate="20" chain_skill_prob="100">
+        <startconditions>
+            <mp value="81" delta="0"/>
+        </startconditions>
+        <setproperties>
+            <firsttarget value="ME"/>
+            <firsttargetrange value="1"/>
+            <targetrange value="ONLYONE"/>
+            <targetrelation value="FRIEND"/>
+        </setproperties>
+        <effects>
+			<dispel dispeltype="EFFECTID" e="1" element="FIRE" hoptype="SKILLLV" hopb="578">
+                <effectids>20000</effectids>
+				<effectids>20010</effectids>
+				<effectids>20011</effectids>
+				<effectids>20012</effectids>		
+				<effectids>20013</effectids>		
+            </dispel>
+			<statup duration="7000" effectid="119682" e="2">
+                		<change stat="STUN_RESISTANCE" func="ADD" delta="0" value="1000"/>
+				<change stat="STUMBLE_RESISTANCE" func="ADD" delta="0" value="1000"/>
+				<change stat="STAGGER_RESISTANCE" func="ADD" delta="0" value="1000"/>
+				<change stat="SPIN_RESISTANCE" func="ADD" delta="0" value="1000"/>
+				<change stat="OPENAREIAL_RESISTANCE" func="ADD" delta="0" value="1000"/>
+            </statup>
+        </effects>
+        <actions>
+            <mpuse value="81" delta="0"/>
+        </actions>
+    </skill_template>
+	
+	<!-- 
+	/ Abyss Skills
+	/ @Author: Kavinsky
+	/ -->
+	<!-- ABYSS SKILL ELYOS: Transformation: Guardian Deity General I (9737) -->
+	<skill_template skill_id="9737" name="STR_SKILL_Abyss_RankerSkill_Light_Avatar_G1" nameId="577347" stack="SKILL_ABYSS_RANKERSKILL_LIGHT_AVATAR" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="72000" duration="6000">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skilllauncher skill_id="9764" value="1" e="1"/>
+			<transform model="202502" duration="600000" effectid="175" e="2"/>
+            <dispeldebuff e="3" element="WATER"/>
+            <statup duration="600000" effectid="109121" e="4" hoptype="SKILLLV" hopb="328">
+                <change stat="SPEED" func="PERCENT" value="10"/>
+ 			</statup>
+            <statup duration="600000" effectid="109122" e="5">
+                <change stat="FLY_SPEED" func="PERCENT" value="10"/>
+            </statup>
+            <statup duration="600000" effectid="10184251" e="6">
+               <change stat="MAXHP" func="ADD" delta="0" value="78000"/>
+            </statup>
+            <statup duration="600000" effectid="101212" e="7">
+                <change stat="REGEN_HP" func="ADD" value="100"/>
+            </statup>
+            <statup duration="600000" effectid="10184252" e="8">
+                <change stat="MAXMP" func="ADD" delta="0" value="156000"/>
+            </statup>
+            <statup duration="600000" effectid="117321" e="9">
+                <change stat="REGEN_MP" func="ADD" value="400"/>
+           </statup>
+            <statup duration="600000" effectid="185861" e="10">
+                <change stat="PVP_ATTACK_RATIO" func="ADD" delta="0" value="200"/>
+            </statup>
+			<heal value="78000" delta="0" e="11" element="WATER"/>
+            <healmp value="156000" delta="0" e="12" element="WATER"/>
+		</effects>
+		<actions>
+			<itemuse itemid="169300012" count="6"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ELYOS: Transformation: Guardian Deity General II (9738) -->
+	<skill_template skill_id="9738" name="STR_SKILL_Abyss_RankerSkill_Light_Avatar_G2" nameId="577353" stack="SKILL_ABYSS_RANKERSKILL_LIGHT_AVATAR" lvl="2" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="72000" duration="6000">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skilllauncher skill_id="9765" value="1" e="1"/>
+			<transform model="202503" duration="600000" effectid="175" e="2"/>
+			<dispeldebuff e="3" element="WATER"/>
+            <statup duration="600000" effectid="109121" e="4" hoptype="SKILLLV" hopb="328">
+                <change stat="SPEED" func="PERCENT" value="10"/>
+ 			</statup>
+            <statup duration="600000" effectid="109122" e="5">
+                <change stat="FLY_SPEED" func="PERCENT" value="10"/>
+            </statup>
+            <statup duration="600000" effectid="10184251" e="6">
+               <change stat="MAXHP" func="ADD" delta="0" value="93600"/>
+            </statup>
+            <statup duration="600000" effectid="101212" e="7">
+                <change stat="REGEN_HP" func="ADD" value="120"/>
+            </statup>
+            <statup duration="600000" effectid="10184252" e="8">
+                <change stat="MAXMP" func="ADD" delta="0" value="187200"/>
+            </statup>
+            <statup duration="600000" effectid="117321" e="9">
+                <change stat="REGEN_MP" func="ADD" value="480"/>
+           </statup>
+            <statup duration="600000" effectid="185861" e="10">
+                <change stat="PVP_ATTACK_RATIO" func="ADD" delta="0" value="210"/>
+            </statup>
+			<heal value="93600" delta="0" e="11" element="WATER"/>
+            <healmp value="187200" delta="0" e="12" element="WATER"/>
+		</effects>
+		<actions>
+			<itemuse itemid="169300012" count="7"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ELYOS: Transformation: Guardian Deity General III (9739) -->
+	<skill_template skill_id="9739" name="STR_SKILL_Abyss_RankerSkill_Light_Avatar_G3" nameId="577357" stack="SKILL_ABYSS_RANKERSKILL_LIGHT_AVATAR" lvl="3" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="72000" duration="6000">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skilllauncher skill_id="9766" value="1" e="1"/>
+			<transform model="202504" duration="600000" effectid="175" e="2"/>
+			<statup duration="600000" effectid="197373" e="2">
+				<change stat="SPEED" func="ADD" delta="0" value="20"/>
+			</statup>
+			<dispeldebuff e="3" element="WATER"/>
+            <statup duration="600000" effectid="109121" e="4" hoptype="SKILLLV" hopb="328">
+                <change stat="SPEED" func="PERCENT" value="10"/>
+ 			</statup>
+            <statup duration="600000" effectid="109122" e="5">
+                <change stat="FLY_SPEED" func="PERCENT" value="20"/>
+            </statup>
+            <statup duration="600000" effectid="10184251" e="6">
+               <change stat="MAXHP" func="ADD" delta="0" value="109200"/>
+            </statup>
+            <statup duration="600000" effectid="101212" e="7">
+                <change stat="REGEN_HP" func="ADD" value="140"/>
+            </statup>
+            <statup duration="600000" effectid="10184252" e="8">
+                <change stat="MAXMP" func="ADD" delta="0" value="218400"/>
+            </statup>
+            <statup duration="600000" effectid="117321" e="9">
+                <change stat="REGEN_MP" func="ADD" value="560"/>
+           </statup>
+            <statup duration="600000" effectid="185861" e="10">
+                <change stat="PVP_ATTACK_RATIO" func="ADD" delta="0" value="220"/>
+            </statup>
+			<heal value="109200" delta="0" e="11" element="WATER"/>
+            <healmp value="218400" delta="0" e="12" element="WATER"/>			
+		</effects>
+		<actions>
+			<itemuse itemid="169300012" count="8"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ELYOS: Transformation: Guardian Deity General IV (9740) -->
+	<skill_template skill_id="9740" name="STR_SKILL_Abyss_RankerSkill_Light_Avatar_G4" nameId="577361" stack="SKILL_ABYSS_RANKERSKILL_LIGHT_AVATAR" lvl="4" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="72000" duration="6000">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skilllauncher skill_id="9767" value="1" e="1"/>
+			<transform model="202505" duration="600000" effectid="175" e="2"/>			
+			<dispeldebuff e="3" element="WATER"/>
+            <statup duration="600000" effectid="109121" e="4" hoptype="SKILLLV" hopb="328">
+                <change stat="SPEED" func="PERCENT" value="10"/>
+ 			</statup>
+            <statup duration="600000" effectid="109122" e="5">
+                <change stat="FLY_SPEED" func="PERCENT" value="30"/>
+            </statup>
+            <statup duration="600000" effectid="10184251" e="6">
+               <change stat="MAXHP" func="ADD" delta="0" value="124800"/>
+            </statup>
+            <statup duration="600000" effectid="101212" e="7">
+                <change stat="REGEN_HP" func="ADD" value="160"/>
+            </statup>
+            <statup duration="600000" effectid="10184252" e="8">
+                <change stat="MAXMP" func="ADD" delta="0" value="249600"/>
+            </statup>
+            <statup duration="600000" effectid="117321" e="9">
+                <change stat="REGEN_MP" func="ADD" value="640"/>
+           </statup>
+            <statup duration="600000" effectid="185861" e="10">
+                <change stat="PVP_ATTACK_RATIO" func="ADD" delta="0" value="230"/>
+            </statup>
+			<heal value="124800" delta="0" e="11" element="WATER"/>
+            <healmp value="249600" delta="0" e="12" element="WATER"/>	
+		</effects>
+		<actions>
+			<itemuse itemid="169300012" count="9"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ELYOS: Transformation: Guardian Deity General V (9741) -->
+	<skill_template skill_id="9741" name="STR_SKILL_Abyss_RankerSkill_Light_Avatar_G5" nameId="577365" stack="SKILL_ABYSS_RANKERSKILL_LIGHT_AVATAR" lvl="5" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="72000" duration="6000">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skilllauncher skill_id="9768" value="1" e="1"/>
+			<transform model="202506" duration="600000" effectid="175" e="2"/>
+			<statup duration="600000" effectid="109121" e="4" hoptype="SKILLLV" hopb="328">
+                <change stat="SPEED" func="PERCENT" value="10"/>
+ 			</statup>
+            <statup duration="600000" effectid="109122" e="5">
+                <change stat="FLY_SPEED" func="PERCENT" value="30"/>
+            </statup>
+            <statup duration="600000" effectid="10184251" e="6">
+               <change stat="MAXHP" func="ADD" delta="0" value="156000"/>
+            </statup>
+            <statup duration="600000" effectid="101212" e="7">
+                <change stat="REGEN_HP" func="ADD" value="200"/>
+            </statup>
+            <statup duration="600000" effectid="10184252" e="8">
+                <change stat="MAXMP" func="ADD" delta="0" value="312000"/>
+            </statup>
+            <statup duration="600000" effectid="117321" e="9">
+                <change stat="REGEN_MP" func="ADD" value="800"/>
+           </statup>
+            <statup duration="600000" effectid="185861" e="10">
+                <change stat="PVP_ATTACK_RATIO" func="ADD" delta="0" value="250"/>
+            </statup>
+			<heal value="156000" delta="0" e="11" element="WATER"/>
+            <healmp value="312000" delta="0" e="12" element="WATER"/>	
+		</effects>
+		<actions>
+			<itemuse itemid="169300012" count="10"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ASMODIANS: Transformation: Guardian Deity General I (9742) -->
+	<skill_template skill_id="9742" name="STR_SKILL_Abyss_RankerSkill_Dark_Avatar_G1" nameId="577369" stack="SKILL_ABYSS_RANKERSKILL_DARK_AVATAR" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="72000" duration="6000">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skilllauncher skill_id="9759" value="1" e="1"/>
+			<transform model="202507" duration="600000" effectid="175" e="2"/>
+			<dispeldebuff e="3" element="WATER"/>
+            <statup duration="600000" effectid="109121" e="4" hoptype="SKILLLV" hopb="328">
+                <change stat="SPEED" func="PERCENT" value="10"/>
+ 			</statup>
+            <statup duration="600000" effectid="109122" e="5">
+                <change stat="FLY_SPEED" func="PERCENT" value="10"/>
+            </statup>
+            <statup duration="600000" effectid="10184251" e="6">
+               <change stat="MAXHP" func="ADD" delta="0" value="78000"/>
+            </statup>
+            <statup duration="600000" effectid="101212" e="7">
+                <change stat="REGEN_HP" func="ADD" value="100"/>
+            </statup>
+            <statup duration="600000" effectid="10184252" e="8">
+                <change stat="MAXMP" func="ADD" delta="0" value="156000"/>
+            </statup>
+            <statup duration="600000" effectid="117321" e="9">
+                <change stat="REGEN_MP" func="ADD" value="400"/>
+           </statup>
+            <statup duration="600000" effectid="185861" e="10">
+                <change stat="PVP_ATTACK_RATIO" func="ADD" delta="0" value="200"/>
+            </statup>
+			<heal value="78000" delta="0" e="11" element="WATER"/>
+            <healmp value="156000" delta="0" e="12" element="WATER"/>
+		</effects>
+		<actions>
+			<itemuse itemid="169300012" count="6"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ASMODIANS: Transformation: Guardian Deity General II (9743) -->
+	<skill_template skill_id="9743" name="STR_SKILL_Abyss_RankerSkill_Dark_Avatar_G2" nameId="577373" stack="SKILL_ABYSS_RANKERSKILL_DARK_AVATAR" lvl="2" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="72000" duration="6000">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skilllauncher skill_id="9760" value="1" e="1"/>
+			<transform model="202508" duration="600000" effectid="175" e="2"/>
+			<dispeldebuff e="3" element="WATER"/>
+            <statup duration="600000" effectid="109121" e="4" hoptype="SKILLLV" hopb="328">
+                <change stat="SPEED" func="PERCENT" value="10"/>
+ 			</statup>
+            <statup duration="600000" effectid="109122" e="5">
+                <change stat="FLY_SPEED" func="PERCENT" value="10"/>
+            </statup>
+            <statup duration="600000" effectid="10184251" e="6">
+               <change stat="MAXHP" func="ADD" delta="0" value="93600"/>
+            </statup>
+            <statup duration="600000" effectid="101212" e="7">
+                <change stat="REGEN_HP" func="ADD" value="120"/>
+            </statup>
+            <statup duration="600000" effectid="10184252" e="8">
+                <change stat="MAXMP" func="ADD" delta="0" value="187200"/>
+            </statup>
+            <statup duration="600000" effectid="117321" e="9">
+                <change stat="REGEN_MP" func="ADD" value="480"/>
+           </statup>
+            <statup duration="600000" effectid="185861" e="10">
+                <change stat="PVP_ATTACK_RATIO" func="ADD" delta="0" value="210"/>
+            </statup>
+			<heal value="93600" delta="0" e="11" element="WATER"/>
+            <healmp value="187200" delta="0" e="12" element="WATER"/>
+		</effects>
+		<actions>
+			<itemuse itemid="169300012" count="7"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ASMODIANS: Transformation: Guardian Deity General III (9744) -->
+	<skill_template skill_id="9744" name="STR_SKILL_Abyss_RankerSkill_Dark_Avatar_G3" nameId="577377" stack="SKILL_ABYSS_RANKERSKILL_DARK_AVATAR" lvl="3" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="72000" duration="6000">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skilllauncher skill_id="9761" value="1" e="1"/>
+			<transform model="202509" duration="600000" effectid="175" e="2"/>
+			<statup duration="600000" effectid="197373" e="2">
+				<change stat="SPEED" func="ADD" delta="0" value="20"/>
+			</statup>
+			<dispeldebuff e="3" element="WATER"/>
+            <statup duration="600000" effectid="109121" e="4" hoptype="SKILLLV" hopb="328">
+                <change stat="SPEED" func="PERCENT" value="10"/>
+ 			</statup>
+            <statup duration="600000" effectid="109122" e="5">
+                <change stat="FLY_SPEED" func="PERCENT" value="20"/>
+            </statup>
+            <statup duration="600000" effectid="10184251" e="6">
+               <change stat="MAXHP" func="ADD" delta="0" value="109200"/>
+            </statup>
+            <statup duration="600000" effectid="101212" e="7">
+                <change stat="REGEN_HP" func="ADD" value="140"/>
+            </statup>
+            <statup duration="600000" effectid="10184252" e="8">
+                <change stat="MAXMP" func="ADD" delta="0" value="218400"/>
+            </statup>
+            <statup duration="600000" effectid="117321" e="9">
+                <change stat="REGEN_MP" func="ADD" value="560"/>
+           </statup>
+            <statup duration="600000" effectid="185861" e="10">
+                <change stat="PVP_ATTACK_RATIO" func="ADD" delta="0" value="220"/>
+            </statup>
+			<heal value="109200" delta="0" e="11" element="WATER"/>
+            <healmp value="218400" delta="0" e="12" element="WATER"/>
+		</effects>
+		<actions>
+			<itemuse itemid="169300012" count="8"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ASMODIANS: Transformation: Guardian Deity General IV (9745) -->
+	<skill_template skill_id="9745" name="STR_SKILL_Abyss_RankerSkill_Dark_Avatar_G4" nameId="577381" stack="SKILL_ABYSS_RANKERSKILL_DARK_AVATAR" lvl="4" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="72000" duration="6000">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skilllauncher skill_id="9762" value="1" e="1"/>
+			<transform model="202510" duration="600000" effectid="175" e="2"/>
+			<dispeldebuff e="3" element="WATER"/>
+            <statup duration="600000" effectid="109121" e="4" hoptype="SKILLLV" hopb="328">
+                <change stat="SPEED" func="PERCENT" value="10"/>
+ 			</statup>
+            <statup duration="600000" effectid="109122" e="5">
+                <change stat="FLY_SPEED" func="PERCENT" value="30"/>
+            </statup>
+            <statup duration="600000" effectid="10184251" e="6">
+               <change stat="MAXHP" func="ADD" delta="0" value="124800"/>
+            </statup>
+            <statup duration="600000" effectid="101212" e="7">
+                <change stat="REGEN_HP" func="ADD" value="160"/>
+            </statup>
+            <statup duration="600000" effectid="10184252" e="8">
+                <change stat="MAXMP" func="ADD" delta="0" value="249600"/>
+            </statup>
+            <statup duration="600000" effectid="117321" e="9">
+                <change stat="REGEN_MP" func="ADD" value="640"/>
+           </statup>
+            <statup duration="600000" effectid="185861" e="10">
+                <change stat="PVP_ATTACK_RATIO" func="ADD" delta="0" value="230"/>
+            </statup>
+			<heal value="124800" delta="0" e="11" element="WATER"/>
+            <healmp value="249600" delta="0" e="12" element="WATER"/>
+		</effects>
+		<actions>
+			<itemuse itemid="169300012" count="9"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ASMODIANS: Transformation: Guardian Deity General V (9746) -->
+	<skill_template skill_id="9746" name="STR_SKILL_Abyss_RankerSkill_Dark_Avatar_G5" nameId="577385" stack="SKILL_ABYSS_RANKERSKILL_DARK_AVATAR" lvl="5" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="72000" duration="6000">
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skilllauncher skill_id="9763" value="1" e="1"/>
+			<transform model="202511" duration="600000" effectid="175" e="2"/>
+			<statup duration="600000" effectid="197423" e="3">
+				<change stat="SPEED" func="ADD" delta="0" value="30"/>
+			</statup><statup duration="600000" effectid="109121" e="4" hoptype="SKILLLV" hopb="328">
+                <change stat="SPEED" func="PERCENT" value="10"/>
+ 			</statup>
+            <statup duration="600000" effectid="109122" e="5">
+                <change stat="FLY_SPEED" func="PERCENT" value="30"/>
+            </statup>
+            <statup duration="600000" effectid="10184251" e="6">
+               <change stat="MAXHP" func="ADD" delta="0" value="156000"/>
+            </statup>
+            <statup duration="600000" effectid="101212" e="7">
+                <change stat="REGEN_HP" func="ADD" value="200"/>
+            </statup>
+            <statup duration="600000" effectid="10184252" e="8">
+                <change stat="MAXMP" func="ADD" delta="0" value="312000"/>
+            </statup>
+            <statup duration="600000" effectid="117321" e="9">
+                <change stat="REGEN_MP" func="ADD" value="800"/>
+           </statup>
+            <statup duration="600000" effectid="185861" e="10">
+                <change stat="PVP_ATTACK_RATIO" func="ADD" delta="0" value="250"/>
+            </statup>
+			<heal value="156000" delta="0" e="11" element="WATER"/>
+            <healmp value="312000" delta="0" e="12" element="WATER"/>
+		</effects>
+		<actions>
+			<itemuse itemid="169300012" count="10"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL BOTH: Abyssal Fury I (9747) -->
+	<skill_template skill_id="9747" name="STR_SKILL_Abyss_RankerSkill_AbyssianStrom_G1" nameId="577389" stack="SKILL_ABYSS_RANKERSKILL_ABYSSIANSTROM" lvl="1" skilltype="MAGICAL" skillsubtype="ATTACK" tslot="NONE" activation="ACTIVE" cooldown="200" duration="0">
+		<startconditions>
+			<mp value="10200" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="AREA" distance="20" maxcount="6"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<effects>
+			<skillatk value="1018" delta="0" e="1"/>
+		</effects>
+		<actions>
+			<mpuse value="10200" delta="0"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL BOTH: Abyssal Fury II (9748) -->
+	<skill_template skill_id="9748" name="STR_SKILL_Abyss_RankerSkill_AbyssianStrom_G2" nameId="577393" stack="SKILL_ABYSS_RANKERSKILL_ABYSSIANSTROM" lvl="2" skilltype="MAGICAL" skillsubtype="ATTACK" tslot="NONE" activation="ACTIVE" cooldown="200" duration="0">
+		<startconditions>
+			<mp value="10800" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="AREA" distance="20" maxcount="12"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<effects>
+			<skillatk value="1018" delta="0" e="1"/>
+		</effects>
+		<actions>
+			<mpuse value="10800" delta="0"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL BOTH: Abyssal Fury III (9749) -->
+	<skill_template skill_id="9749" name="STR_SKILL_Abyss_RankerSkill_AbyssianStrom_G3" nameId="577397" stack="SKILL_ABYSS_RANKERSKILL_ABYSSIANSTROM" lvl="3" skilltype="MAGICAL" skillsubtype="ATTACK" tslot="NONE" activation="ACTIVE" cooldown="200" duration="0">
+		<startconditions>
+			<mp value="11500" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="AREA" distance="20" maxcount="18"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<effects>
+			<skillatk value="1018" delta="0" e="1"/>
+		</effects>
+		<actions>
+			<mpuse value="11500" delta="0"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL BOTH: Abyssal Fury IV (9750) -->
+	<skill_template skill_id="9750" name="STR_SKILL_Abyss_RankerSkill_AbyssianStrom_G4" nameId="577401" stack="SKILL_ABYSS_RANKERSKILL_ABYSSIANSTROM" lvl="4" skilltype="MAGICAL" skillsubtype="ATTACK" tslot="NONE" activation="ACTIVE" cooldown="200" duration="0">
+		<startconditions>
+			<mp value="11900" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="AREA" distance="20" maxcount="18"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<effects>
+			<skillatk value="1518" delta="0" e="1"/>
+		</effects>
+		<actions>
+			<mpuse value="11900" delta="0"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ELYOS: Summon Abyssal Energy I (9751) -->
+	<skill_template skill_id="9751" name="STR_SKILL_Abyss_RankerSkill_L_AbyssianServant_G1" nameId="577405" stack="SKILL_ABYSS_RANKERSKILL_L_ABYSSIANSERVANT" lvl="1" skilltype="MAGICAL" skillsubtype="SUMMON" tslot="NONE" activation="ACTIVE" cooldown="600" duration="2500">
+		<startconditions>
+			<mp value="14100" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="20"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>	
+		<effects>
+			<summonservant skill_id="17815" hp_ratio="17" npc_id="749127" e="1" element="FIRE" hoptype="SKILLLV" hopb="1949"/>
+		</effects>			
+		<actions>
+			<mpuse value="14100" delta="0"/>
+		</actions>
+	</skill_template>
+	<!-- ABYSS SKILL ELYOS: Summon Abyssal Energy II (9752) -->
+	<skill_template skill_id="9752" name="STR_SKILL_Abyss_RankerSkill_L_AbyssianServant_G2" nameId="577409" stack="SKILL_ABYSS_RANKERSKILL_L_ABYSSIANSERVANT" lvl="2" skilltype="MAGICAL" skillsubtype="SUMMON" tslot="NONE" activation="ACTIVE" cooldown="600" duration="2500">
+		<startconditions>
+			<mp value="16500" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="20"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<summonservant skill_id="17816" hp_ratio="17" npc_id="749128" e="1" element="FIRE" hoptype="SKILLLV" hopb="1949"/>
+		</effects>
+		<actions>		
+			<mpuse value="16500" delta="0"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ASMODIAN: Summon Abyssal Energy I (9753) -->
+	<skill_template skill_id="9753" name="STR_SKILL_Abyss_RankerSkill_D_AbyssianServant_G1" nameId="577413" stack="SKILL_ABYSS_RANKERSKILL_D_ABYSSIANSERVANT" lvl="1" skilltype="MAGICAL" skillsubtype="SUMMON" tslot="NONE" activation="ACTIVE" cooldown="600" duration="2500">
+		<startconditions>
+			<mp value="14100" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="20"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<summonservant skill_id="17815" hp_ratio="17" npc_id="749129" e="1" element="FIRE" hoptype="SKILLLV" hopb="1949"/>
+		</effects>
+		<actions>
+			<mpuse value="14100" delta="0"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL ASMODIAN: Summon Abyssal Energy II (9754) -->
+	<skill_template skill_id="9754" name="STR_SKILL_Abyss_RankerSkill_D_AbyssianServant_G2" nameId="577417" stack="SKILL_ABYSS_RANKERSKILL_D_ABYSSIANSERVANT" lvl="2" skilltype="MAGICAL" skillsubtype="SUMMON" tslot="NONE" activation="ACTIVE" cooldown="600" duration="2500">
+		<startconditions>
+			<mp value="16500" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="20"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<summonservant skill_id="17816" hp_ratio="17" npc_id="749130" e="1" element="FIRE" hoptype="SKILLLV" hopb="1949"/>
+		</effects>
+		<actions>
+			<mpuse value="16500" delta="0"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL BOTH: Reflective Abyssal Aegis I (9755) -->
+	<skill_template skill_id="9755" name="STR_SKILL_Abyss_RankerSkill_AbyssianField_G1" nameId="577421" stack="SKILL_ABYSS_RANKERSKILL_ABYSSIANFIELD" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="3000" duration="0">
+		<startconditions>
+			<mp value="21400" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<reflector value="600" delta="0" radius="5" duration="60000" effectid="153" e="1"/>
+		</effects>
+		<actions>
+			<mpuse value="21400" delta="0"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL BOTH: Abyssal Wave I (9756) -->
+	<skill_template skill_id="9756" name="STR_SKILL_Abyss_RankerSkill_DevanianShock_G1" nameId="577427" stack="SKILL_ABYSS_RANKERSKILL_DEVANIANSHOCK" lvl="1" skilltype="MAGICAL" skillsubtype="DEBUFF" tslot="DEBUFF" activation="ACTIVE" cooldown="900" duration="0">
+		<startconditions>
+			<mp value="25400" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="2"/>
+			<targetrange value="AREA" distance="20" maxcount="18"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<effects>
+			<stun duration="5000" effectid="20000" e="1" element="FIRE"/>
+		</effects>
+		<actions>
+			<mpuse value="25400" delta="0"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL BOTH: Abyssal Tidal Wave I (9757) -->
+	<skill_template skill_id="9757" name="STR_SKILL_Abyss_RankerSkill_AbyssianChainBolt_G1" nameId="577433" stack="SKILL_ABYSS_RANKERSKILL_ABYSSIANCHAINBOLT" lvl="1" skilltype="MAGICAL" skillsubtype="ATTACK" tslot="DEBUFF" activation="ACTIVE" cooldown="1200" duration="3000">
+		<startconditions>
+			<mp value="37700" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="30"/>
+			<targetrange value="AREA" distance="30" maxcount="18"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<skillatk value="1600" delta="0" e="1"/>
+			<statdown duration="30000" effectid="197572" e="2" element="FIRE">
+				<change stat="PVP_DEFEND_RATIO" func="ADD" delta="0" value="-200"/>
+			</statdown>
+		</effects>
+		<actions>
+			<mpuse value="37700" delta="0"/>
+		</actions>
+	</skill_template>
+	
+	<!-- ABYSS SKILL BOTH: Abyssal Verdict I (9758) -->
+	<skill_template skill_id="9758" name="STR_SKILL_Abyss_RankerSkill_DeathRay_G1" nameId="577437" stack="SKILL_ABYSS_RANKERSKILL_DEATHRAY" lvl="1" skilltype="MAGICAL" skillsubtype="ATTACK" tslot="NONE" activation="ACTIVE" cooldown="3000" duration="2000">
+		<startconditions>
+			<mp value="59000" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="30"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<delaydamage delay="5000" value="9990" delta="0" e="1" element="FIRE"/>
+		</effects>
+		<actions>
+			<mpuse value="59000" delta="0"/>
+		</actions>
+	</skill_template>
+	<!-- END ABYSS SKILLS -->
+	<skill_template skill_id="1021" name="STR_SKILL_PR_InvinsibleVeill_G1" nameId="590239" stack="SKILL_PR_INVINSIBLEVEILL" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="1800" duration="0" cancel_rate="20">
+		<startconditions>
+			<mp value="162" delta="4"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<dispel dispeltype="EFFECTID" e="1" element="FIRE" hoptype="SKILLLV" hopb="665">
+				<effectids>119682</effectids>
+			</dispel>
+			<shield value="8000" delta="0" percent="true" hitvalue="100" hitdelta="0" duration="30000" effectid="154" e="4"/>
+			<bind duration="30000" effectid="20014" e="2" element="FIRE"/>
+			<silence duration="30000" effectid="20101" e="3" element="FIRE"/>
+		</effects>
+		<actions>
+			<mpuse value="162" delta="4"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1597" name="STR_SKILL_WI_iceBarrier_G1" nameId="584543" stack="SKILL_WI_ICEBARRIER" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="3000" duration="2000" cancel_rate="20">
+		<startconditions>
+			<mp value="214" delta="3"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<shield value="10000000" delta="0" hitvalue="10000" hitdelta="0" duration="8000" effectid="154" e="1" hoptype="SKILLLV" hopb="1"/>
+			<stun duration="8000" effectid="20000" e="2" element="FIRE"/>
+		</effects>
+		<actions>
+			<mpuse value="214" delta="3"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="287" name="STR_SKILL_WA_Steadiness_G1" nameId="567033" stack="SKILL_WA_STEADINESS" lvl="1" skilltype="MAGICAL" skillsubtype="BUFF" tslot="BUFF" activation="ACTIVE" cooldown="1800" duration="0" cancel_rate="20">
+		<startconditions>
+			<mp value="79" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="ME"/>
+			<firsttargetrange value="1"/>
+			<targetrange value="ONLYONE"/>
+			<targetrelation value="FRIEND"/>
+		</setproperties>
+		<effects>
+			<statup duration="90000" effectid="102871" e="1" hoptype="SKILLLV" hopb="11737">
+				<change stat="STUN_RESISTANCE" func="ADD" delta="0" value="1000"/>
+				<change stat="STUMBLE_RESISTANCE" func="ADD" delta="0" value="1000"/>
+				<change stat="STAGGER_RESISTANCE" func="ADD" delta="0" value="1000"/>
+				<change stat="SPIN_RESISTANCE" func="ADD" delta="0" value="1000"/>
+				<change stat="OPENAREIAL_RESISTANCE" func="ADD" delta="0" value="1000"/>
+			</statup>
+		</effects>
+		<actions>
+			<mpuse value="79" delta="0"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1560" name="STR_SKILL_WI_CounterMagic_G1" nameId="581435" stack="SKILL_WI_COUNTERMAGIC" lvl="1" skilltype="MAGICAL" skillsubtype="DEBUFF" tslot="DEBUFF" activation="ACTIVE" cooldown="3000" duration="0" cancel_rate="20">
+		<startconditions>
+			<mp value="103" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="25"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<effects>
+			<magiccounteratk percent="5" maxdmg="500" duration="60000" effectid="203" element="FIRE" hoptype="SKILLLV" hopb="1400" e="1"/>
+		</effects>
+		<actions>
+			<mpuse value="103" delta="0"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1561" name="STR_SKILL_WI_CounterMagic_G2" nameId="581441" stack="SKILL_WI_COUNTERMAGIC" lvl="2" skilltype="MAGICAL" skillsubtype="DEBUFF" tslot="DEBUFF" activation="ACTIVE" cooldown="3000" duration="0" cancel_rate="20">
+		<startconditions>
+			<mp value="148" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="25"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<effects>
+			<magiccounteratk percent="10" maxdmg="1000" duration="60000" effectid="203" element="FIRE" hoptype="SKILLLV" hopb="1884" e="1"/>
+		</effects>
+		<actions>
+			<mpuse value="148" delta="0"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="1774" name="STR_SKILL_EL_PlagueSwam_G1" nameId="582729" stack="SKILL_EL_PLAGUESWAM" lvl="1" skilltype="MAGICAL" skillsubtype="ATTACK" tslot="DEBUFF" activation="ACTIVE" cooldown="36000" duration="1500" cancel_rate="20">
+		<startconditions>
+			<dp value="4000"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="25"/>
+			<targetrange value="AREA" distance="25" maxcount="18"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<spellatk value="648" delta="8" e="1" element="EARTH" hoptype="SKILLLV" hopb="2513" hopa="30"/>
+			<dot checktime="6000" value="648" delta="8" duration="54000" effectid="117742" e="2" element="EARTH"/>
+			<magiccounteratk percent="5" maxdmg="1000" duration="54000" effectid="203" element="EARTH" e="3"/>
+		</effects>
+		<actions>
+			<dpuse value="4000"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="2196" name="STR_SKILL_WI_CounterMagic_G3" nameId="591095" stack="SKILL_WI_COUNTERMAGIC" lvl="3" skilltype="MAGICAL" skillsubtype="DEBUFF" tslot="DEBUFF" activation="ACTIVE" cooldown="3000" duration="0" cancel_rate="20">
+		<startconditions>
+			<mp value="190" delta="0"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="25"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<effects>
+			<magiccounteratk percent="12" maxdmg="1200" duration="60000" effectid="203" element="FIRE" hoptype="SKILLLV" hopb="2904" e="1"/>
+		</effects>
+		<actions>
+			<mpuse value="190" delta="0"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="2225" name="STR_SKILL_EL_PlagueSwam_G2" nameId="591149" stack="SKILL_EL_PLAGUESWAM" lvl="2" skilltype="MAGICAL" skillsubtype="ATTACK" tslot="DEBUFF" activation="ACTIVE" cooldown="36000" duration="1500" cancel_rate="20">
+		<startconditions>
+			<dp value="4000"/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="25"/>
+			<targetrange value="AREA" distance="25" maxcount="18"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<spellatk value="806" delta="21" e="1" element="EARTH" hoptype="SKILLLV" hopb="6062" hopa="161"/>
+			<dot checktime="6000" value="806" delta="21" duration="54000" effectid="117742" e="2" element="EARTH"/>
+			<magiccounteratk percent="6" maxdmg="1000" duration="54000" effectid="203" element="EARTH" e="3"/>
+		</effects>
+		<actions>
+			<dpuse value="4000"/>
+		</actions>
+	</skill_template>
+	<skill_template skill_id="16774" name="STR_GNCH_MagicCounterATK_Nr" nameId="573235" stack="GNCH_MAGICCOUNTERATK_NR" lvl="1" skilltype="MAGICAL" skillsubtype="DEBUFF" tslot="DEBUFF" activation="ACTIVE" cooldown="0" duration="2500" cancel_rate="35">
+		<startconditions>
+			<arrowcheck/>
+		</startconditions>
+		<setproperties>
+			<firsttarget value="TARGET"/>
+			<firsttargetrange value="16"/>
+			<targetrange value="ONLYONE" maxcount="1"/>
+			<targetrelation value="ENEMY"/>
+		</setproperties>
+		<useconditions>
+			<playermove allow="false"/>
+		</useconditions>
+		<effects>
+			<magiccounteratk percent="50" maxdmg="30000" duration="5000" effectid="203" element="FIRE" hoptype="DAMAGE" e="1"/>
+		</effects>
+	</skill_template>
+</skill_data>

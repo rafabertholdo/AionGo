@@ -1,0 +1,117 @@
+# Methods whose bytecode differs between the 1.0.1 build (al-game-1.0.1.jar, build 333)
+# and this tree. Some are still compiler differences in enum switches (PlayerClass and
+# StatEnum were checked by hand and match). SpawnEngine.spawnObject (walk routes)
+# is ported; the rest are as upstream has them. The decompiled 1.0.1 sources are in
+# AionLightning1.9/docker-gs/sources; the decompiler garbles enum switches and
+# merges variables, so port a method by hand and compare its bytecode, not by copying.
+
+com.aionemu.gameserver.GameServer :: public com.aionemu.gameserver.GameServer() throws com.aionemu.commons.log4j.exceptions.Log4jInitializationError;
+com.aionemu.gameserver.ai.desires.impl.AttackDesire :: public boolean equals(java.lang.Object);
+com.aionemu.gameserver.ai.desires.impl.MoveToHomeDesire :: public boolean handleDesire(com.aionemu.gameserver.ai.AI);
+com.aionemu.gameserver.ai.desires.impl.MoveToTargetDesire :: public boolean equals(java.lang.Object);
+com.aionemu.gameserver.ai.npcai.NpcAi :: public com.aionemu.gameserver.ai.npcai.NpcAi();
+com.aionemu.gameserver.ai.npcai.NpcAi :: public void handleEvent(com.aionemu.gameserver.ai.events.Event);
+com.aionemu.gameserver.ai.npcai.ServantAi :: public com.aionemu.gameserver.ai.npcai.ServantAi();
+com.aionemu.gameserver.controllers.MoveController :: private void move();
+com.aionemu.gameserver.controllers.MoveController :: public void schedule();
+com.aionemu.gameserver.controllers.NpcController :: public void onDespawn(boolean);
+com.aionemu.gameserver.controllers.NpcController :: public void onDialogSelect(int, com.aionemu.gameserver.model.gameobjects.player.Player, int);
+com.aionemu.gameserver.controllers.NpcController :: public void onDie(com.aionemu.gameserver.model.gameobjects.Creature);
+com.aionemu.gameserver.controllers.NpcController :: public void onRespawn();
+com.aionemu.gameserver.controllers.ServantController :: public void onDie(com.aionemu.gameserver.model.gameobjects.Creature);
+com.aionemu.gameserver.controllers.SummonController :: public void notSee(com.aionemu.gameserver.model.gameobjects.VisibleObject, boolean);
+com.aionemu.gameserver.controllers.SummonController :: public void release(com.aionemu.gameserver.controllers.SummonController$UnsummonType);
+com.aionemu.gameserver.controllers.attack.AggroList :: public boolean isMostHated(com.aionemu.gameserver.model.gameobjects.Creature);
+com.aionemu.gameserver.dataholders.SpawnsData :: void afterUnmarshal(javax.xml.bind.Unmarshaller, java.lang.Object);
+com.aionemu.gameserver.model.PlayerClass :: public static com.aionemu.gameserver.model.PlayerClass getStartingClassFor(com.aionemu.gameserver.model.PlayerClass);
+com.aionemu.gameserver.model.gameobjects.AionObject :: public com.aionemu.gameserver.model.gameobjects.AionObject(java.lang.Integer);
+com.aionemu.gameserver.model.gameobjects.Kisk :: public boolean canBind(com.aionemu.gameserver.model.gameobjects.player.Player);
+com.aionemu.gameserver.model.gameobjects.player.Equipment :: public void onLoadHandler(com.aionemu.gameserver.model.gameobjects.Item);
+com.aionemu.gameserver.model.gameobjects.player.Player :: public boolean isAggroIconTo(java.lang.String);
+com.aionemu.gameserver.model.gameobjects.player.Player :: public byte getLevel();
+com.aionemu.gameserver.model.gameobjects.player.Player :: public com.aionemu.gameserver.model.Gender getGender();
+com.aionemu.gameserver.model.gameobjects.player.Player :: public com.aionemu.gameserver.model.PlayerClass getPlayerClass();
+com.aionemu.gameserver.model.gameobjects.player.Player :: public com.aionemu.gameserver.model.gameobjects.player.Player(com.aionemu.gameserver.controllers.PlayerController, com.a
+com.aionemu.gameserver.model.gameobjects.player.Player :: public com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData getCommonData();
+com.aionemu.gameserver.model.gameobjects.player.Player :: public int getCubeSize();
+com.aionemu.gameserver.model.gameobjects.player.Player :: public int getLastOnline();
+com.aionemu.gameserver.model.gameobjects.player.Player :: public int getWarehouseSize();
+com.aionemu.gameserver.model.gameobjects.player.Player :: public java.lang.String getName();
+com.aionemu.gameserver.model.gameobjects.player.Player :: public void setCommonData(com.aionemu.gameserver.model.gameobjects.player.PlayerCommonData);
+com.aionemu.gameserver.model.gameobjects.player.Player :: public void setCubesize(int);
+com.aionemu.gameserver.model.gameobjects.player.Player :: public void setWarehouseSize(int);
+com.aionemu.gameserver.model.gameobjects.player.PrivateStore :: public void removeItem(int);
+com.aionemu.gameserver.model.gameobjects.stats.CreatureGameStats :: public java.lang.String toString();
+com.aionemu.gameserver.model.gameobjects.stats.PlayerGameStats :: public com.aionemu.gameserver.model.gameobjects.stats.PlayerGameStats(com.aionemu.gameserver.dataholders.PlayerStatsData
+com.aionemu.gameserver.model.gameobjects.stats.StatEnum :: public boolean isMainOrSubHandStat();
+com.aionemu.gameserver.model.gameobjects.stats.StatEnum :: public com.aionemu.gameserver.model.gameobjects.stats.StatEnum getMainOrSubHandStat(com.aionemu.gameserver.model.items.I
+com.aionemu.gameserver.model.group.PlayerGroup :: private void eventToSubjective(com.aionemu.gameserver.model.gameobjects.player.Player, com.aionemu.gameserver.model.grou
+com.aionemu.gameserver.model.group.PlayerGroup :: public void updateGroupUIToEvent(com.aionemu.gameserver.model.gameobjects.player.Player, com.aionemu.gameserver.model.gr
+com.aionemu.gameserver.model.legion.LegionRank :: public boolean canEditAnnouncement(int);
+com.aionemu.gameserver.model.legion.LegionRank :: public boolean canInviteToLegion(int);
+com.aionemu.gameserver.model.legion.LegionRank :: public boolean canKickFromLegion(int);
+com.aionemu.gameserver.model.legion.LegionRank :: public boolean canUseArtifact(int);
+com.aionemu.gameserver.model.legion.LegionRank :: public boolean canUseGateGuardianStone(int, int);
+com.aionemu.gameserver.model.legion.LegionRank :: public boolean canUseLegionWarehouse(int);
+com.aionemu.gameserver.model.templates.spawn.SpawnTime :: public boolean isAllowedDuring(com.aionemu.gameserver.utils.gametime.DayTime);
+com.aionemu.gameserver.network.aion.clientpackets.CM_ATTACK :: protected void runImpl();
+com.aionemu.gameserver.network.aion.clientpackets.CM_CHAT_MESSAGE_PUBLIC :: private void broadcastToGroupMembers(com.aionemu.gameserver.model.gameobjects.player.Player);
+com.aionemu.gameserver.network.aion.clientpackets.CM_CHAT_MESSAGE_PUBLIC :: protected void runImpl();
+com.aionemu.gameserver.network.aion.clientpackets.CM_CHAT_MESSAGE_WHISPER :: protected void runImpl();
+com.aionemu.gameserver.network.aion.clientpackets.CM_MOVE :: protected void runImpl();
+com.aionemu.gameserver.network.aion.clientpackets.CM_SEND_MAIL :: protected void runImpl();
+com.aionemu.gameserver.network.aion.clientpackets.CM_SUMMON_MOVE :: protected void runImpl();
+com.aionemu.gameserver.network.aion.clientpackets.CM_USE_ITEM :: protected void runImpl();
+com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK :: protected void writeImpl(com.aionemu.gameserver.network.aion.AionConnection, java.nio.ByteBuffer);
+com.aionemu.gameserver.network.aion.serverpackets.SM_ATTACK_STATUS :: protected void writeImpl(com.aionemu.gameserver.network.aion.AionConnection, java.nio.ByteBuffer);
+com.aionemu.gameserver.network.aion.serverpackets.SM_CASTSPELL_END :: protected void writeImpl(com.aionemu.gameserver.network.aion.AionConnection, java.nio.ByteBuffer);
+com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_INFO :: protected void writeImpl(com.aionemu.gameserver.network.aion.AionConnection, java.nio.ByteBuffer);
+com.aionemu.gameserver.network.aion.serverpackets.SM_PLAYER_SEARCH :: public void writeImpl(com.aionemu.gameserver.network.aion.AionConnection, java.nio.ByteBuffer);
+com.aionemu.gameserver.questEngine.handlers.QuestHandler :: public boolean defaultQuestEndDialog(com.aionemu.gameserver.questEngine.model.QuestEnv);
+com.aionemu.gameserver.questEngine.handlers.QuestHandler :: public boolean defaultQuestStartDialog(com.aionemu.gameserver.questEngine.model.QuestEnv);
+com.aionemu.gameserver.questEngine.handlers.template.WorkOrders :: public boolean onDialogEvent(com.aionemu.gameserver.questEngine.model.QuestEnv);
+com.aionemu.gameserver.restrictions.PlayerRestrictions :: public boolean canInviteToGroup(com.aionemu.gameserver.model.gameobjects.player.Player, com.aionemu.gameserver.model.gam
+com.aionemu.gameserver.services.AllianceService :: private void broadcastAllianceMemberInfo(com.aionemu.gameserver.model.alliance.PlayerAlliance, com.aionemu.gameserver.mo
+com.aionemu.gameserver.services.AllianceService :: private void sendOtherMemberInfo(com.aionemu.gameserver.model.alliance.PlayerAlliance, com.aionemu.gameserver.model.game
+com.aionemu.gameserver.services.AllianceService :: public void playerStatusInfo(com.aionemu.gameserver.model.gameobjects.player.Player, int, int);
+com.aionemu.gameserver.services.AllianceService :: public void updateAllianceUIToEvent(com.aionemu.gameserver.model.gameobjects.player.Player, com.aionemu.gameserver.model
+com.aionemu.gameserver.services.BrokerService :: public void registerItem(com.aionemu.gameserver.model.gameobjects.player.Player, int, int);
+com.aionemu.gameserver.services.BrokerService :: public void settleAccount(com.aionemu.gameserver.model.gameobjects.player.Player);
+com.aionemu.gameserver.services.CubeExpandService :: public static void expandCube(com.aionemu.gameserver.model.gameobjects.player.Player, com.aionemu.gameserver.model.gameo
+com.aionemu.gameserver.services.DropService :: private void distributeLoot(com.aionemu.gameserver.model.gameobjects.player.Player, long, int, int);
+com.aionemu.gameserver.services.DropService :: private void resendDropList(com.aionemu.gameserver.model.gameobjects.player.Player, int, java.util.Set<com.aionemu.games
+com.aionemu.gameserver.services.DropService :: private void winningBidActions(com.aionemu.gameserver.model.gameobjects.player.Player, int, int, long);
+com.aionemu.gameserver.services.DropService :: private void winningRollActions(com.aionemu.gameserver.model.gameobjects.player.Player, int, int);
+com.aionemu.gameserver.services.DropService :: public void handleRoll(com.aionemu.gameserver.model.gameobjects.player.Player, int, int, int);
+com.aionemu.gameserver.services.DropService :: public void registerDrop(com.aionemu.gameserver.model.gameobjects.Npc, com.aionemu.gameserver.model.gameobjects.player.P
+com.aionemu.gameserver.services.DropService :: public void requestDropItem(com.aionemu.gameserver.model.gameobjects.player.Player, int, int);
+com.aionemu.gameserver.services.GroupService :: public void groupDistribution(com.aionemu.gameserver.model.gameobjects.player.Player, long);
+com.aionemu.gameserver.services.GroupService :: public void onLogin(com.aionemu.gameserver.model.gameobjects.player.Player);
+com.aionemu.gameserver.services.GroupService :: public void setGroup(com.aionemu.gameserver.model.gameobjects.player.Player);
+com.aionemu.gameserver.services.LegionService :: public void handleLegionRequest(int, com.aionemu.gameserver.model.gameobjects.player.Player);
+com.aionemu.gameserver.services.MailService :: public void readMail(com.aionemu.gameserver.model.gameobjects.player.Player, int);
+com.aionemu.gameserver.services.MailService :: public void sendMail(com.aionemu.gameserver.model.gameobjects.player.Player, java.lang.String, java.lang.String, java.la
+com.aionemu.gameserver.services.PlayerService :: public static void playerLoggedIn(com.aionemu.gameserver.model.gameobjects.player.Player);
+com.aionemu.gameserver.services.PlayerService :: public static void playerLoggedOut(com.aionemu.gameserver.model.gameobjects.player.Player);
+com.aionemu.gameserver.services.PrivateStoreService :: private static void createStore(com.aionemu.gameserver.model.gameobjects.player.Player);
+com.aionemu.gameserver.services.PrivateStoreService :: public static void addItem(com.aionemu.gameserver.model.gameobjects.player.Player, com.aionemu.gameserver.model.trade.Tr
+com.aionemu.gameserver.services.SkillLearnService :: private static boolean checkLearnIsPossible(com.aionemu.gameserver.model.gameobjects.player.SkillList, com.aionemu.games
+com.aionemu.gameserver.services.TradeService :: private static boolean validateBuyItems(com.aionemu.gameserver.model.trade.TradeList, com.aionemu.gameserver.model.gameo
+com.aionemu.gameserver.services.TradeService :: public static boolean performBuyFromAbyssShop(com.aionemu.gameserver.model.gameobjects.player.Player, com.aionemu.gamese
+com.aionemu.gameserver.services.WarehouseService :: public static void expandWarehouse(com.aionemu.gameserver.model.gameobjects.player.Player, com.aionemu.gameserver.model.
+com.aionemu.gameserver.services.ZoneService :: private void initializeZones();
+com.aionemu.gameserver.skillengine.model.Skill :: private boolean checkEndCast();
+com.aionemu.gameserver.skillengine.model.Skill :: private void startCast();
+com.aionemu.gameserver.skillengine.properties.FirstTargetRangeProperty :: public boolean set(com.aionemu.gameserver.skillengine.model.Skill);
+com.aionemu.gameserver.skillengine.properties.TargetRangeProperty :: public boolean set(com.aionemu.gameserver.skillengine.model.Skill);
+com.aionemu.gameserver.taskmanager.tasks.UpdateAbyssRank :: public void run();
+com.aionemu.gameserver.utils.DeadlockDetector :: private void printMonitorInfo(java.lang.management.ThreadInfo, java.lang.management.MonitorInfo[]);
+com.aionemu.gameserver.utils.DeadlockDetector :: private void printThread(java.lang.management.ThreadInfo);
+com.aionemu.gameserver.utils.gametime.GameTime :: private void analyzeDayTime();
+com.aionemu.gameserver.world.KnownList :: protected void findVisibleObjects();
+com.aionemu.gameserver.world.World :: private com.aionemu.gameserver.world.World();
+com.aionemu.gameserver.world.World :: public com.aionemu.gameserver.model.gameobjects.player.Player findPlayer(int);
+com.aionemu.gameserver.world.World :: public com.aionemu.gameserver.model.gameobjects.player.Player findPlayer(java.lang.String);
+com.aionemu.gameserver.world.World :: public java.util.Collection<com.aionemu.gameserver.model.gameobjects.player.Player> getAllPlayers();
+com.aionemu.gameserver.world.World :: public void removeObject(com.aionemu.gameserver.model.gameobjects.AionObject);
+com.aionemu.gameserver.world.World :: public void storeObject(com.aionemu.gameserver.model.gameobjects.AionObject);

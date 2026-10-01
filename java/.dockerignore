@@ -1,0 +1,4 @@
+**/target
+docker/db
+doc
+tools

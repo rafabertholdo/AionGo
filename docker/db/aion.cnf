@@ -1,0 +1,4 @@
+# The 2010 server code expects MySQL 5.1's lenient SQL mode: it inserts rows
+# without values for NOT NULL columns and relies on implicit defaults.
+[mysqld]
+sql_mode = NO_ENGINE_SUBSTITUTION

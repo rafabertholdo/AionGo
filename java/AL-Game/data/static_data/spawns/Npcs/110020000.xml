@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+	This file is part of aion-lightning <aion-lightning.com>.
+
+	aion-lightning is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	aion-lightning is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with aion-lightning.  If not, see <http://www.gnu.org/licenses/>.
+
+	Cloister of Kaisinel
+	@author Magenik From EU-PTS 2.0
+	@Modiefied by Khaos, Gigi
+ -->
+<spawns>
+	<!-- Arathias (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798504" pool="1" interval="105">
+		<object x="2197.8052" y="1584.4193" z="1212.2662" h="75"/>
+	</spawn>
+	<!-- Chatia (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798501" pool="1" interval="105">
+		<object x="2181.8308" y="1610.974" z="1212.2661" h="75"/>
+	</spawn>
+	<!-- Ecocia (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798510" pool="1" interval="105">
+		<object x="2190.5645" y="1544.7278" z="1204.9724" h="40"/>
+	</spawn>
+	<!-- Elmaia (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798506" pool="1" interval="105">
+		<object x="2142.294" y="1626.2306" z="1204.9724" h="100"/>
+	</spawn>
+	<!-- Eremitia (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798600" pool="1" interval="105">
+		<object x="2177.9" y="1590.9" z="1206.1" h="74"/>
+	</spawn>
+	<!-- Falshon (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798602" pool="1" interval="105">
+		<object x="2137.6353" y="1623.426" z="1204.9724" h="100"/>
+	</spawn>
+	<!-- Gracus (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798507" pool="1" interval="105">
+		<object x="2149.2954" y="1621.4233" z="1204.9724" h="70"/>
+	</spawn>
+	<!-- Konopas (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798601" pool="1" interval="105">
+		<object x="2183.7812" y="1540.6451" z="1204.9724" h="40"/>
+	</spawn>
+	<!-- Machiah (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798513" pool="1" interval="105">
+		<object x="2177.1638" y="1596.2241" z="1206.1139" h="69"/>
+	</spawn>
+	<!-- Mopsus (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798603" pool="1" interval="105">
+		<object x="2136.3997" y="1622.6876" z="1204.9724" h="100"/>
+	</spawn>
+	<!-- Mysteris (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798500" pool="1" interval="105">
+		<object x="2182.216" y="1587.85" z="1206.1139" h="74"/>
+	</spawn>
+	<!-- Niotia (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798512" pool="1" interval="105">
+		<object x="2145.6" y="1577.2" z="1205.5" h="10"/>
+	</spawn>
+	<!-- Papinius (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798509" pool="1" interval="105">
+		<object x="2189.5986" y="1544.1367" z="1204.9724" h="40"/>
+	</spawn>
+	<!-- Peidolas (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798511" pool="1" interval="105">
+		<object x="2150.1" y="1570.1" z="1205.5" h="10"/>
+	</spawn>
+	<!-- Pilitas (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798503" pool="1" interval="105">
+		<object x="2196.5554" y="1599.7812" z="1212.45" h="71"/>
+	</spawn>
+	<!-- Salvius (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798505" pool="1" interval="105">
+		<object x="2143.4248" y="1626.9343" z="1204.9724" h="100"/>
+	</spawn>
+	<!-- Teleport Statue DC2 > DC1 (Object Normal lvl:3)-->
+	<spawn map="110020000" npcid="730266" pool="1" interval="105">
+		<object x="2147.5464" y="1573.55" z="1205.4822" h="10" staticid="17"/>
+	</spawn>
+	<!-- Tanoria (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798502" pool="1" interval="105">
+		<object x="2194.7334" y="1602.9154" z="1212.45" h="71"/>
+	</spawn>
+	<!-- Tororite (NPC Normal lvl:50)-->
+	<spawn map="110020000" npcid="798508" pool="1" interval="105">
+		<object x="2138.1328" y="1614.8734" z="1204.9724" h="10"/>
+	</spawn>
+</spawns>

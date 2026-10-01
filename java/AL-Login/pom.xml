@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>AionLightning</groupId>
+		<artifactId>al-main</artifactId>
+		<version>1.0.1</version>
+	</parent>
+	<artifactId>al-login</artifactId>
+	<name>Aion Lightning login server</name>
+	<dependencies>
+		<dependency>
+			<groupId>AionLightning</groupId>
+			<artifactId>al-commons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+	</build>
+</project>

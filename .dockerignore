@@ -1,0 +1,9 @@
+.git
+.build
+**/target
+**/.quest-debug
+**/.quest-claims
+**/__pycache__
+.env
+java/doc
+java/tools

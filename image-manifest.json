@@ -1,0 +1,17 @@
+{
+  "repository": "docker.io/rafabertholdo/aiongo",
+  "clientVersion": "1.9",
+  "release": "0.1.0",
+  "platform": "linux/arm64",
+  "images": {
+    "db": {"variant": "db-mariadb11", "dockerfile": "docker/db/Dockerfile", "context": "docker/db"},
+    "login-go": {"variant": "login-go", "dockerfile": "go/Dockerfile", "target": "login", "context": "."},
+    "chat-go": {"variant": "chat-go", "dockerfile": "go/Dockerfile", "target": "chat", "context": "."},
+    "game-go": {"variant": "game-go", "dockerfile": "go/Dockerfile", "target": "game", "context": "."},
+    "gamesniff": {"variant": "gamesniff-go", "dockerfile": "go/Dockerfile", "target": "gamesniff", "context": "."},
+    "panel": {"variant": "panel-go", "dockerfile": "go/Dockerfile", "target": "panel", "context": "."},
+    "login-java21": {"variant": "login-java21", "dockerfile": "java/docker/Dockerfile", "target": "login", "context": "java"},
+    "chat-java21": {"variant": "chat-java21", "dockerfile": "java/docker/Dockerfile", "target": "chat", "context": "java"},
+    "game-java21": {"variant": "game-java21", "dockerfile": "java/docker/Dockerfile", "target": "game", "context": "java"}
+  }
+}

@@ -1,0 +1,11 @@
+.build/
+**/target/
+**/.quest-claims/
+**/.quest-debug/
+**/__pycache__/
+*.pyc
+*.log
+.DS_Store
+.env
+panel-assets/
+*.dump

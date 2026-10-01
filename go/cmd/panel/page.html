@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aion Server</title>
+<style>
+:root { --bg:#f6f5f2; --card:#fff; --ink:#1d1d1f; --muted:#6b6b70; --line:#e2e0db; --accent:#2f5d8a; --bad:#a3302a; --good:#2f7a4a; }
+@media (prefers-color-scheme: dark) { :root { --bg:#151517; --card:#1f1f22; --ink:#ececee; --muted:#9a9aa1; --line:#333338; --accent:#7fb0e0; --bad:#e8857e; --good:#7cc79a; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.45 -apple-system, system-ui, sans-serif; }
+main { max-width:980px; margin:0 auto; padding:24px 16px 64px; }
+header { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+h1 { font-size:22px; margin:0; } h2 { font-size:17px; margin:0 0 12px; }
+section { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px; margin-bottom:16px; overflow-x:auto; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px; }
+label { display:block; font-size:13px; color:var(--muted); margin:8px 0 3px; }
+input[type=text], input[type=password], input[type=number] { width:100%; padding:7px 9px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--ink); font:inherit; }
+table input[type=number] { width:64px; }
+button { margin-top:10px; padding:7px 14px; border:0; border-radius:6px; background:var(--accent); color:var(--bg); font:inherit; font-weight:600; cursor:pointer; }
+table button { margin:0; padding:4px 10px; font-size:13px; }
+button.plain { background:none; color:var(--accent); padding:4px 0; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th, td { text-align:left; padding:7px 8px; border-bottom:1px solid var(--line); vertical-align:middle; }
+th { color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.03em; }
+td form { display:flex; gap:6px; align-items:center; margin:0; }
+.muted { color:var(--muted); font-size:13px; }
+.tag { font-size:12px; padding:1px 7px; border-radius:9px; border:1px solid var(--line); color:var(--muted); }
+.on { color:var(--good); } .off { color:var(--bad); }
+.msg { padding:10px 14px; border-radius:8px; margin-bottom:16px; border:1px solid var(--good); color:var(--good); }
+.msg.err { border-color:var(--bad); color:var(--bad); }
+code { font-size:13px; }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Aion 1.9 Server</h1>
+  {{with .User}}<form method="post" action="/signout"><span class="muted">{{.Name}} · level {{.AccessLevel}}</span> <button class="plain">Sign out</button></form>{{end}}
+</header>
+
+{{with .Message}}<div class="msg{{if $.Error}} err{{end}}">{{.}}</div>{{end}}
+
+{{if not .User}}
+<div class="grid">
+  {{if .Signup}}
+  <section>
+    <h2>Create an account</h2>
+    <form method="post" action="/signup">
+      <label for="su-name">Account name</label><input id="su-name" type="text" name="name" required pattern="[A-Za-z0-9]{3,16}" maxlength="16" autocomplete="username">
+      <label for="su-pass">Password</label><input id="su-pass" type="password" name="password" required minlength="4" maxlength="16" autocomplete="new-password">
+      <label for="su-conf">Confirm password</label><input id="su-conf" type="password" name="confirm" required minlength="4" maxlength="16" autocomplete="new-password">
+      <button>Create account</button>
+    </form>
+  </section>
+  {{end}}
+  <section>
+    <h2>Sign in</h2>
+    <p class="muted">With your game account. GM and admin tools appear for accounts with an access level.</p>
+    <form method="post" action="/signin">
+      {{with .Next}}<input type="hidden" name="next" value="{{.}}">{{end}}
+      <label for="si-name">Account name</label><input id="si-name" type="text" name="name" required autocomplete="username">
+      <label for="si-pass">Password</label><input id="si-pass" type="password" name="password" required autocomplete="current-password">
+      <button>Sign in</button>
+    </form>
+  </section>
+</div>
+{{else if not .User.GM}}
+<section><p>Your account has no GM access. Log in from the game client to play.</p></section>
+{{end}}
+
+{{if .User.Admin}}
+<section>
+  <h2>Server options</h2>
+  <p class="muted">Stored in <code>au_server_ls.server_options</code>. The login and game servers read them at start, so restart them after saving. Empty text uses the container's environment, then the default.</p>
+  <form method="post" action="/admin/options">
+    <table>
+      <tr><th>Option</th><th>Server</th><th>Value</th><th>What it does</th></tr>
+      {{range .Options}}
+      <tr>
+        <td><code>{{.Name}}</code></td>
+        <td><span class="tag">{{.Server}}</span></td>
+        <td>{{if .Bool}}<input type="checkbox" name="{{.Name}}" aria-label="{{.Name}}" {{if eq .Value "true"}}checked{{else if and (eq .Value "") (eq .Default "true")}}checked{{end}}>
+            {{else}}<input type="text" name="{{.Name}}" aria-label="{{.Name}}" value="{{.Value}}" placeholder="{{.Default}}">{{end}}</td>
+        <td class="muted">{{.Help}}</td>
+      </tr>
+      {{end}}
+    </table>
+    <button>Save options</button>
+  </form>
+</section>
+
+<section>
+  <h2>Game servers</h2>
+  <p class="muted">Which game servers may register with the login server. It reads this list at start.</p>
+  <table>
+    <tr><th>Id</th><th>Address mask</th><th></th></tr>
+    {{range .GameServers}}
+    <tr><td>{{.ID}}</td><td><code>{{.Mask}}</code></td>
+      <td><form method="post" action="/admin/gameserver/delete"><input type="hidden" name="id" value="{{.ID}}"><button>Remove</button></form></td></tr>
+    {{end}}
+  </table>
+  <form method="post" action="/admin/gameserver" class="grid">
+    <div><label for="gs-id">Id</label><input id="gs-id" type="number" name="id" min="1" max="127" required></div>
+    <div><label for="gs-mask">Address mask</label><input id="gs-mask" type="text" name="mask" value="*" required></div>
+    <div><label for="gs-pass">Password (AION_LS_PASSWORD)</label><input id="gs-pass" type="password" name="password" required></div>
+    <div><button>Add game server</button></div>
+  </form>
+</section>
+{{end}}
+
+{{if .User.GM}}
+<section>
+  <h2>Accounts</h2>
+  <p class="muted">Locking an account stops its next login. Access level changes apply on the next login; 1 and up unlock in-game GM commands.</p>
+  <table>
+    <tr><th>Account</th><th>Last IP</th><th>Login</th>{{if $.User.Admin}}<th>Access level</th>{{else}}<th>Level</th>{{end}}</tr>
+    {{range .Accounts}}
+    <tr>
+      <td>{{.Name}}</td>
+      <td class="muted">{{.LastIP}}</td>
+      <td>{{if lt .AccessLevel $.User.AccessLevel}}
+        <form method="post" action="/gm/account"><input type="hidden" name="id" value="{{.ID}}">
+          {{if .Activated}}<span class="on">open</span><input type="hidden" name="activated" value="0"><button>Lock</button>
+          {{else}}<span class="off">locked</span><input type="hidden" name="activated" value="1"><button>Unlock</button>{{end}}
+        </form>{{else}}<span class="{{if .Activated}}on{{else}}off{{end}}">{{if .Activated}}open{{else}}locked{{end}}</span>{{end}}</td>
+      <td>{{if and $.User.Admin (ne .ID $.User.ID)}}
+        <form method="post" action="/admin/access"><input type="hidden" name="id" value="{{.ID}}">
+          <input type="number" name="level" min="0" max="{{$.User.AccessLevel}}" value="{{.AccessLevel}}" aria-label="Access level of {{.Name}}"><button>Set</button>
+        </form>{{else}}{{.AccessLevel}}{{end}}</td>
+    </tr>
+    {{end}}
+  </table>
+</section>
+
+<section>
+  <h2>Characters</h2>
+  <form method="get" action="/character" class="grid">
+    <div><label for="find">Find a character (equipment and cube, as in the game)</label><input id="find" type="text" name="name" required></div>
+    <div><button>Search</button></div>
+  </form>
+  <table>
+    <tr><th>Name</th><th>Account</th><th>Race</th><th>Class</th><th>Exp</th><th>Status</th></tr>
+    {{range .Characters}}
+    <tr><td><a href="/character?name={{.Name}}">{{.Name}}</a></td><td class="muted">{{.Account}}</td><td>{{.Race}}</td><td>{{.Class}}</td><td>{{.Exp}}</td>
+      <td>{{if .Online}}<span class="on">online</span>{{else}}<span class="muted">{{.LastOnline.Format "2006-01-02 15:04"}}</span>{{end}}</td></tr>
+    {{else}}<tr><td colspan="6" class="muted">No characters yet.</td></tr>
+    {{end}}
+  </table>
+</section>
+
+<section>
+  <h2>IP bans</h2>
+  <p class="muted">The login server reads bans at start.</p>
+  <table>
+    <tr><th>Mask</th><th>Until</th><th></th></tr>
+    {{range .Bans}}
+    <tr><td><code>{{.Mask}}</code></td><td>{{with .End}}{{.Format "2006-01-02 15:04"}}{{else}}forever{{end}}</td>
+      <td><form method="post" action="/gm/unban"><input type="hidden" name="mask" value="{{.Mask}}"><button>Unban</button></form></td></tr>
+    {{end}}
+  </table>
+  <form method="post" action="/gm/ban" class="grid">
+    <div><label for="ban-mask">Address or mask</label><input id="ban-mask" type="text" name="mask" required></div>
+    <div><label for="ban-hours">Hours (empty = forever)</label><input id="ban-hours" type="number" name="hours" min="1"></div>
+    <div><button>Ban</button></div>
+  </form>
+</section>
+{{end}}
+</main>
+</body>
+</html>
