@@ -1,7 +1,7 @@
 {
   "date": "2026-10-01",
   "imageSourceRevision": "d85c51aca5026c3e56cd10262bfc5d7ca39eeb38",
-  "publicationStatus": "awaiting Docker Hub authentication; upload returned 401 before publishing any tag",
+  "publicationStatus": "published; all 18 version/source tags verified against local image digests",
   "tests": {
     "go": {
       "passed": 2071,
@@ -54,5 +54,6 @@
     "goClientLoginCreateCharacterEnterExit": "passed",
     "panelHTTP": 200,
     "panelArtworkHTTP": 200
-  }
+  },
+  "publicationVerifiedAt": "2026-10-01T18:51:34.023340+00:00"
 }

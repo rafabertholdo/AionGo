@@ -18,7 +18,11 @@ Tags distinguish client version, service, implementation, and server release:
 `docker.io/rafabertholdo/aiongo`; existing Java 6 repositories and their `1.9`
 tags are retained. There is no rolling `latest` tag.
 
-Docker Hub publication requires a signed-in Apple container CLI:
+Published to [Docker Hub](https://hub.docker.com/r/rafabertholdo/aiongo/tags)
+on 2026-10-01. All 18 version/source tags were verified against the built digests;
+see [the publication record](../releases/publication-v0.1.0.json).
+
+The publication command used a signed-in Apple container CLI:
 
 ```sh
 container registry login docker.io
