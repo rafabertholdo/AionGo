@@ -25,8 +25,10 @@ func TestAltenosWeddingRingObjectTurnInAndReward(t *testing.T) {
 	s := testServer(d)
 	s.quests = &recordedQuests{}
 	p := wrathchild(s)
+	p.Class = "SORCERER"
 	p.Race, p.level, p.Exp = "ELYOS", 15, d.ExpStart(15)
 	p.cube, p.seen = []*store.Item{}, map[int32]*object{}
+	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
 	p.spawned = true
 	packets := &questPackets{}
 	c := &conn{s: s, player: p, tap: packets.tap}
@@ -40,6 +42,7 @@ func TestAltenosWeddingRingObjectTurnInAndReward(t *testing.T) {
 			o.npc = &data.NpcTemplate{ID: id}
 		}
 		s.initNpc(o)
+		o.watchers[p.ID] = p
 		return o
 	}
 	start := npc(altenosWeddingRingStartNPCID, 0x31162)

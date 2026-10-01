@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-01",
+  "imageSourceRevision": "d85c51aca5026c3e56cd10262bfc5d7ca39eeb38",
+  "publicationStatus": "awaiting Docker Hub authentication; upload returned 401 before publishing any tag",
+  "tests": {
+    "go": {
+      "passed": 2071,
+      "failed": 0,
+      "skipped": 5,
+      "includesSubtests": true,
+      "toolchain": "Go 1.25.1"
+    },
+    "java": {
+      "passed": 5,
+      "failed": 0
+    },
+    "imageTooling": {
+      "passed": 7,
+      "failed": 0
+    },
+    "goTooling": {
+      "passed": 7,
+      "failed": 0
+    },
+    "rerun": {
+      "passed": 97,
+      "failed": 0
+    },
+    "downloadKit": {
+      "passed": 30,
+      "failed": 0
+    }
+  },
+  "checks": {
+    "goVet": "passed",
+    "gofmt": "passed",
+    "rerunBuild": "passed",
+    "changedSwiftLint": "passed",
+    "repositorySwiftLint": "616 existing violations, 26 serious",
+    "roadmapSync": "passed (15 products, 4 sources)"
+  },
+  "imageChecks": {
+    "count": 9,
+    "sourceRevisionLabels": "passed",
+    "platform": "linux/arm64",
+    "versionAndSourceDigestPairs": "passed",
+    "freshDatabaseSchemas": [
+      "au_server_ls",
+      "au_server_gs",
+      "au_server_gs_java"
+    ],
+    "goStackStartup": "passed",
+    "java21StackStartup": "passed",
+    "goClientLoginCreateCharacterEnterExit": "passed",
+    "panelHTTP": 200,
+    "panelArtworkHTTP": 200
+  }
+}

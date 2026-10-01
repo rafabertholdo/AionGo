@@ -17,8 +17,9 @@ func TestForestOutlawLevelUpNineKillRouteAndReward(t *testing.T) {
 	}
 	s := testServer(d)
 	p := wrathchild(s)
+	p.Class = "SORCERER"
 	p.Race, p.level = "ELYOS", 10
-	p.Exp = 0
+	p.Exp = d.ExpStart(p.level)
 	p.seen = map[int32]*object{}
 	p.quests = []store.Quest{{ID: forestOutlawQuestID, Status: "LOCKED"}}
 	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
@@ -85,6 +86,7 @@ func TestForestOutlawFiveKillRoute(t *testing.T) {
 	d := staticDataOrSkip(t)
 	s := testServer(d)
 	p := wrathchild(s)
+	p.Class = "SORCERER"
 	p.quests = []store.Quest{{ID: forestOutlawQuestID, Status: "START", Vars: setQuestVar(0, 0, 1)}}
 	c := &conn{s: s, player: p, tap: (&questPackets{}).tap}
 	p.conn = c

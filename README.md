@@ -19,7 +19,9 @@ Java still has known 2.0 packet leftovers; the old Java 6 stack is the captured
 
 ## Checks
 
-On this Mac, Go and Maven run through Apple's `container`:
+On this Mac, Go and Maven run through Apple's `container`. The Go validation
+helper pins Go 1.25.1 and uses one CPU after Go 1.25.14 crashed during large
+test builds on this host:
 
 ```sh
 go/scripts/run-go.sh go test -json ./...
@@ -50,7 +52,8 @@ version, role, implementation, and server release. The initial release includes:
 
 Each image also receives a source tag ending in `-sha-<12-character Git SHA>`
 and OCI source/revision/version labels. `image-manifest.json` is the source of
-truth. Increment its release for subsequent publication; do not overwrite an
+truth. Built references and digests are recorded under `releases/`; see
+[docs/ROLLOUT.md](docs/ROLLOUT.md) for the initial rollout. Increment its release for subsequent publication; do not overwrite an
 existing release tag. There is no `latest` tag, and the legacy Java 6 repositories
 and their `:1.9` tags remain untouched. Initial images are Linux arm64 for Apple
 Silicon Macs.
@@ -60,6 +63,8 @@ python3 scripts/images.py list
 python3 scripts/images.py build          # all nine roles, or append selected roles
 container registry login docker.io
 python3 scripts/images.py push
+# Resume an existing build after later documentation/test commits:
+python3 scripts/images.py push --revision <built-source-commit>
 ```
 
 Commit source before building so its image revision label identifies published

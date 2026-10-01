@@ -8,6 +8,19 @@ type conformanceException struct {
 
 // conformanceExceptions is "<quest id>/<rule>" -> why Java itself breaks the rule. Cite the Java line.
 var conformanceExceptions = map[string]conformanceException{
+	"1183/clickpage": {Java: "verteron/_1183SpiritOfNature.java:87", Reason: "First helper explicitly handles click by sending page 1352"},
+	"1170/accept":    {Java: "verteron/_1170HeadlessStoneStatue.java:69", Reason: "Body starts the quest on any initial dialog"},
+	"1170/echo":      {Java: "verteron/_1170HeadlessStoneStatue.java:69", Reason: "Body starts and sends page 1011 before returning false for the framework echo"},
+	"1170/click":     {Java: "verteron/_1170HeadlessStoneStatue.java:69", Reason: "Body starts the quest on any initial dialog and sends page 1011"},
+	"1162/echo":      {Java: "verteron/_1162_AltenosWeddingRing.java:128", Reason: "Reporter advances to REWARD for any dialog when var is 1"},
+	"1076/clickpage": {Java: "reshanta/_1076FragmentofMemory2.java:95", Reason: "REWARD click explicitly returns page 10002"},
+	"1075/clickpage": {Java: "reshanta/_1075NewWings.java:88", Reason: "REWARD click explicitly returns page 10002"},
+	"1072/clickpage": {Java: "reshanta/_1072AbyssTraining.java:84", Reason: "REWARD click explicitly returns page 10002"},
+	"1071/clickpage": {Java: "reshanta/_1071SpeakingBalaur.java:90", Reason: "REWARD click explicitly returns page 10002"},
+	"1062/clickpage": {Java: "heiron/_1062IndratuLegion.java:91", Reason: "REWARD click explicitly returns page 10002"},
+	"1034/clickpage": {Java: "eltnen/_1034DisappearingAether.java:90", Reason: "REWARD click explicitly returns page 2375"},
+	"1032/clickpage": {Java: "eltnen/_1032ARulersDuty.java:137", Reason: "REWARD click explicitly returns page 2716"},
+	"1031/clickpage": {Java: "eltnen/_1031TheMandurisSecret.java:145", Reason: "REWARD click explicitly returns page 3398"},
 	"1002/clickpage": {Java: "poeta/_1002RequestoftheElim.java:101", Reason: "REWARD: if(getDialogId() == -1) return sendQuestDialog(.., 2716) for npc 203067 (the case -1 at l.207 is the loot barrel)"},
 	"1005/clickpage": {Java: "poeta/_1005BarringtheGate.java:195", Reason: "REWARD: if(getDialogId() == -1) return sendQuestDialog(.., 2716) for npc 203067"},
 	"1011/clickpage": {Java: "verteron/_1011DangerFromAbove.java:148", Reason: "REWARD: if (getDialogId() == -1) return sendQuestDialog(.., 1693) for npc 203109"},

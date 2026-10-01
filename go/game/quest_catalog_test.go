@@ -20,7 +20,7 @@ func TestAllGenericQuestScriptsComplete(t *testing.T) {
 		}
 	}
 	sort.Slice(ids, func(i, j int) bool { return ids[i] < ids[j] })
-	if len(ids) != 1099 {
+	if len(ids) != 1098 {
 		t.Fatalf("generic script count = %d", len(ids))
 	}
 	for _, id := range ids {

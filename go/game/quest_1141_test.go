@@ -16,9 +16,10 @@ func TestBelbuasTreasureOfferAndBarrelReward(t *testing.T) {
 	}
 	s := testServer(d)
 	p := wrathchild(s)
+	p.Class = "SORCERER"
 	p.Race = "ELYOS"
 	p.level = template.MinLevel
-	p.Exp = 0
+	p.Exp = d.ExpStart(p.level)
 	p.cube = nil
 	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
 	p.seen = map[int32]*object{}
@@ -65,6 +66,7 @@ func TestBelbuasTreasureRequiresPrerequisite(t *testing.T) {
 	d := staticDataOrSkip(t)
 	s := testServer(d)
 	p := wrathchild(s)
+	p.Class = "SORCERER"
 	p.Race = "ELYOS"
 	p.level = 11
 	p.seen = map[int32]*object{}

@@ -26,6 +26,7 @@ func TestHeadlessStoneStatueObjectItemAndMovieReward(t *testing.T) {
 	s := testServer(d)
 	s.quests = &recordedQuests{}
 	p := wrathchild(s)
+	p.Class = "SORCERER"
 	p.Race, p.level = "ELYOS", 15
 	p.Exp = d.ExpStart(p.level)
 	p.cube, p.seen = []*store.Item{}, map[int32]*object{}
@@ -42,6 +43,7 @@ func TestHeadlessStoneStatueObjectItemAndMovieReward(t *testing.T) {
 			o.npc = &data.NpcTemplate{ID: id}
 		}
 		s.initNpc(o)
+		o.watchers[p.ID] = p
 		return o
 	}
 	body := makeNPC(headlessStoneStatueBodyNPCID, 0x31170)

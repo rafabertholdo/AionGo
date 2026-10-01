@@ -13,9 +13,10 @@ func delicateMandrakeTestFixture(t *testing.T, status string) (*Server, *player,
 	d := staticDataOrSkip(t)
 	s := testServer(d)
 	p := wrathchild(s)
+	p.Class = "SORCERER"
 	p.Race, p.Class = "ELYOS", "SORCERER"
 	p.level = 12
-	p.Exp = 0
+	p.Exp = d.ExpStart(p.level)
 	p.cube = []*store.Item{}
 	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
 	p.seen = map[int32]*object{}

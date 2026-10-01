@@ -121,6 +121,8 @@ func newConformanceFixture(d *data.Data, script *data.QuestScript, status string
 		npc := questCatalogNPC(s, p, id, int32(0x40000+i))
 		// The catalog npc has no stats to walk with; a task marks it as already walking (handlers that send an
 		// npc off must not start a real ticker in a test).
+		s.initNpc(npc)
+		npc.watchers[p.ID] = p
 		npc.move.task = newTask()
 		f.npcs = append(f.npcs, npc)
 	}
@@ -131,6 +133,13 @@ func (f *conformanceFixture) reset() {
 	f.p.quests = slices.Clone(f.initial)
 	f.p.cube = nil
 	f.packets.frames = nil
+	// Despawn handlers remove NPCs from the player's known list. Restore the
+	// fixture's visible NPCs before the next independent dialog probe.
+	f.p.seen = make(map[int32]*object, len(f.npcs))
+	for _, npc := range f.npcs {
+		f.p.seen[npc.id] = npc
+		npc.watchers[f.p.ID] = f.p
+	}
 }
 
 func (f *conformanceFixture) state(id int32) string {

@@ -20,10 +20,10 @@ if [[ ! -d "$data_dir" ]]; then
     exit 1
 fi
 
-exec container run --rm --arch arm64 --memory 4G --cpus 2 \
-    -v go-cache:/go \
-    -v go-build-cache:/root/.cache/go-build \
+# Pin the validation toolchain and serialize compilation: Go 1.25.14 crashed
+# inside the Go tool on this Apple container host during large test builds.
+exec container run --rm --arch arm64 --memory 4G --cpus 1 \
     -v "$module_dir:/repo" \
     -v "$data_dir:/data/static_data" \
-    -w /repo -e AION_DATA=/data/static_data -e GOMAXPROCS=2 \
-    golang:1.25 "/usr/local/go/bin/$go_command" "$@"
+    -w /repo -e AION_DATA=/data/static_data -e GOMAXPROCS=1 -e GODEBUG=asyncpreemptoff=1 \
+    golang:1.25.1 "/usr/local/go/bin/$go_command" "$@"

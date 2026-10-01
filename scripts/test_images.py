@@ -32,6 +32,25 @@ class ImageTests(unittest.TestCase):
             else:
                 self.assertNotIn("--target", command)
 
+    def test_publication_can_select_the_actual_built_revision(self):
+        with patch("images.subprocess.check_output", side_effect=["new\n", "built\n"]):
+            self.assertEqual(images.source_revision("built", "push"), "built")
+        with patch("images.subprocess.check_output", side_effect=["new\n", "built\n"]):
+            with self.assertRaises(ValueError):
+                images.source_revision("built", "build")
+
+    def test_publication_requires_matching_local_version_and_source_images(self):
+        manifest = images.load_manifest()
+        versioned, source = images.references(manifest, "game-go", "abcdef")
+        rows = [{"reference": versioned, "descriptor": {"digest": "same"}},
+                {"reference": source, "descriptor": {"digest": "same"}}]
+        images.validate_image_pairs(manifest, ["game-go"], "abcdef", rows)
+        rows[1]["descriptor"]["digest"] = "other"
+        with self.assertRaises(ValueError):
+            images.validate_image_pairs(manifest, ["game-go"], "abcdef", rows)
+        with self.assertRaises(ValueError):
+            images.validate_image_pairs(manifest, ["game-go"], "abcdef", rows[:1])
+
     def test_published_tags_cannot_be_overwritten(self):
         with patch("images.urllib.request.urlopen"):
             with self.assertRaises(RuntimeError):

@@ -53,22 +53,45 @@ def require_new_tag(reference):
             raise
 
 
+def validate_image_pairs(manifest, roles, revision, local_images):
+    digests = {row["reference"]: row["descriptor"]["digest"] for row in local_images}
+    for role in roles:
+        versioned, source = references(manifest, role, revision)
+        if versioned not in digests or source not in digests:
+            raise ValueError(f"Build is missing for {role} at revision {revision}")
+        if digests[versioned] != digests[source]:
+            raise ValueError(f"Version and source tags identify different builds for {role}")
+
+
+def source_revision(requested, action):
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    revision = head if requested is None else subprocess.check_output(
+        ["git", "rev-parse", "--verify", f"{requested}^{{commit}}"], cwd=ROOT, text=True).strip()
+    if action == "build" and revision != head:
+        raise ValueError("Build from the checked-out revision; --revision selects an existing build for push/list")
+    return revision
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("build", "push", "list"))
     parser.add_argument("roles", nargs="*")
+    parser.add_argument("--revision", help="Source revision of an existing build (push/list)")
     args = parser.parse_args()
     manifest = load_manifest()
     roles = args.roles or list(manifest["images"])
     for role in roles:
         if role not in manifest["images"]:
             parser.error(f"Unknown image role: {role}")
-    revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    revision = source_revision(args.revision, args.action)
     if args.action == "list":
         for role in roles:
             print(role, *references(manifest, role, revision))
         return
     if args.action == "push":
+        local_images = json.loads(subprocess.check_output(
+            ["container", "image", "list", "--format", "json"], text=True))
+        validate_image_pairs(manifest, roles, revision, local_images)
         # Check every tag before publishing anything; a version must identify one
         # source revision for all roles. A partial upload can be resumed manually.
         for role in roles:

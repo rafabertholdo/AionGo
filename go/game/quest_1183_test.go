@@ -28,6 +28,7 @@ func TestSpiritOfNatureStartWorkItemsAndReward(t *testing.T) {
 	s := testServer(d)
 	s.quests = &recordedQuests{}
 	p := wrathchild(s)
+	p.Class = "SORCERER"
 	p.Race, p.Class, p.level = "ELYOS", "CLERIC", 17
 	p.Exp = d.ExpStart(p.level)
 	p.cube, p.seen = []*store.Item{}, map[int32]*object{}
@@ -51,10 +52,11 @@ func TestSpiritOfNatureStartWorkItemsAndReward(t *testing.T) {
 	selectDialog := func(target *object, dialogID int32) bool {
 		return c.spiritOfNatureDialog(target, script, dialogID)
 	}
-	if selectDialog(start, 25) || p.quest(spiritOfNatureQuestID) != nil {
+	if !selectDialog(start, 25) || selectDialog(start, 1002) || p.quest(spiritOfNatureQuestID) != nil {
 		t.Fatal("quest should not start below level 18")
 	}
 	p.level = 18
+	p.Exp = d.ExpStart(p.level)
 	if !selectDialog(start, 25) || !bytes.Equal(packets.last(smDialogWindow), dialogWindow(start.id, 1011, spiritOfNatureQuestID).Data) {
 		t.Fatalf("quest offer page = %x", packets.last(smDialogWindow))
 	}

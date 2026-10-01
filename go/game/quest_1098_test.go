@@ -22,8 +22,9 @@ func TestPearlOfProtectionNPCChainWorkItemsAndReward(t *testing.T) {
 	s := testServer(d)
 	s.quests = &recordedQuests{}
 	p := wrathchild(s)
+	p.Class = "SORCERER"
 	p.Race, p.level = "ELYOS", 49
-	p.Exp = 0
+	p.Exp = d.ExpStart(p.level)
 	p.cube = []*store.Item{}
 	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
 	p.seen = map[int32]*object{}
@@ -122,8 +123,9 @@ func TestPearlOfProtectionPernosInitialNPCStart(t *testing.T) {
 	s := testServer(d)
 	s.quests = &recordedQuests{}
 	p := wrathchild(s)
+	p.Class = "SORCERER"
 	p.Race, p.level = "ELYOS", 50
-	p.Exp = 0
+	p.Exp = d.ExpStart(p.level)
 	p.cube = []*store.Item{}
 	p.kinah = &store.Item{UniqueID: 0x10578, ItemID: data.Kinah, Owner: p.ID}
 	p.seen = map[int32]*object{}

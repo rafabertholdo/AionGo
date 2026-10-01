@@ -255,10 +255,6 @@ func TestSelectableQuestRewardUsesDialogChoice(t *testing.T) {
 	s, p, c, _, saver := starterQuestPlayer(t, "ELYOS")
 	p.quests = []store.Quest{{ID: 1971, Status: "REWARD"}}
 	npc := questNPC(s, p, 203812, 0x30001)
-	selectQuestDialog(c, npc, 17, 1971)
-	if p.quest(1971).Status != "REWARD" {
-		t.Fatal("a selectable reward was completed without a choice")
-	}
 	selectQuestDialog(c, npc, 9, 1971)
 	if q := p.quest(1971); q.Status != "COMPLETE" {
 		t.Fatalf("selected quest reward was not completed: %+v", q)
@@ -335,5 +331,16 @@ func TestQuestCompletionPersistsSpecialRewards(t *testing.T) {
 			}
 			tc.check(t, p, saver.rewards[0], packets)
 		})
+	}
+}
+
+// QuestService.java:82 lets dialog 17 finish with only the fixed rewards.
+func TestSelectableQuestRewardAllowsFixedRewardsOnly(t *testing.T) {
+	s, p, c, _, _ := starterQuestPlayer(t, "ELYOS")
+	p.quests = []store.Quest{{ID: 1971, Status: "REWARD"}}
+	npc := questNPC(s, p, 203812, 0x30001)
+	selectQuestDialog(c, npc, 17, 1971)
+	if p.quest(1971).Status != "COMPLETE" || len(p.cube) != 1 || p.cube[0].ItemID != 169100000 {
+		t.Fatalf("fixed-only reward differs from Java: quest=%+v items=%+v", p.quest(1971), p.cube)
 	}
 }
