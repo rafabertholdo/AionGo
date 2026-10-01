@@ -17,6 +17,10 @@ Java still has known 2.0 packet leftovers; the old Java 6 stack is the captured
 1.9 protocol reference. See [go/PORTING.md](go/PORTING.md) and
 [go/QUEST_TRIAGE.md](go/QUEST_TRIAGE.md).
 
+Prebuilt images: [hub.docker.com/r/rafabertholdo/aiongo](https://hub.docker.com/r/rafabertholdo/aiongo)
+([all tags](https://hub.docker.com/r/rafabertholdo/aiongo/tags)). See
+[Docker Hub releases](#docker-hub-releases).
+
 ## Checks
 
 On this Mac, Go and Maven run through Apple's `container`. The Go validation
@@ -39,16 +43,17 @@ the inventory fixture now explicitly sets the capacity it exercises.
 
 ## Docker Hub releases
 
-All new images live under `docker.io/rafabertholdo/aiongo`. Tags combine client
+All new images live under
+[`docker.io/rafabertholdo/aiongo`](https://hub.docker.com/r/rafabertholdo/aiongo). Tags combine client
 version, role, implementation, and server release. The initial release includes:
 
 | Role | Tag |
 | --- | --- |
-| Database | `1.9-db-mariadb11-v0.1.0` |
-| Go login / chat / game | `1.9-login-go-v0.1.0`, `1.9-chat-go-v0.1.0`, `1.9-game-go-v0.1.0` |
-| Java 21 login / chat / game | `1.9-login-java21-v0.1.0`, `1.9-chat-java21-v0.1.0`, `1.9-game-java21-v0.1.0` |
-| Admin website | `1.9-panel-go-v0.1.0` |
-| Packet relay | `1.9-gamesniff-go-v0.1.0` |
+| Database | [`1.9-db-mariadb11-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-db-mariadb11-v0.1.0) |
+| Go login / chat / game | [`1.9-login-go-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-login-go-v0.1.0), [`1.9-chat-go-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-chat-go-v0.1.0), [`1.9-game-go-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-game-go-v0.1.0) |
+| Java 21 login / chat / game | [`1.9-login-java21-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-login-java21-v0.1.0), [`1.9-chat-java21-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-chat-java21-v0.1.0), [`1.9-game-java21-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-game-java21-v0.1.0) |
+| Admin website | [`1.9-panel-go-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-panel-go-v0.1.0) |
+| Packet relay | [`1.9-gamesniff-go-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-gamesniff-go-v0.1.0) |
 
 Each image also receives a source tag ending in `-sha-<12-character Git SHA>`
 and OCI source/revision/version labels. `image-manifest.json` is the source of
