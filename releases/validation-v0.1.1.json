@@ -41,5 +41,11 @@
     },
     "probeAccountRestored": true,
     "runningImagesMatchPublished": true
+  },
+  "primaryCheckoutIntegration": {
+    "passed": 2142,
+    "failed": 0,
+    "skipped": 7,
+    "goVet": "passed"
   }
 }
