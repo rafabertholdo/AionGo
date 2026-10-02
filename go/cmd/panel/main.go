@@ -100,6 +100,7 @@ func main() {
 		assets: loadAssets(env("AION_PANEL_ASSETS", "/assets"), log)}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /{$}", p.show)
+	mux.HandleFunc("GET /help", p.help)
 	mux.HandleFunc("POST /signup", p.signup)
 	mux.HandleFunc("POST /signin", p.signin)
 	mux.HandleFunc("POST /signout", p.signout)

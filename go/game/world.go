@@ -93,12 +93,12 @@ func (c *conn) enterWorld(r *wire.Reader) {
 	c.send(s.siegeLocations())
 	c.send(prices())
 	c.send(abyssRank(p.abyss))
-	c.send(message(chatAnnouncement, "Welcome to "+s.config.Name+", on Aion Lightning ported to Go."))
+	c.send(message(chatAnnouncement, "Welcome to "+s.currentConfig().Name+", on Aion Lightning ported to Go."))
 	s.visMu.Lock()
 	s.prisonLogin(p)
 	s.petitionLogin(p)
 	s.classChangeDialog(p)
-	if s.config.HTMLWelcome {
+	if s.currentConfig().HTMLWelcome {
 		s.showHTML(p, s.data.Welcome)
 	}
 	s.visMu.Unlock()

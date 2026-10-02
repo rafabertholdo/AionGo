@@ -88,7 +88,7 @@ func (s *Server) bindDialog(p *player, o *object) {
 		return
 	}
 	world := s.data.WorldMaps[p.WorldID].WorldType
-	if !s.config.CrossFactionBinding {
+	if !s.currentConfig().CrossFactionBinding {
 		switch {
 		case world == "ASMODAE" && p.Race == "ELYOS", world == "ABYSS" && p.Race == "ELYOS" && o.npc.ID == 700401:
 			s.tell(p, "Elyos cannot bind in Asmodian territory.")
@@ -140,7 +140,7 @@ var classQuests = map[string][2]int32{"ELYOS": {1006, 1007}, "ASMODIANS": {2008,
 
 // classChangeDialog is ClassChangeService.showClassChangeDialog: at level 9 a player of a first class is asked to pick.
 func (s *Server) classChangeDialog(p *player) {
-	if !s.config.SimpleSecondClass || p.level < 9 {
+	if !s.currentConfig().SimpleSecondClass || p.level < 9 {
 		return
 	}
 	first := slices.Index(classNames, p.Class)
@@ -161,7 +161,7 @@ func (s *Server) classChangeDialog(p *player) {
 func (c *conn) classChange(dialog uint16) bool {
 	p := c.player
 	s := c.s
-	if p == nil || !s.config.SimpleSecondClass {
+	if p == nil || !s.currentConfig().SimpleSecondClass {
 		return false
 	}
 	s.visMu.Lock()

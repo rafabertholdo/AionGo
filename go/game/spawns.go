@@ -13,6 +13,8 @@ import (
 
 // object is an npc or a gatherable standing in a map.
 type object struct {
+	spawnGroup  *data.SpawnGroup
+	spawnSpot   data.Spot
 	id          int32
 	worldID     int32
 	x, y, z     float32
@@ -97,7 +99,7 @@ func (s *Server) spawnMap(id, inst int32) (npcs, gatherables int) {
 			continue
 		}
 		for _, spot := range group.Spots[:group.Pool] {
-			o := &object{id: s.ids.nextID(), worldID: id, instance: inst, x: spot.X, y: spot.Y, z: spot.Z,
+			o := &object{spawnGroup: group, spawnSpot: spot, id: s.ids.nextID(), worldID: id, instance: inst, x: spot.X, y: spot.Y, z: spot.Z,
 				heading: byte(spot.Heading), staticID: spot.StaticID, homeX: spot.X, homeY: spot.Y, homeZ: spot.Z,
 				interval: group.Interval, walker: spot.Walker, randomWalk: max(spot.Random, group.Random)}
 			if isGatherable(group.NpcID) {
