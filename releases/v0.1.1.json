@@ -1,0 +1,52 @@
+{
+  "release": "0.1.1",
+  "sourceRevision": "db9095a618ccda5205449a77b0c99f59c24b225e",
+  "platform": "linux/arm64",
+  "images": {
+    "db": {
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-db-mariadb11-v0.1.1",
+      "sourceReference": "docker.io/rafabertholdo/aiongo:1.9-db-mariadb11-sha-db9095a618cc",
+      "digest": "sha256:b603fd7612550561279969a6c294a40d18cc799db7a92a3588e47e9c053a30ef"
+    },
+    "login-go": {
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-login-go-v0.1.1",
+      "sourceReference": "docker.io/rafabertholdo/aiongo:1.9-login-go-sha-db9095a618cc",
+      "digest": "sha256:7cc86d11303b1a81e68f351e5c08fd414529fd2a2ccabe3e5fe473d514e59c04"
+    },
+    "chat-go": {
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-chat-go-v0.1.1",
+      "sourceReference": "docker.io/rafabertholdo/aiongo:1.9-chat-go-sha-db9095a618cc",
+      "digest": "sha256:3097f0bee1828047989227e72b2ec7c2e9104b8851ecabe9b17c43660bf4a905"
+    },
+    "game-go": {
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-game-go-v0.1.1",
+      "sourceReference": "docker.io/rafabertholdo/aiongo:1.9-game-go-sha-db9095a618cc",
+      "digest": "sha256:f89a929d62366af12a54529e96d117ff8dc2b6596d7036661b3e8407e71352b9"
+    },
+    "gamesniff": {
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-gamesniff-go-v0.1.1",
+      "sourceReference": "docker.io/rafabertholdo/aiongo:1.9-gamesniff-go-sha-db9095a618cc",
+      "digest": "sha256:7e32ccdf4fecc6ebcfd458cfc7c54243ecb9f76d67e4d91a0c6c845b6c434f43"
+    },
+    "panel": {
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-panel-go-v0.1.1",
+      "sourceReference": "docker.io/rafabertholdo/aiongo:1.9-panel-go-sha-db9095a618cc",
+      "digest": "sha256:5468e6d9632ac9ed5d5f002da87837dc310eda8d7a23be54071e585439b35655"
+    },
+    "login-java21": {
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-login-java21-v0.1.1",
+      "sourceReference": "docker.io/rafabertholdo/aiongo:1.9-login-java21-sha-db9095a618cc",
+      "digest": "sha256:bdd8b86564349dbbb583e94f1458c023ccfac528d71835a8080bc8cf3a3d7617"
+    },
+    "chat-java21": {
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-chat-java21-v0.1.1",
+      "sourceReference": "docker.io/rafabertholdo/aiongo:1.9-chat-java21-sha-db9095a618cc",
+      "digest": "sha256:cc6954e911a8bab6fd19a7be7a2274f4338c26e379c22824dd9cfe2acffab378"
+    },
+    "game-java21": {
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-game-java21-v0.1.1",
+      "sourceReference": "docker.io/rafabertholdo/aiongo:1.9-game-java21-sha-db9095a618cc",
+      "digest": "sha256:0ee2e3fc191523bb1383d63f672aad3e81e63013b88eec17dc730536f11052e6"
+    }
+  }
+}
