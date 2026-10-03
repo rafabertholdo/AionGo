@@ -8,11 +8,11 @@ import (
 const (
 	altgardDutiesQuestID         int32  = 2200
 	altgardDutiesMapID           int32  = 220030000
-	altgardDutiesZone            string = "ALTGARD_FORTRESS"
+	altgardDutiesZone            string = "ALTGARD_FORTRESS_220030000"
 	altgardDutiesEndNPC          int32  = 203557
 	morheimCommandersCallQuestID int32  = 2300
 	morheimCommandersCallMapID   int32  = 220020000
-	morheimCommandersCallZone    string = "MORHEIM_ICE_FORTRESS"
+	morheimCommandersCallZone    string = "MORHEIM_ICE_FORTRESS_220020000"
 	morheimCommandersCallEndNPC  int32  = 204301
 )
 

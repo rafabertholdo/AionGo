@@ -79,7 +79,10 @@ XP message; a handler that panics.
    Before hand-porting, try `scripts/quest-java-port.py --check <id>`: it translates the Java onDialogEvent (and an
    unlocking onLvlUpEvent) line for line into `game/quest_java_dialogs.go` (`scripts/quest-java-port.py <id>` writes
    it), and says which Java call it cannot map when it cannot. Translated handlers take precedence over hand ports in
-   `questDialog`; keep only their other events (kills, items, zones) hand-ported.
+   `questDialog`. For a new quest, `--events` also translates its kill, attack, item-use, zone, world-entry, death,
+   movie-end and quest-finish methods with their `register()` registrations (dispatched by `game/quest_java_events.go`);
+   add the quest's `{ID, Kind: QuestCustom}` entry (with `StartNPC`/`NPCStart` from `addOnQuestStart`) to
+   `game/data/quest_scripts.go`, then run gofmt and the parity test.
 5. Run `scripts/quest-parity.sh <id>` (Java handler vs Go handler over every state, npc and dialog; see
    [QUEST_TRIAGE.md](QUEST_TRIAGE.md) section 0). A non-seeded difference is a bug unless you can name the Java line
    that makes it unreachable.

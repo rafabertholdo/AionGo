@@ -146,6 +146,7 @@ func (c *conn) levelReady(*wire.Reader) {
 	c.startPrologue()
 	c.sealingAbyssGateEnterWorld()
 	c.creatingMonsterEnterWorld()
+	c.javaEnterWorld()
 	c.send(systemMessage(msgChannelEntered, 1))
 	// The 1.9 client takes current HP only once its level is loaded.
 	c.send(statUpdate(smStatupdateHp, p.life.HP, p.stats.current(data.MaxHP)))

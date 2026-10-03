@@ -1,11 +1,14 @@
 package game
 
 import (
+	"fmt"
 	"math"
+	"slices"
 	"time"
 
 	"aionlightning/game/data"
 	"aionlightning/game/store"
+	"aionlightning/wire"
 )
 
 // The quest_script_data templates, ported from questEngine/handlers/template/*.java branch by branch. Each returns
@@ -396,4 +399,83 @@ func (c *conn) javaPort(run func() bool) (answered bool) {
 		}
 	}()
 	return run()
+}
+
+// jAddTitle is TitleList.addTitle: a title of the player's race, once; the title list follows.
+func (c *conn) jAddTitle(id int32) bool {
+	p := c.player
+	title := c.s.data.Titles[id]
+	if title == nil {
+		panic(fmt.Sprintf("invalid title id %d", id)) // Java throws IllegalArgumentException
+	}
+	if title.Race != raceID(p.Race) || slices.Contains(p.titles, id) {
+		return false
+	}
+	if c.s.adminDB != nil {
+		if err := c.s.adminDB.AddTitle(p.ID, id); err != nil {
+			c.s.log.Error("adding quest title", "title", id, "err", err)
+			return false
+		}
+	}
+	p.titles = append(p.titles, id)
+	c.send(titleList(p))
+	return true
+}
+
+// jEquippedCount is player.getEquipment().getEquippedItemsByItemId(id).size().
+func (c *conn) jEquippedCount(itemID int32) int32 {
+	n := int32(0)
+	for _, item := range c.player.equipment {
+		if item.ItemID == itemID && item.Equipped {
+			n++
+		}
+	}
+	return n
+}
+
+// teleportLoc is SM_TELEPORT_LOC(mapId, x, y, z).
+func teleportLoc(mapID int32, x, y, z float32) *wire.Writer {
+	w := wire.Packet(smTeleportLoc)
+	w.C(3)
+	w.C(0x90)
+	w.C(0x9e)
+	w.D(mapID)
+	w.F(x)
+	w.F(y)
+	w.F(z)
+	w.C(0)
+	return w
+}
+
+// jEquippedItems is player.getEquipment().getEquippedItemsByItemId(id).
+func (c *conn) jEquippedItems(itemID int32) []*store.Item {
+	var items []*store.Item
+	for _, item := range c.player.equipment {
+		if item.ItemID == itemID && item.Equipped {
+			items = append(items, item)
+		}
+	}
+	return items
+}
+
+// jStartingClass is PlayerClass.getStartingClassFor.
+func jStartingClass(class string) string {
+	switch class {
+	case "ASSASSIN", "RANGER":
+		return "SCOUT"
+	case "GLADIATOR", "TEMPLAR":
+		return "WARRIOR"
+	case "CHANTER", "CLERIC":
+		return "PRIEST"
+	case "SORCERER", "SPIRIT_MASTER":
+		return "MAGE"
+	}
+	panic("Given player class is starting class: " + class) // Java throws IllegalArgumentException
+}
+
+// ascensionMorph is SM_ASCENSION_MORPH(inascension): 1 starts the ascension morph.
+func ascensionMorph(kind byte) *wire.Writer {
+	w := wire.Packet(smAscensionMorph)
+	w.C(kind)
+	return w
 }

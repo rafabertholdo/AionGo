@@ -35,6 +35,9 @@ func (c *conn) useItem(r *wire.Reader) {
 	}
 	for _, item := range p.cube {
 		if item.UniqueID == id {
+			if c.javaItemUse(item) {
+				return
+			}
 			if item.ItemID == flyingReconnaissancePotionID {
 				c.flyingReconnaissancePotionUse(item)
 				return

@@ -8,6 +8,7 @@ type conformanceException struct {
 
 // conformanceExceptions is "<quest id>/<rule>" -> why Java itself breaks the rule. Cite the Java line.
 var conformanceExceptions = map[string]conformanceException{
+	"1467/accept":    {Java: "eltnen/_1467TheFourLeaders.java:79", Reason: "Java starts the quest on dialog 10002; verified by TestQuestJavaParity"},
 	"1020/echo":      {Java: "verteron/_1020SealingTheAbyssGate.java:85", Reason: "Java's onDialogEvent does this (fall-through or a handler returning true without a window); verified probe by probe by TestQuestJavaParity"},
 	"1122/clickpage": {Java: "poeta/_1122DeliveringPernossRobe.java:55", Reason: "Java's onDialogEvent does this (fall-through or a handler returning true without a window); verified probe by probe by TestQuestJavaParity"},
 	"1123/clickpage": {Java: "poeta/_1123WheresTutty.java:51", Reason: "Java's onDialogEvent does this (fall-through or a handler returning true without a window); verified probe by probe by TestQuestJavaParity"},

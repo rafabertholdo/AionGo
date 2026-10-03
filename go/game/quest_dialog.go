@@ -469,6 +469,7 @@ func (c *conn) questFinish(script *data.QuestScript, dialogID uint16, rewardInde
 		c.s.log.Error("finishing quest", "quest", script.ID, "err", err)
 		return false
 	}
+	c.javaQuestFinish() // QuestEngine.onQuestFinish, while the quest is still REWARD in memory
 	*q = complete
 	// QuestService.questFinish sends in this order: the items, kinah and experience, then the title, abyss points and
 	// cube, the finished quest, the nearby quests, the quests the level unlocks, and last the main menu.

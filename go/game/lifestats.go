@@ -169,6 +169,7 @@ func (s *Server) playerDied(p *player, attacker creature) {
 	if p.conn != nil {
 		p.conn.sealingAbyssGateDeath()
 		p.conn.ascensionDeath()
+		p.conn.javaDie()
 	}
 	if p.restore != nil {
 		p.restore.cancel()

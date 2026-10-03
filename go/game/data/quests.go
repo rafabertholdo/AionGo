@@ -11,6 +11,7 @@ import (
 type QuestTemplate struct {
 	ID                         int32         `xml:"id,attr"`
 	NameID                     int32         `xml:"nameId,attr"`
+	Name                       string        `xml:"name,attr"`
 	Race                       string        `xml:"race_permitted,attr"`
 	MinLevel                   int           `xml:"minlevel_permitted,attr"`
 	CombineSkill               int32         `xml:"combineskill,attr"`

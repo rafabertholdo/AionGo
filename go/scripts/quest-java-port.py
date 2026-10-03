@@ -13,6 +13,7 @@ using anything outside that API is reported and left out (port it by hand). Test
     scripts/quest-java-port.py --check 1097      print the Go for one handler, or why it cannot be translated
 """
 import glob
+import json
 import os
 import re
 import sys
@@ -32,7 +33,7 @@ TOKEN = re.compile(r'''
     (?P<ws>\s+|//[^\n]*|/\*.*?\*/)
   | (?P<num>0[xX][0-9a-fA-F]+[lL]?|\d+\.\d*[fF]?|\d+[fFlL]?)
   | (?P<str>"(?:\\.|[^"\\])*")
-  | (?P<id>[A-Za-z_][A-Za-z0-9_]*)
+  | (?P<id>[A-Za-z_$][A-Za-z0-9_$]*)
   | (?P<op>==|!=|<=|>=|&&|\|\||\+\+|--|\+=|-=|[-+*/%<>=!?:;,.(){}\[\]&|@])
 ''', re.S | re.X)
 
@@ -148,6 +149,19 @@ class Parser:
             return ('foreach', name, seq, self.stmt(), elemtype)
         if p in ('while', 'do', 'try', 'throw', 'synchronized'):
             raise Unsupported(p)
+        if p == 'List' and self.peek(1) == '<':
+            self.i += 2
+            elem = self.eat()
+            self.eat('>')
+            name = self.eat()
+            self.eat('=')
+            if self.peek() != 'new':
+                init = self.expr()
+                self.eat(';')
+                return ('list', name, elem, init)
+            for word in ('new', 'ArrayList', '<', elem, '>', '(', ')', ';'):
+                self.eat(word)
+            return ('list', name, elem)
         if p in ('++', '--'):
             op = self.eat()
             target = self.expr()
@@ -320,6 +334,8 @@ class Emitter:
         self.qid = qid
         self.src = src
         self.helpers = {}  # name -> Go source
+        # class int fields used as constants (questId is script.ID)
+        self.constants = {n: v for n, v in re.findall(r'\n\s*(?:private|protected|public)?\s*(?:final\s+)?(?:static\s+)?(?:final\s+)?int\s+(\w+)\s*=\s*(-?\d+)\s*;', src) if n != 'questId'}
         self.locals = {}  # java name -> kind: quest, obj, int, long, bool
         self.pre = []
         self.closure = 0
@@ -385,6 +401,8 @@ class Emitter:
             if n in self.locals:
                 kind = self.locals[n]
                 return goname(n), kind
+            if n in self.constants:
+                return self.constants[n], 'num'
             raise Unsupported('name ' + n)
         s = dotted(e)
         fixed = {
@@ -406,11 +424,16 @@ class Emitter:
         }
         if s in fixed:
             return fixed[s]
+        m = re.fullmatch(r'ZoneName\.([A-Za-z0-9_]+)', s)
+        if m:
+            return '"%s"' % m.group(1), 'str'
         m = re.fullmatch(r'(QuestStatus|Race|PlayerClass|Gender)\.([A-Z_]+)', s)
         if m:
             return '"%s"' % m.group(2), 'enum'
         if t == 'field':
             raise Unsupported('field ' + s)
+        if t == 'new' and e[1] == 'QuestItems' and len(e[2]) == 2:
+            return 'data.QuestItem{ID: %s, Count: int64(%s)}' % (self.num(e[2][0]), self.num(e[2][1])), 'questitem'
         if t == 'new':
             raise Unsupported('new ' + e[1])
         if t == 'call':
@@ -456,6 +479,11 @@ class Emitter:
             except Unsupported:
                 pass
         a = args
+        if recv is not None and recv[0] == 'name' and self.locals.get(recv[1]) == 'item' and not a:
+            if name == 'getObjectId':
+                return goname(recv[1]) + '.UniqueID', 'int'
+        if name == 'getTemplateId' and recv is not None and recv[0] == 'call' and recv[2] == 'getItemTemplate' and recv[1][0] == 'name' and self.locals.get(recv[1][1]) == 'item':
+            return goname(recv[1][1]) + '.ItemID', 'int'
         # quest state
         if rt == 'quest' or r in ('qs',):
             q = self.quest(recv)
@@ -484,7 +512,7 @@ class Emitter:
             return self.obj(recv) + '.npc.ID', 'int'
         if r == 'player.getInventory()' and name == 'getItemCountByItemId':
             return 'c.s.countItems(p, %s)' % self.num(a[0]), 'long'
-        if recv is None and re.search(r'private\s+(void|boolean)\s+%s\s*\(' % name, self.src):
+        if recv is None and re.search(r'private\s+(void|boolean|int)\s+%s\s*\(' % name, self.src):
             return self.helper(name, a)
         if recv is None or r == 'this':
             if name == 'sendQuestDialog':
@@ -513,6 +541,8 @@ class Emitter:
             if dotted(a[1]) == 'true':
                 return 'c.collectQuestItems(script.ID)', 'bool'
             return 'c.s.hasQuestItems(p, c.s.data.Quests[script.ID])', 'bool'
+        if r == 'ItemService' and name == 'addItems' and a[1][0] == 'name' and self.locals.get(a[1][1]) == 'items':
+            return 'c.addQuestItems(%s)' % goname(a[1][1]), 'bool'
         if r == 'ItemService' and name == 'addItems':
             items = a[1]
             if items[0] == 'call' and items[2] == 'singletonList':
@@ -550,6 +580,18 @@ class Emitter:
             return '%s.%s' % (self.obj(recv), {'getX': 'x', 'getY': 'y', 'getZ': 'z', 'getHeading': 'heading'}[name]), 'num'
         if recv is not None and name == 'getInstanceId' and not a and self.ex(recv)[1] == 'inst':
             return self.x(recv) + '.id', 'int'
+        if r == 'ZoneService.getInstance()' and name == 'isInsideZone' and dotted(a[0]) == 'player':
+            return 'c.s.insideZone(p, %s)' % self.x(a[1]), 'bool'
+        if r == 'PacketSendUtility' and name in ('broadcastPacket', 'sendPacket') and dotted(a[0]) == 'player' and a[1][0] == 'new' and a[1][1] == 'SM_ITEM_USAGE_ANIMATION':
+            u = [self.num(x) for x in a[1][2]]
+            if len(u) == 3:
+                u += ['0', '1', '1']
+            elif len(u) == 5:
+                u += ['0']
+            w = 'itemUsageAnimation(%s, %s, %s, %s, byte(%s), %s)' % tuple(u)
+            if name == 'sendPacket':
+                return 'c.send(%s)' % w, 'void'
+            return 'p.broadcast(%s, true)' % w, 'void'
         if r == 'QuestService' and name == 'checkLevelRequirement':
             return 'int32(p.level) >= int32(c.s.data.Quests[%s].MinLevel)' % self.num(a[0]), 'bool'
         if name == 'useSkill' and not a and recv is not None and recv[0] == 'call' and recv[2] == 'getSkill' and dotted(recv[1]) == 'SkillEngine.getInstance()':
@@ -557,6 +599,48 @@ class Emitter:
             if dotted(g[0]) != 'player' or dotted(g[3]) != 'player':
                 raise Unsupported('skill on another target')
             return 'c.jUseSkill(%s, %s)' % (self.num(g[1]), self.num(g[2])), 'void'
+        if recv is not None and recv[0] == 'name' and self.locals.get(recv[1]) in ('objs', 'items') and name == 'add':
+            return '%s = append(%s, %s)' % (goname(recv[1]), goname(recv[1]), self.x(a[0])), 'void'
+        if r == 'ItemService' and name == 'addItems' and a[1][0] == 'name' and self.locals.get(a[1][1]) == 'items':
+            return 'c.addQuestItems(%s)' % goname(a[1][1]), 'bool'
+        if r == 'player.getEquipment()' and name == 'getEquippedItemsByItemId':
+            return 'c.jEquippedCount(%s)' % self.num(a[0]), 'count'
+        if name == 'size' and recv is not None and self.ex(recv)[1] == 'count':
+            return self.x(recv), 'int'
+        if recv is not None and recv[0] == 'name' and self.locals.get(recv[1]) == 'equipment' and name == 'unEquipItem':
+            return 'c.s.unequipItem(p, %s)' % self.num(a[0]), 'void'
+        if r == 'player' and name == 'getTransformedModelId':
+            return 'p.transformed', 'int'
+        if r == 'PlayerClass' and name == 'getStartingClassFor':
+            return 'jStartingClass(%s)' % self.x(a[0]), 'enum'
+        if name in ('getCurrentHp', 'getMaxHp') and not a and recv is not None and recv[0] == 'call' and recv[2] == 'getLifeStats':
+            return '%s.%s' % (self.obj(recv[1]), 'hp' if name == 'getCurrentHp' else 'maxHP'), 'int'
+        if name in ('setStat', 'getCurrentStat') and recv is not None and recv[0] == 'call' and recv[2] == 'getGameStats':
+            o = self.obj(recv[1])
+            m = re.fullmatch(r'StatEnum\.([A-Z_]+)', dotted(a[0]))
+            stat = 'data.' + ''.join(w.capitalize() for w in m.group(1).split('_'))
+            if not re.search(r'\b%s\b' % stat.split('.')[1], open(os.path.join(ROOT, 'game', 'data', 'statenum.go')).read()):
+                raise Unsupported('stat ' + m.group(1))
+            if name == 'getCurrentStat':
+                return '%s.stats.current(%s)' % (o, stat), 'int'
+            return '%s.stats.set(%s, %s, false)' % (o, stat, self.num(a[1])), 'void'
+        if r == 'player.getCommonData()' and name == 'setPlayerClass':
+            return 'p.Class = %s' % self.x(a[0]), 'void'
+        if r == 'player.getCommonData()' and name == 'upgradePlayer':
+            return 'c.s.levelUp(p)', 'void'
+        if name == 'getName' and recv is not None and recv[0] == 'call' and recv[2] == 'getQuestById' and dotted(recv[1]) == 'DataManager.QUEST_DATA':
+            return 'c.s.data.Quests[%s].Name' % self.num(recv[3][0]), 'str'
+        if r == 'player' and name == 'setTransformedModelId':
+            return 'p.transformed = %s' % self.num(a[0]), 'void'
+        if r == 'PacketSendUtility' and name == 'broadcastPacketAndReceive' and dotted(a[0]) == 'player' and a[1][0] == 'new' and a[1][1] == 'SM_TRANSFORM':
+            return 'p.broadcast(transformPacket(p), true)', 'void'
+        if r == 'player.getTitleList()' and name == 'addTitle':
+            return 'c.jAddTitle(%s)' % self.num(a[0]), 'bool'
+        if r == 'PacketSendUtility' and name == 'sendPacket' and dotted(a[0]) == 'player' and a[1][0] == 'new' and a[1][1] == 'SM_TELEPORT_LOC':
+            return 'c.send(teleportLoc(%s))' % ', '.join(['int32(%s)' % self.num(a[1][2][0])] + ['float32(%s)' % self.num(x) for x in a[1][2][1:]]), 'void'
+        if r == 'TeleportService' and name == 'scheduleTeleportTask' and dotted(a[0]) == 'player':
+            n = [self.x(x) for x in a[1:]]
+            return 'c.s.teleportTo(p, %s, float32(%s), float32(%s), float32(%s), byte(p.Heading), 2200*time.Millisecond)' % tuple(n), 'bool'
         if r == 'env' and name == 'setQuestId':
             return '', 'nothing'
         if r == 'String' and name == 'valueOf':
@@ -618,6 +702,13 @@ class Emitter:
             pk = a[1]
             if pk[0] != 'new':
                 raise Unsupported('sendPacket of ' + dotted(pk))
+            if pk[1] == 'SM_SYSTEM_MESSAGE' and pk[2] and dotted(pk[2][0]).startswith('SystemMessageId.'):
+                java = open(os.path.join(ROOT, '..', 'java', 'AL-Game', 'src', 'main', 'java', 'com', 'aionemu', 'gameserver', 'network', 'aion', 'SystemMessageId.java')).read()
+                key = dotted(pk[2][0]).split('.', 1)[1]
+                code = int(re.search(r'\b%s\((0x[0-9A-Fa-f]+|\d+)\)' % re.escape(key), java).group(1), 0)
+                return 'c.send(systemMessage(%d%s))' % (code, ''.join(', ' + self.x(x) for x in pk[2][1:])), 'void'
+            if pk[1] == 'SM_ASCENSION_MORPH' and len(pk[2]) == 1:
+                return 'c.send(ascensionMorph(byte(%s)))' % self.num(pk[2][0]), 'void'
             if pk[1] == 'SM_DIALOG_WINDOW':
                 quest = self.num(pk[2][2]) if len(pk[2]) > 2 else '0'
                 return 'c.send(dialogWindow(%s, uint16(%s), %s))' % (self.num(pk[2][0]), self.num(pk[2][1]), quest), 'void'
@@ -628,7 +719,7 @@ class Emitter:
 
     def helper(self, name, args):
         """A private method of the handler class, translated once as its own Go method."""
-        m = re.search(r'private\s+(void|boolean)\s+%s\s*\(([^)]*)\)\s*\{' % name, self.src)
+        m = re.search(r'private\s+(void|boolean|int)\s+%s\s*\(([^)]*)\)\s*\{' % name, self.src)
         ret, params = m.group(1), [x.split() for x in m.group(2).split(',') if x.strip()]
         params = [x[1:] if x[0] == 'final' else x for x in params]
         gofn = 'java%d%s' % (self.qid, name[0].upper() + name[1:])
@@ -642,19 +733,31 @@ class Emitter:
                     if pname != 'env':
                         raise Unsupported('env parameter name')
                     continue
+                if jtype == 'Player':
+                    if pname != 'player':
+                        raise Unsupported('player parameter name')
+                    continue
+                if jtype == 'PlayerClass':
+                    sub.locals[pname] = 'enum'
+                    goparams.append('%s string' % goname(pname))
+                    continue
+                if jtype == 'QuestState':
+                    sub.locals[pname] = 'quest'
+                    goparams.append('%s *store.Quest' % goname(pname))
+                    continue
                 if jtype not in ('int', 'long', 'boolean'):
                     raise Unsupported('helper parameter ' + jtype)
                 sub.locals[pname] = {'int': 'int', 'long': 'long', 'boolean': 'bool'}[jtype]
                 goparams.append('%s %s' % (goname(pname), {'int': 'int32', 'long': 'int64', 'boolean': 'bool'}[jtype]))
             tree = Parser(tokenize(method_body(self.src, name, ret))).block()
             body = sub.stmts(tree[1], 1)
-            if ret == 'boolean' and not terminates(tree):
-                body.append('\treturn false')
+            if ret in ('boolean', 'int') and not terminates(tree):
+                body.append('\treturn %s' % ('false' if ret == 'boolean' else '0'))
             self.helpers[name] = '\n'.join(['// %s is the handler\'s private %s.' % (gofn, name),
-                'func (c *conn) %s(o *object, script *data.QuestScript, d int32%s)%s {' % (gofn, ''.join(', ' + x for x in goparams), ' bool' if ret == 'boolean' else ''),
+                'func (c *conn) %s(o *object, script *data.QuestScript, d int32%s)%s {' % (gofn, ''.join(', ' + x for x in goparams), {'boolean': ' bool', 'int': ' int32', 'void': ''}[ret]),
                 '\tp := c.player', '\t_ = p'] + body + ['}']) + '\n'
-        call_args = [self.x(x) for (jtype, _), x in zip(params, args) if jtype != 'QuestEnv']
-        return 'c.%s(o, script, d%s)' % (gofn, ''.join(', ' + x for x in call_args)), ('bool' if ret == 'boolean' else 'void')
+        call_args = [self.x(x) for (jtype, _), x in zip(params, args) if jtype not in ('QuestEnv', 'Player')]
+        return 'c.%s(o, script, d%s)' % (gofn, ''.join(', ' + x for x in call_args)), {'boolean': 'bool', 'int': 'int', 'void': 'void'}[ret]
 
     # statements
     def stmts(self, body, ind):
@@ -679,18 +782,36 @@ class Emitter:
                     raise Unsupported('bare return')
                 return [pad + 'return']
             go, ty = self.ex(s[1])
-            if ty not in ('bool',):
+            if ty not in ('bool', 'int', 'num'):
                 raise Unsupported('return of ' + ty)
             return [pad + 'return ' + go]
         if t == 'break':
             return [pad + 'break']
         if t == 'continue':
             return [pad + 'continue']
+        if t == 'list' and len(s) == 4:
+            init = s[3]
+            if s[2] != 'Item' or init[0] != 'call' or dotted(init[1]) != 'player.getEquipment()' or init[2] != 'getEquippedItemsByItemId':
+                raise Unsupported('List<%s> from %s' % (s[2], dotted(init)))
+            self.locals[s[1]] = 'itemlist'
+            return [pad + '%s := c.jEquippedItems(%s)' % (goname(s[1]), self.num(init[3][0]))]
+        if t == 'list':
+            kind, gotype = {'Npc': ('objs', '[]*object'), 'QuestItems': ('items', '[]data.QuestItem')}.get(s[2], (None, None))
+            if not kind:
+                raise Unsupported('List<%s>' % s[2])
+            self.locals[s[1]] = kind
+            return [pad + 'var %s %s' % (goname(s[1]), gotype), pad + '_ = %s' % goname(s[1])]
         if t == 'array':
             self.locals[s[1]] = 'ints'
             return [pad + '%s := []int32{%s}' % (goname(s[1]), ', '.join(self.num(x) for x in s[2]))]
         if t == 'foreach':
             name, seq, body = s[1], s[2], s[3]
+            if seq[0] == 'name' and self.locals.get(seq[1]) == 'itemlist':
+                self.locals[name] = 'item'
+                return [pad + 'for _, %s := range %s {' % (goname(name), goname(seq[1]))] + self.stmt(body, ind + 1) + [pad + '}']
+            if seq[0] == 'name' and self.locals.get(seq[1]) == 'objs':
+                self.locals[name] = 'obj'
+                return [pad + 'for _, %s := range %s {' % (goname(name), goname(seq[1]))] + self.stmt(body, ind + 1) + [pad + '}']
             if dotted(seq) == 'player.getKnownList().getKnownObjects().values()':
                 self.locals[name] = 'obj'
                 return [pad + 'for _, %s := range p.seen {' % goname(name)] + self.stmt(body, ind + 1) + [pad + '}']
@@ -703,7 +824,7 @@ class Emitter:
             go, ty = self.ex(s[1])
             if ty == 'nothing':
                 return []
-            if ty in ('bool', 'obj', 'inst') and go.startswith(('c.java', 'c.jAddNewSpawn', 'c.s.newInstance', 'c.s.teleportTo', 'c.jTeleport', 'c.s.decreaseKinah', 'c.jQuestFinish', 'c.questFinish', 'c.addQuestItems', 'c.jRemoveAll', 'c.beginQuest', 'c.collectQuestItems', 'c.s.removeItemsByID', 'c.jPage', 'c.default')):
+            if ty in ('bool', 'obj', 'inst', 'int') and go.startswith(('c.jAddTitle', 'c.java', 'c.jAddNewSpawn', 'c.s.newInstance', 'c.s.teleportTo', 'c.jTeleport', 'c.s.decreaseKinah', 'c.jQuestFinish', 'c.questFinish', 'c.addQuestItems', 'c.jRemoveAll', 'c.beginQuest', 'c.collectQuestItems', 'c.s.removeItemsByID', 'c.jPage', 'c.default')):
                 return [pad + go]
             if ty != 'void':
                 raise Unsupported('expression statement ' + go)
@@ -715,12 +836,18 @@ class Emitter:
                 if init is not None and dotted(init) != 'env.getPlayer()':
                     raise Unsupported('player local')
                 return []
+            if jtype == 'Equipment' and init is not None and dotted(init) == 'player.getEquipment()':
+                self.locals[name] = 'equipment'
+                return []
             if jtype == 'WorldMapInstance':
                 self.locals[name] = 'inst'
                 return [pad + '%s := %s' % (goname(name), self.x(init)), pad + '_ = %s' % goname(name)]
             if jtype == 'Npc' and init is not None and dotted(init) == 'player.getTarget()':
                 self.locals[name] = 'obj'
                 return [pad + '%s := c.jTarget()' % goname(name), pad + '_ = %s' % goname(name)]
+            if jtype == 'Npc' and init is not None and dotted(init) != 'env.getVisibleObject()':
+                self.locals[name] = 'obj'
+                return [pad + '%s := %s' % (goname(name), self.obj(init)), pad + '_ = %s' % goname(name)]
             if jtype == 'Npc':
                 if init is not None and dotted(init) != 'env.getVisibleObject()':
                     raise Unsupported('npc local')
@@ -827,6 +954,7 @@ def emotion(e):
 
 
 def goname(n):
+    n = n.replace('$', '_')
     return {'var': 'var_', 'type': 'type_', 'func': 'func_', 'range': 'range_', 'map': 'map_', 'go': 'go_'}.get(n, n)
 
 
@@ -878,7 +1006,7 @@ def method_body(src, name, ret=None):
     if ret is not None:
         m = re.search(r'private\s+%s\s+%s\s*\([^)]*\)\s*\{' % (ret, name), src)
     else:
-        m = re.search(r'public\s+boolean\s+%s\s*\(\s*QuestEnv\s+\w+\s*\)\s*\{' % name, src)
+        m = re.search(r'public\s+boolean\s+%s\s*\(\s*QuestEnv\s+\w+[^)]*\)\s*\{' % name, src)
     if not m:
         raise Unsupported('no ' + name)
     depth, i = 1, m.end()
@@ -898,9 +1026,18 @@ def method_body(src, name, ret=None):
     return src[m.end() - 1:i]
 
 
-def translate(qid):
+def translate(qid, events=False):
     path = java_file(qid)
     src = open(path).read()
+    if not re.search(r'boolean\s+onDialogEvent\s*\(', src):
+        if not events:
+            raise Unsupported('no onDialogEvent')
+        regs = registrations(src)
+        out = '// javaEvents%d is %s: no onDialogEvent.\n// register: %s\n' % (
+            qid, os.path.relpath(path, os.path.join(ROOT, '..')), json.dumps(regs, sort_keys=True))
+        for ev in translate_events(qid):
+            out += '\n' + ev
+        return out
     if re.search(r'onDialogEvent\s*\(\s*QuestEnv\s+(\w+)', src).group(1) != 'env':
         raise Unsupported('env name')
     tree = Parser(tokenize(method_body(src, 'onDialogEvent'))).block()
@@ -909,10 +1046,11 @@ def translate(qid):
     if not terminates(tree):
         body.append('\treturn false')
     rel = os.path.relpath(path, os.path.join(ROOT, '..'))
-    m = re.search(r'void\s+register\s*\(\s*\)\s*\{(.*?)\n\s*\}', src, re.S)
-    talks = [int(n) for n in re.findall(r'setNpcQuestData\((\d+)\)\.addOnTalkEvent\(questId\)', m.group(1))] if m else []
+    regs = registrations(src)
+    talks = regs.get('talk', [])
     lines = ['// javaDialog%d is %s onDialogEvent.' % (qid, rel),
              '// talk npcs: %s' % ' '.join(str(n) for n in talks),
+             '// register: %s' % json.dumps(regs, sort_keys=True),
              'func (c *conn) javaDialog%d(o *object, script *data.QuestScript, d int32) bool {' % qid,
              '\tp := c.player',
              '\t_ = p']
@@ -924,7 +1062,77 @@ def translate(qid):
     level_up = translate_level_up(qid)
     if level_up:
         out += '\n' + level_up
+    if events:
+        for ev in translate_events(qid, set(em.helpers)):
+            out += '\n' + ev
     return out
+
+
+EVENTS = {
+    'onKillEvent': ('Kill', None), 'onAttackEvent': ('Attack', None),
+    'onItemUseEvent': ('ItemUse', ('item', 'item', '*store.Item')),
+    'onEnterZoneEvent': ('EnterZone', ('zone', 'zoneName', 'string')),
+    'onEnterWorldEvent': ('EnterWorld', None), 'onDieEvent': ('Die', None),
+    'onMovieEndEvent': ('MovieEnd', ('int', 'movieId', 'int32')), 'onQuestFinishEvent': ('QuestFinish', None),
+}
+
+
+def translate_events(qid, emitted=None):
+    """The handler's other event methods (kill, item use, zone, world entry, death, movie end, attack, finish)."""
+    src = open(java_file(qid)).read()
+    out = []
+    for method, (event, extra) in EVENTS.items():
+        m = re.search(r'public\s+boolean\s+%s\s*\(\s*QuestEnv\s+(\w+)\s*(?:,\s*\w+\s+(\w+))?\s*\)' % method, src)
+        if not m:
+            continue
+        if m.group(1) != 'env':
+            raise Unsupported('env name in ' + method)
+        em = Emitter(qid, src)
+        param = ''
+        if extra:
+            kind, _, gotype = extra
+            em.locals[m.group(2)] = kind
+            param = ', %s %s' % (goname(m.group(2)), gotype)
+        tree = Parser(tokenize(method_body(src, method))).block()
+        body = em.stmts(tree[1], 1)
+        if not terminates(tree):
+            body.append('\treturn false')
+        out.append('\n'.join(['// java%s%d is its %s.' % (event, qid, method),
+                               'func (c *conn) java%s%d(o *object, script *data.QuestScript, d int32%s) bool {' % (event, qid, param),
+                               '\tp := c.player', '\t_ = p'] + body + ['}']) + '\n')
+        emitted = emitted if emitted is not None else set()
+        for name, helper in em.helpers.items():
+            if name not in emitted:
+                emitted.add(name)
+                out.append(helper)
+    return out
+
+
+def registrations(src):
+    """register()'s quest engine registrations, with its for-loops over the class's int arrays expanded."""
+    m = re.search(r'void\s+register\s*\(\s*\)\s*\{(.*?)\n\s*\}', src, re.S)
+    if not m:
+        return {}
+    body = m.group(1)
+    arrays = {name: re.findall(r'\d+', values) for name, values in re.findall(r'int\s*\[\s*\]\s*(\w+)\s*=\s*\{([^}]*)\}', src)}
+    def expand(loop):
+        var, arr, stmt = loop.group(1), loop.group(2), loop.group(3)
+        return ' '.join(re.sub(r'\b%s\b' % var, v, stmt) for v in arrays.get(arr, []))
+    body = re.sub(r'for\s*\(\s*int\s+(\w+)\s*:\s*(\w+)\s*\)\s*\{?([^;{}]*;)\s*\}?', expand, body)
+    constants = {n: v for n, v in re.findall(r'\n\s*(?:private|protected|public)?\s*(?:final\s+)?(?:static\s+)?(?:final\s+)?int\s+(\w+)\s*=\s*(-?\d+)\s*;', src)}
+    body = re.sub(r'\((\w+)\)', lambda m: '(%s)' % constants.get(m.group(1), m.group(1)) if m.group(1) != 'questId' else m.group(0), body)
+    regs = {}
+    def add(kind, *values):
+        regs.setdefault(kind, []).extend(values)
+    for kind, pattern in [('talk', r'setNpcQuestData\((\d+)\)\.addOnTalkEvent'), ('start', r'setNpcQuestData\((\d+)\)\.addOnQuestStart'),
+                          ('kill', r'setNpcQuestData\((\d+)\)\.addOnKillEvent'), ('attack', r'setNpcQuestData\((\d+)\)\.addOnAttackEvent'),
+                          ('item', r'setQuestItemIds\((\d+)\)\.add'), ('zone', r'setQuestEnterZone\(ZoneName\.(\w+)\)\.add'),
+                          ('movie', r'setQuestMovieEndIds\((\d+)\)\.add')]:
+        add(kind, *re.findall(pattern, body))
+    for kind, call in [('enterworld', 'addOnEnterWorld'), ('die', 'addOnDie'), ('finish', 'addOnQuestFinish'), ('levelup', 'addQuestLvlUp')]:
+        if re.search(call + r'\(questId\)', body):
+            add(kind, 'yes')
+    return regs
 
 
 def translate_level_up(qid):
@@ -971,7 +1179,7 @@ def load_existing():
         return {}
     src = open(OUT).read()
     funcs = {}
-    marks = [m for m in re.finditer(r'^// java(?:Dialog|LevelUp)(\d+) is ', src, re.M)]
+    marks = [m for m in re.finditer(r'^// java(?:Dialog|LevelUp|Events)(\d+) is ', src, re.M)]
     for i, m in enumerate(marks):
         end = marks[i + 1].start() if i + 1 < len(marks) else len(src)
         block = src[m.start():end].rstrip('\n') + '\n'
@@ -1000,6 +1208,37 @@ def write(funcs):
         if 'func (c *conn) javaLevelUp%d(' % i in funcs[i]:
             out += '\t%d: (*conn).javaLevelUp%d,\n' % (i, i)
     out += '}\n\n'
+    regs = {}
+    for i in ids:
+        m = re.search(r'// register: (\{.*\})', funcs[i])
+        regs[i] = json.loads(m.group(1)) if m else {}
+    def has(event, i):
+        return 'func (c *conn) java%s%d(' % (event, i) in funcs[i]
+    for event, extra in [('Kill', ''), ('Attack', ''), ('ItemUse', ', item *store.Item'), ('EnterZone', ', zoneName string'),
+                         ('EnterWorld', ''), ('Die', ''), ('MovieEnd', ', movieId int32'), ('QuestFinish', '')]:
+        out += '// java%sHandlers are the translated %s handlers.\n' % (event, event)
+        out += 'var java%sHandlers = map[int32]func(c *conn, o *object, script *data.QuestScript, d int32%s) bool{\n' % (event, extra)
+        for i in ids:
+            if has(event, i):
+                out += '\t%d: (*conn).java%s%d,\n' % (i, event, i)
+        out += '}\n\n'
+    for name, kind, event, keytype in [('javaKills', 'kill', 'Kill', 'int32'), ('javaAttacks', 'attack', 'Attack', 'int32'),
+                                       ('javaItemUses', 'item', 'ItemUse', 'int32'), ('javaZones', 'zone', 'EnterZone', 'string'),
+                                       ('javaMovieEnds', 'movie', 'MovieEnd', 'int32')]:
+        table = {}
+        for i in ids:
+            if has(event, i):
+                for key in regs[i].get(kind, []):
+                    table.setdefault(key, []).append(i)
+        out += '// %s are the %s registrations of the translated handlers (register()), in order.\n' % (name, kind)
+        out += 'var %s = map[%s][]int32{\n' % (name, keytype)
+        for key in sorted(table):
+            out += '\t%s: {%s},\n' % ('"%s"' % key if keytype == 'string' else key, ', '.join(str(i) for i in table[key]))
+        out += '}\n\n'
+    for name, kind, event in [('javaEnterWorld', 'enterworld', 'EnterWorld'), ('javaDie', 'die', 'Die'), ('javaQuestFinish', 'finish', 'QuestFinish')]:
+        listed = [str(i) for i in ids if has(event, i) and regs[i].get(kind)]
+        out += '// %s are the translated handlers registered for that event.\n' % name
+        out += 'var %s = []int32{%s}\n\n' % (name, ', '.join(listed))
     out += '// javaTalkNPCs are the npcs each translated handler registers its talk event on (register()).\n'
     out += 'var javaTalkNPCs = map[int32][]int32{\n'
     for n in sorted(talks):
@@ -1012,11 +1251,12 @@ def write(funcs):
 
 def main(argv):
     check = '--check' in argv
+    events = '--events' in argv
     ids = [int(a) for a in argv if a.isdigit()]
     if check:
         for i in ids:
             try:
-                print(translate(i))
+                print(translate(i, events))
             except Unsupported as e:
                 print('%d: cannot translate: %s' % (i, e))
         return 0
@@ -1033,7 +1273,7 @@ def main(argv):
                 funcs[i] = (keep.rstrip('\n') + '\n\n' + level_up) if keep.strip() else level_up
             continue
         try:
-            funcs[i] = translate(i)
+            funcs[i] = translate(i, events)
         except Unsupported as e:
             failed.append((i, str(e)))
             try:

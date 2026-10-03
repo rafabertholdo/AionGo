@@ -25,11 +25,12 @@ func (c *conn) levelUpStartQuests() {
 		if script == nil {
 			continue
 		}
-		if (id == 1006 || id == 1007) && c.s.currentConfig().SimpleSecondClass {
+		if (id == 1006 || id == 1007 || id == 2008 || id == 2009) && c.s.currentConfig().SimpleSecondClass {
 			continue
 		}
-		if id == sanctumCeremonyQuestID {
-			ascension := c.player.quest(ascensionQuestID)
+		// _1007ACeremonyinSanctum / _2009ACeremonyinPandaemonium: only after the ascension quest.
+		if prev := map[int32]int32{sanctumCeremonyQuestID: ascensionQuestID, 2009: 2008}[id]; prev != 0 {
+			ascension := c.player.quest(prev)
 			if ascension == nil || ascension.Status != "COMPLETE" {
 				continue
 			}

@@ -10,6 +10,9 @@ import (
 // recordQuestKill is MonsterHunt.onKillEvent for the player who earned the
 // monster reward. QuestVars packs five six-bit counters.
 func (s *Server) recordQuestKill(o *object, p *player) {
+	if p.conn != nil && p.conn.javaKill(o) {
+		return
+	}
 	for _, script := range s.data.QuestKills[o.npc.ID] {
 		if script.ID == fungusAmongUsQuestID {
 			p.conn.fungusAmongUsKill(o)

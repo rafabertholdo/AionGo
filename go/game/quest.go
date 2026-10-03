@@ -87,6 +87,9 @@ func (c *conn) playMovieEnd(r *wire.Reader) {
 	if r.Err != nil {
 		return
 	}
+	if c.javaMovieEnd(int32(movieID)) {
+		return
+	}
 	if c.flyingReconnaissanceMovieEnd(movieID) {
 		return
 	}

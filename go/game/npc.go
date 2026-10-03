@@ -252,6 +252,7 @@ func (s *Server) npcHit(o *object, attacker creature, skillID int32, kind byte, 
 	o.broadcast(attackStatus(o, kind, skillID, damage), true)
 	if p, ok := attacker.(*player); ok && p.conn != nil {
 		p.conn.ascensionAttack(o)
+		p.conn.javaAttack(o)
 	}
 }
 
