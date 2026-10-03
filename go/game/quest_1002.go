@@ -162,7 +162,7 @@ func (c *conn) requestOfTheElimDialog(o *object, script *data.QuestScript, dialo
 					return
 				}
 				c.send(useObject(p.ID, o.id, 0))
-				p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, o.id, 0, 0, 0, 0), true)
+				p.broadcast(c.s.playerEmotionTo(p, emoteEndQuestLoot, 0, o.id, 0, 0, 0, 0), true)
 				c.send(dialogWindow(o.id, 10, 0))
 			})
 		} else if dialogID == 25 {

@@ -75,8 +75,8 @@ func characterBack(w http.ResponseWriter, r *http.Request, name, message string,
 	http.Redirect(w, r, target, http.StatusSeeOther)
 }
 
-// editCharacter only changes offline characters, and commits the preset's level,
-// position and quest rows together. Class selection remains an in-game choice.
+// editCharacter requires offline characters for inventory and progression edits.
+// Account access changes take effect at the next account login.
 func (p *panel) editCharacter(u *user, w http.ResponseWriter, r *http.Request) {
 	if !u.Admin() || !hmac.Equal([]byte(r.FormValue("token")), []byte(characterToken(u))) {
 		http.Error(w, "forbidden", http.StatusForbidden)
@@ -87,6 +87,13 @@ func (p *panel) editCharacter(u *user, w http.ResponseWriter, r *http.Request) {
 	var message string
 	var err error
 	switch action {
+	case "promote_admin", "remove_gm":
+		level := adminLevel
+		if action == "remove_gm" {
+			level = 0
+		}
+		err = p.setCharacterAccess(r, u, name, level)
+		message = fmt.Sprintf("Account access set to %d for all characters on this account. Sign out of the game completely and log back in to apply the change.", level)
 	case "level", "ascension":
 		var level int
 		level, err = strconv.Atoi(r.FormValue("level"))
@@ -475,4 +482,46 @@ func (p *panel) updateCharacter(r *http.Request, name, action string, exp int64)
 func (p *panel) editDatabaseError(err error) error {
 	p.log.Error("saving character edit", "err", err)
 	return errors.New("Unable to save the character. No changes were applied.")
+}
+
+// GM permissions come from the login account, not the character row.
+func (p *panel) setCharacterAccess(r *http.Request, u *user, name string, level int) error {
+	if !u.Admin() || (level != 0 && level != adminLevel) || level > u.AccessLevel {
+		return errors.New("You cannot assign that access level.")
+	}
+	tx, err := p.db.BeginTx(r.Context(), nil)
+	if err != nil {
+		return p.editDatabaseError(err)
+	}
+	defer tx.Rollback()
+	var accountID int32
+	err = tx.QueryRowContext(r.Context(), `SELECT account_id FROM `+p.gsDB+
+		`.players WHERE name = ? AND deletion_date IS NULL`, name).Scan(&accountID)
+	if errors.Is(err, sql.ErrNoRows) {
+		return errors.New("Character not found.")
+	}
+	if err != nil {
+		return p.editDatabaseError(err)
+	}
+	var current int
+	err = tx.QueryRowContext(r.Context(), `SELECT access_level FROM account_data WHERE id = ? FOR UPDATE`, accountID).Scan(&current)
+	if errors.Is(err, sql.ErrNoRows) {
+		return errors.New("Character account not found.")
+	}
+	if err != nil {
+		return p.editDatabaseError(err)
+	}
+	if accountID == u.ID {
+		return errors.New("You cannot change your own account's access here.")
+	}
+	if current > u.AccessLevel {
+		return errors.New("You cannot change an account with a higher access level than yours.")
+	}
+	if _, err := tx.ExecContext(r.Context(), `UPDATE account_data SET access_level = ? WHERE id = ?`, level, accountID); err != nil {
+		return p.editDatabaseError(err)
+	}
+	if err := tx.Commit(); err != nil {
+		return p.editDatabaseError(err)
+	}
+	return nil
 }

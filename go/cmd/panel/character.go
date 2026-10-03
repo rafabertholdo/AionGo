@@ -181,6 +181,9 @@ type characterView struct {
 	Found          bool
 
 	Name, Race, Class string
+	AccessLevel       int
+	AccountID         int32
+	AccountName       string
 	Level             int
 	Online            bool
 	Equipment         []slotView
@@ -252,9 +255,10 @@ func (p *panel) findCharacter(v *characterView) error {
 	var id int32
 	var exp int64
 	var cubeSize int
-	err := p.db.QueryRow(`SELECT id, name, race, player_class, exp, online, cube_size FROM `+p.gsDB+
-		`.players WHERE name = ? AND deletion_date IS NULL`, v.Query).
-		Scan(&id, &v.Name, &v.Race, &v.Class, &exp, &v.Online, &cubeSize)
+	err := p.db.QueryRow(`SELECT p.id, p.name, p.race, p.player_class, p.exp, p.online, p.cube_size,
+		a.id, a.name, a.access_level FROM `+p.gsDB+
+		`.players p JOIN account_data a ON a.id = p.account_id WHERE p.name = ? AND p.deletion_date IS NULL`, v.Query).
+		Scan(&id, &v.Name, &v.Race, &v.Class, &exp, &v.Online, &cubeSize, &v.AccountID, &v.AccountName, &v.AccessLevel)
 	if errors.Is(err, sql.ErrNoRows) {
 		rows, err := p.db.Query(`SELECT name FROM `+p.gsDB+`.players WHERE name LIKE ? AND deletion_date IS NULL ORDER BY name LIMIT 20`,
 			"%"+likeEscape(v.Query)+"%")

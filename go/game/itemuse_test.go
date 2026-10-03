@@ -4,7 +4,53 @@ import (
 	"testing"
 
 	"aionlightning/game/store"
+	"aionlightning/wire"
 )
+
+func TestUseHallowedStrikeBook(t *testing.T) {
+	d := staticDataOrSkip(t)
+	for _, tc := range []struct {
+		name, class, race string
+		level             int
+		known, learns     bool
+	}{
+		{"level 3 priest elyos", "PRIEST", "ELYOS", 3, false, true},
+		{"level 3 priest asmodian", "PRIEST", "ASMODIANS", 3, false, true},
+		{"cleric inherits priest book", "CLERIC", "ELYOS", 10, false, true},
+		{"chanter inherits priest book", "CHANTER", "ASMODIANS", 10, false, true},
+		{"below required level", "PRIEST", "ELYOS", 2, false, false},
+		{"wrong class", "MAGE", "ELYOS", 3, false, false},
+		{"already learned", "PRIEST", "ELYOS", 3, true, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := testServer(d)
+			p, tap := fighter(t, s, 1000)
+			p.Class, p.Race, p.level = tc.class, tc.race, tc.level
+			p.skills = nil
+			if tc.known {
+				p.skills = []store.Skill{{ID: 962, Level: 1}}
+			}
+			db := &restoredSkills{}
+			s.skillDB = db
+			book := &store.Item{UniqueID: 0x40000, ItemID: 169500354, Owner: p.ID, Count: 1}
+			p.cube = []*store.Item{book}
+			use := wire.Packet(cmUseItem)
+			use.D(book.UniqueID)
+			use.C(0)
+			p.conn.useItem(wire.NewReader(use.Data[1:]))
+			if tc.learns {
+				if len(p.cube) != 0 || !p.hasSkill(962) || len(db.writes) != 1 || db.writes[0] != (store.Skill{ID: 962, Level: 1}) {
+					t.Fatalf("book use: cube=%v skills=%v saved=%v", p.cube, p.skills, db.writes)
+				}
+				if tap.count(smSkillList) != 1 || tap.count(smItemUsageAnimation) != 1 || tap.count(smDeleteItem) != 1 {
+					t.Fatal("missing skill, animation or inventory notification")
+				}
+			} else if len(p.cube) != 1 || len(db.writes) != 0 || tap.count(smSkillList) != 0 || tap.count(smItemUsageAnimation) != 0 {
+				t.Fatal("ineligible book use changed inventory or skills")
+			}
+		})
+	}
+}
 
 // TestUsePotion has a wounded player drink a healing potion: it is used up and cools down.
 func TestUsePotion(t *testing.T) {

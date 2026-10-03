@@ -125,7 +125,18 @@ input:checked + .tab { color:#f1ead0; }
 <section class="admin-tools" aria-label="Admin character controls">
 <h2>Admin tools · {{.Name}}</h2>
 {{with .Message}}<p role="status"{{if $.Error}} class="error"{{end}}>{{.}}</p>{{end}}
-<p class="admin-status">{{if .Online}}This character is online. Log out before making changes.{{else}}Changes apply the next time this character logs in.{{end}}</p>
+<p class="admin-status">{{if .Online}}This character is online. Log out before changing inventory or progression.{{else}}Changes apply the next time this character logs in.{{end}}</p>
+<section class="admin-section" aria-labelledby="gm-access-title">
+<h3 id="gm-access-title">GM access</h3>
+<p>Account: {{.AccountName}} · Access level: {{.AccessLevel}}</p>
+<p>Permissions apply to every character on this account. Admin access (level 3) enables GM commands and panel administration. Sign out of the game completely and log back in after changing access.</p>
+<form method="post" action="/admin/character" class="admin-row">
+<input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
+<button name="action" value="promote_admin"{{if or (eq .AccountID .User.ID) (ge .AccessLevel 3)}} disabled{{end}}>Promote to admin</button>
+<button name="action" value="remove_gm"{{if or (eq .AccountID .User.ID) (eq .AccessLevel 0) (gt .AccessLevel .User.AccessLevel)}} disabled{{end}}>Remove GM access</button>
+</form>
+<p>To instantly kill your selected mob, use <code>//kill</code>. Extra skills are not granted automatically. To learn Wrath of Developer, select your own character and use <code>//addskill 1904 1</code>. It deals massive area damage to nearby enemies.</p>
+</section>
 <section class="admin-section" aria-labelledby="grant-kinah-title">
 <h3 id="grant-kinah-title">Give Kinah</h3>
 <form method="post" action="/admin/character" class="admin-row">

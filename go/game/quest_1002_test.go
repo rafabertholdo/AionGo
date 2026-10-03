@@ -3,10 +3,50 @@ package game
 import (
 	"bytes"
 	"testing"
+	"testing/synctest"
+	"time"
 
 	"aionlightning/game/data"
 	"aionlightning/game/store"
 )
+
+func TestRequestOfTheElimFluteInteraction(t *testing.T) {
+	staticDataOrSkip(t)
+	synctest.Test(t, func(t *testing.T) {
+		f := newReplayFixture(t, 1002, replayQuest{ID: 1002, Status: "START", Vars: 2})
+		f.p.spawned = true
+		f.give(182200002, 1)
+		for index, want := range []int32{4, 5} {
+			elder := questCatalogNPC(f.s, f.p, 730010, 0x33000+int32(index))
+			f.p.targetID = elder.id
+			f.packets.frames = nil
+			f.c.showDialog(dialogRequest(cmShowDialog, elder.id, 0, 0))
+			if elder.useTask == nil || !bytes.Equal(f.packets.last(smUseObject), useObject(f.p.ID, elder.id, 1).Data) ||
+				!bytes.Equal(f.packets.last(smEmotion), f.s.playerEmotionTo(f.p, emoteStartQuestLoot, 0, elder.id, 0, 0, 0, 0).Data) {
+				t.Fatal("elder interaction did not start the flute")
+			}
+			if f.packets.last(smDialogWindow) != nil {
+				t.Fatal("elder dialog opened before the flute finished")
+			}
+			time.Sleep(3 * time.Second)
+			synctest.Wait()
+			if elder.useTask != nil || !bytes.Equal(f.packets.last(smUseObject), useObject(f.p.ID, elder.id, 0).Data) ||
+				!bytes.Equal(f.packets.last(smEmotion), f.s.playerEmotionTo(f.p, emoteEndQuestLoot, 0, elder.id, 0, 0, 0, 0).Data) {
+				t.Fatalf("flute did not end the quest interaction: emotion=%x", f.packets.last(smEmotion))
+			}
+			if !bytes.Equal(f.packets.last(smDialogWindow), dialogWindow(elder.id, 10, 0).Data) {
+				t.Fatal("finished flute did not open the elder dialog")
+			}
+			f.c.dialogSelect(dialogRequest(cmDialogSelect, elder.id, 25, 1002))
+			f.expectVars(want)
+			if !elder.dead || !bytes.Equal(f.packets.last(smDialogWindow), dialogWindow(elder.id, 0, 0).Data) {
+				t.Fatal("elder was not consumed after waking")
+			}
+			f.c.dialogSelect(dialogRequest(cmDialogSelect, elder.id, 25, 1002))
+			f.expectVars(want)
+		}
+	})
+}
 
 func TestRequestOfTheElimLockedAndConversation(t *testing.T) {
 	d := staticDataOrSkip(t)

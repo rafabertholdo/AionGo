@@ -135,6 +135,19 @@ func loadItems(path string) (map[int32]*ItemTemplate, error) {
 				return nil, fmt.Errorf("%s: item %d: %w", filepath.Base(path), current.ID, err)
 			}
 			current.Actions = node.Children
+			for _, action := range current.Actions {
+				if action.Name != "skilllearn" {
+					continue
+				}
+				// Skill books use the same legacy SkillClass enum as the skill tree.
+				action.Attr["class"] = skillTreeClass(action.Str("class"))
+				switch action.Str("race") {
+				case "PC_LIGHT":
+					action.Attr["race"] = "ELYOS"
+				case "PC_DARK":
+					action.Attr["race"] = "ASMODIANS"
+				}
+			}
 		case "modifiers":
 			if current == nil {
 				continue
