@@ -161,11 +161,7 @@ func (s *Server) npcInfo(o *object, p *player) *wire.Writer {
 	if o.kisk != nil && o.kisk.ownerRace != p.Race {
 		kind = npcTypeIDs["ATTACKABLE"]
 	}
-	state := uint16(stateActive | stateNpcIdle)
-	if t.State != 0 {
-		state = uint16(t.State)
-	}
-	maxHP := npcMaxHP(t)
+	hp, maxHP := o.hitPoints()
 	w := wire.Packet(smNpcInfo)
 	w.F(o.x)
 	w.F(o.y)
@@ -174,7 +170,7 @@ func (s *Server) npcInfo(o *object, p *player) *wire.Writer {
 	w.D(t.ID)
 	w.D(t.ID)
 	w.C(kind)
-	w.H(state)
+	w.H(o.state)
 	w.C(o.heading)
 	w.D(t.NameID)
 	w.D(t.TitleID)
@@ -188,7 +184,7 @@ func (s *Server) npcInfo(o *object, p *player) *wire.Writer {
 		w.D(0) // master
 		w.S("")
 	}
-	w.C(100) // %hp
+	w.C(byte(100 * int64(hp) / int64(max(maxHP, 1))))
 	w.D(maxHP)
 	w.C(byte(o.clevel()))
 	mask, gear := s.npcGear(t)

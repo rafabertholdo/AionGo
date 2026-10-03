@@ -1,7 +1,7 @@
 {
   "repository": "docker.io/rafabertholdo/aiongo",
   "clientVersion": "1.9",
-  "release": "0.1.6",
+  "release": "0.1.7",
   "platform": "linux/arm64",
   "images": {
     "db": {

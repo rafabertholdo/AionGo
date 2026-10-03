@@ -134,7 +134,7 @@ func (s *Server) startFlightTeleport(p *player, path int32) {
 	p.state |= stateFlying
 	p.state &^= stateActive
 	p.flightTeleportID = path
-	p.broadcast(s.playerEmotion(p, emoteStartFlyTele, uint16(path), 0, 0, 0, 0), true)
+	p.broadcast(s.playerEmotion(p, emoteStartFlyTele, path, 0, 0, 0, 0), true)
 }
 
 // endFlightTeleport is PlayerController.onFlyTeleportEnd: the player has arrived.

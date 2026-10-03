@@ -71,12 +71,12 @@ func (c *conn) emotion(r *wire.Reader) {
 		return
 	}
 	kind := r.C()
-	var emote uint16
+	var emote int32
 	var x, y, z float32
 	var heading byte
 	switch kind {
 	case emoteEmote:
-		emote = r.H()
+		emote = int32(r.H())
 	case emoteChairSit, emoteChairUp:
 		x, y, z, heading = r.F(), r.F(), r.F(), r.C()
 	}
@@ -142,12 +142,12 @@ func (p *player) hasPowershard() bool {
 }
 
 // playerEmotion is SM_EMOTION for a player.
-func (s *Server) playerEmotion(p *player, kind byte, emote uint16, x, y, z float32, heading byte) *wire.Writer {
+func (s *Server) playerEmotion(p *player, kind byte, emote int32, x, y, z float32, heading byte) *wire.Writer {
 	return s.playerEmotionTo(p, kind, emote, p.targetID, x, y, z, heading)
 }
 
 // playerEmotionTo is playerEmotion aimed at another target than the player's own, like the corpse it loots.
-func (s *Server) playerEmotionTo(p *player, kind byte, emote uint16, target int32, x, y, z float32, heading byte) *wire.Writer {
+func (s *Server) playerEmotionTo(p *player, kind byte, emote int32, target int32, x, y, z float32, heading byte) *wire.Writer {
 	speed := float32(p.stats.current(data.Speed)) / speedScale
 	if p.inState(stateFlying) {
 		speed = float32(p.stats.current(data.FlySpeed)) / speedScale
@@ -157,7 +157,7 @@ func (s *Server) playerEmotionTo(p *player, kind byte, emote uint16, target int3
 }
 
 // emotionPacket is SM_EMOTION: who did what, with the extras that kind of emotion carries.
-func emotionPacket(id int32, kind byte, state uint16, speed float32, emote uint16, target int32,
+func emotionPacket(id int32, kind byte, state uint16, speed float32, emote int32, target int32,
 	x, y, z float32, heading byte, baseAttackSpeed, attackSpeed uint16) *wire.Writer {
 	w := wire.Packet(smEmotion)
 	w.D(id)
@@ -179,12 +179,12 @@ func emotionPacket(id int32, kind byte, state uint16, speed float32, emote uint1
 		w.F(z)
 		w.C(heading)
 	case emoteStartFlyTele:
-		w.D(int32(emote))
+		w.D(emote)
 	case emoteDie, emoteStartLoot, emoteEndLoot, emoteStartQuestLoot, emoteEndQuestLoot:
 		w.D(target)
 	case emoteEmote:
 		w.D(target)
-		w.H(emote)
+		w.H(uint16(emote))
 		w.C(1)
 	case emoteStartEmote, emoteStartEmote2:
 		w.H(baseAttackSpeed)

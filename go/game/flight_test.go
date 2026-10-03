@@ -1,6 +1,8 @@
 package game
 
 import (
+	"encoding/binary"
+	"fmt"
 	"slices"
 	"testing"
 	"time"
@@ -8,6 +10,44 @@ import (
 	"aionlightning/game/data"
 	"aionlightning/wire"
 )
+
+func TestFlightTeleportRouteIDs(t *testing.T) {
+	d := staticDataOrSkip(t)
+	var checked int
+	for _, id := range slices.Sorted(mapKeys(d.Teleporters)) {
+		tp := d.Teleporters[id]
+		if tp.Type != "FLIGHT" {
+			continue
+		}
+		for _, dest := range tp.Locations {
+			t.Run(fmt.Sprintf("npc_%d/path_%d", id, dest.TeleportID), func(t *testing.T) {
+				s := testServer(d)
+				p, _ := fighter(t, s, 1000)
+				p.state = stateActive
+				var start []byte
+				p.conn.tap = func(w *wire.Writer) {
+					if w.Data[0] == smEmotion {
+						start = append([]byte(nil), w.Data[1:]...)
+					}
+				}
+				s.startFlightTeleport(p, dest.TeleportID)
+				if len(start) != 15 || start[4] != emoteStartFlyTele {
+					t.Fatalf("invalid flight start packet: %x", start)
+				}
+				if got := int32(binary.LittleEndian.Uint32(start[11:])); got != dest.TeleportID {
+					t.Errorf("client path = %d, want %d", got, dest.TeleportID)
+				}
+				if state := binary.LittleEndian.Uint16(start[5:]); state != stateFlying || !p.usingFlyTeleport() {
+					t.Errorf("transport state = %d, server path = %d", state, p.flightTeleportID)
+				}
+			})
+			checked++
+		}
+	}
+	if checked == 0 {
+		t.Fatal("no flight routes checked")
+	}
+}
 
 // TestFlying has a player fly for a while: the fly time runs out, and it comes back after landing.
 func TestFlying(t *testing.T) {

@@ -6,14 +6,14 @@ import (
 )
 
 const (
-	newWingsQuestID       int32  = 1075
-	newWingsFirstNPCID    int32  = 278506
-	newWingsEndNPCID      int32  = 279023
-	newWingsInstanceNPCID int32  = 278643
-	newWingsBalaurNPCID   int32  = 214102
-	newWingsInstanceID    int32  = 400010000
-	newWingsInstanceIndex int32  = 1
-	newWingsFlightPathID  uint16 = 57001
+	newWingsQuestID       int32 = 1075
+	newWingsFirstNPCID    int32 = 278506
+	newWingsEndNPCID      int32 = 279023
+	newWingsInstanceNPCID int32 = 278643
+	newWingsBalaurNPCID   int32 = 214102
+	newWingsInstanceID    int32 = 400010000
+	newWingsInstanceIndex int32 = 1
+	newWingsFlightPathID  int32 = 57001
 )
 
 func (c *conn) newWingsLevelUp() bool {

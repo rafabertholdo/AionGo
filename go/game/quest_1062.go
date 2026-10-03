@@ -7,14 +7,14 @@ import (
 )
 
 const (
-	indratuLegionQuestID      int32  = 1062
-	indratuLegionStartNPCID   int32  = 204500
-	indratuLegionSecondNPCID  int32  = 204600
-	indratuLegionThirdNPCID   int32  = 204610
-	indratuLegionTargetNPCID  int32  = 700220
-	indratuLegionBossNPCID    int32  = 212588
-	indratuLegionDropItemID   int32  = 182201622
-	indratuLegionFlightPathID uint16 = 54001
+	indratuLegionQuestID      int32 = 1062
+	indratuLegionStartNPCID   int32 = 204500
+	indratuLegionSecondNPCID  int32 = 204600
+	indratuLegionThirdNPCID   int32 = 204610
+	indratuLegionTargetNPCID  int32 = 700220
+	indratuLegionBossNPCID    int32 = 212588
+	indratuLegionDropItemID   int32 = 182201622
+	indratuLegionFlightPathID int32 = 54001
 )
 
 func (c *conn) indratuLegionLevelUp() bool {

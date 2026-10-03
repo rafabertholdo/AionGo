@@ -27,6 +27,6 @@ func TestEmotionsMatchClient19(t *testing.T) {
 	}
 }
 
-func emotionHex(kind byte, state uint16, emote uint16, target int32) string {
+func emotionHex(kind byte, state uint16, emote int32, target int32) string {
 	return hex.EncodeToString(emotionPacket(0x10577, kind, state, 6, emote, target, 0, 0, 0, 0, 0, 0).Data[1:])
 }
