@@ -104,7 +104,8 @@ Wrathchild, which `game/world_test.go` compares the Go packets with.
    products, skill and player experience), dye scrolls, and the masters who teach the next level of a crafting skill.
    Enchanting (stones with AL-Game's rates, the stats each level adds) and socketing manastones.
    Godstone socketing charges the Java service fee, replaces the existing socket and consumes one stone atomically;
-   sockets persist across item reloads and appear in inventory/equipment packets. Combat procs remain unimplemented.
+   sockets persist across item reloads and appear in inventory/equipment packets. A godstone on a weapon in hand procs
+   its skill on the player's target when the player attacks (GodStone's ATTACK observer, `godstoneProcs`).
    Account warehouse (`accountwh.go`: item and kinah rows in location 2 owned by the account id, 17 places, no expansion,
    shared by the characters of an account, sent with the warehouse dialog; AL-Game has no restrictions on what goes in).
    Left: the other item actions (supplements for enchants), crafting stations (static objects),
@@ -228,7 +229,11 @@ against the real database: `AION_TEST_DB=<db host> go test ./game/store`), but n
 - godstone socketing/replacement, the service fee and weapon glow after equipping/relogging;
 - groups (invite, accept, leave, kick, leader, loot rules), group chat;
   group loot rolls and quality settings are implemented with protected winner
-  reservations and atomic grants; bid distribution remains unported;
+  reservations and atomic grants; bids pay the winning bid, shared among the other
+  members asked, in the same transaction as the item;
+- saved effects and skill cooldowns (player_effects) across relogs; the search,
+  returnpoint, mpuseovertime, onetimeboostskillattack, magiccounteratk and
+  petorderuseultraskill skill effects;
 - friends, blocks, whispers, `/who` (CM_PLAYER_SEARCH), looking at a player;
   LFG status 9, LFG-only search and result status 2 are implemented with packet
   regression tests; real-client confirmation remains pending;

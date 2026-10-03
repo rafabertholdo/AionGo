@@ -2,6 +2,7 @@ package game
 
 import (
 	"context"
+	"errors"
 	"math"
 	"slices"
 	"strconv"
@@ -22,6 +23,15 @@ const (
 	msgRollWonMe      = 1390180
 	msgRollWonOther   = 1390181
 	msgLootOtherOwner = 1390220
+	msgPayAccountMe   = 1390185
+	msgPayAccountOthr = 1390186
+	msgPayDistribute  = 1390187
+)
+
+// Loot distributions of the group's quality rules that ask the members first.
+const (
+	distributionRoll = 2
+	distributionBid  = 3
 )
 
 func (g *group) lootQualityRules() [7]int32 {
@@ -43,20 +53,23 @@ func (g *group) qualityDistribution(quality string) int32 {
 // lootRoll snapshots participants at corpse registration and accepts one response per participant.
 // All accesses use visMu, including departure and corpse removal; no extra timers or workers are owned here.
 type lootRoll struct {
+	distribution byte // distributionRoll or distributionBid
 	group        *group
 	item         *dropItem
 	participants []*player
 	pending      map[*player]bool
 	replies      []lootReply
 	winner       *player
+	best         int64 // the winning roll or bid
 }
 
 type lootReply struct {
 	player *player
-	value  int32
+	value  int64 // the roll, or the kinah bid; 0 passes
 }
 
-// groupLoot is CM_GROUP_LOOT. Luck comes from the server; the request only chooses roll or pass.
+// groupLoot is CM_GROUP_LOOT. Luck comes from the server; a roll request only chooses roll or pass.
+// A bid more than the bidder's kinah passes, as DropService.handleBid.
 func (c *conn) groupLoot(r *wire.Reader) {
 	groupID := r.D()
 	r.D()
@@ -66,8 +79,9 @@ func (c *conn) groupLoot(r *wire.Reader) {
 	npcID := r.D()
 	distribution := r.C()
 	choice := r.D()
-	r.Q()
-	if r.Err != nil || distribution != 2 || choice < 0 || choice > 1 {
+	bid := r.Q()
+	if r.Err != nil || (distribution != distributionRoll && distribution != distributionBid) ||
+		(distribution == distributionRoll && (choice < 0 || choice > 1)) {
 		return
 	}
 	c.withPlayer(func(s *Server, p *player) {
@@ -76,18 +90,22 @@ func (c *conn) groupLoot(r *wire.Reader) {
 			return
 		}
 		roll := o.loot.active
-		if p.group != roll.group || groupID != roll.group.id || itemID != roll.item.item || !roll.pending[p] {
+		if p.group != roll.group || groupID != roll.group.id || itemID != roll.item.item || !roll.pending[p] ||
+			distribution != roll.distribution {
 			return
 		}
-		value := int32(0)
-		if choice == 1 {
-			value = rnd(1, 100)
+		value := int64(0)
+		switch {
+		case distribution == distributionBid && bid > 0 && bid <= p.kinah.Count:
+			value = bid
+		case distribution == distributionRoll && choice == 1:
+			value = int64(rnd(1, 100))
 		}
 		s.answerLootRoll(o, p, value)
 	})
 }
 
-func groupLootPacket(groupID, itemID, npcID int32) *wire.Writer {
+func groupLootPacket(groupID, itemID, npcID int32, distribution byte) *wire.Writer {
 	w := wire.Packet(smGroupLoot)
 	w.D(groupID)
 	w.D(1)
@@ -95,7 +113,7 @@ func groupLootPacket(groupID, itemID, npcID int32) *wire.Writer {
 	w.D(itemID)
 	w.C(0)
 	w.D(npcID)
-	w.C(2)
+	w.C(distribution)
 	w.D(0)
 	w.D(1)
 	return w
@@ -104,10 +122,14 @@ func groupLootPacket(groupID, itemID, npcID int32) *wire.Writer {
 func (s *Server) beginLootRoll(o *object, item *dropItem) bool {
 	loot := o.loot
 	t := s.data.Items[item.item]
-	if t == nil || t.ID == data.Kinah || loot.group.qualityDistribution(t.Quality) != 2 {
+	if t == nil || t.ID == data.Kinah {
 		return false
 	}
-	roll := &lootRoll{group: loot.group, item: item, pending: map[*player]bool{}}
+	distribution := byte(loot.group.qualityDistribution(t.Quality))
+	if distribution != distributionRoll && distribution != distributionBid {
+		return false
+	}
+	roll := &lootRoll{distribution: distribution, group: loot.group, item: item, pending: map[*player]bool{}}
 	for _, p := range loot.eligible {
 		if s.spawned[p.ID] == p && p.group == loot.group && p.conn != nil {
 			roll.participants = append(roll.participants, p)
@@ -124,19 +146,23 @@ func (s *Server) beginLootRoll(o *object, item *dropItem) bool {
 	}
 	s.lootRolls[o] = true
 	for _, p := range roll.participants {
-		p.conn.send(groupLootPacket(roll.group.id, item.item, o.id))
+		p.conn.send(groupLootPacket(roll.group.id, item.item, o.id, distribution))
 	}
 	return true
 }
 
-func (s *Server) answerLootRoll(o *object, p *player, value int32) {
+func (s *Server) answerLootRoll(o *object, p *player, value int64) {
 	roll := o.loot.active
 	if roll == nil || !roll.pending[p] {
 		return
 	}
 	delete(roll.pending, p)
 	roll.replies = append(roll.replies, lootReply{player: p, value: value})
+	// Java tells the members of rolls only; a bid is secret.
 	for _, m := range roll.participants {
+		if roll.distribution != distributionRoll {
+			break
+		}
 		if s.spawned[m.ID] != m || m.group != roll.group || m.conn == nil {
 			continue
 		}
@@ -146,9 +172,9 @@ func (s *Server) answerLootRoll(o *object, p *player, value int32) {
 		case value == 0:
 			m.conn.send(systemMessage(msgRollPassOther, p.Name))
 		case m == p:
-			m.conn.send(systemMessage(msgRollMe, strconv.Itoa(int(value))))
+			m.conn.send(systemMessage(msgRollMe, strconv.FormatInt(value, 10)))
 		default:
-			m.conn.send(systemMessage(msgRollOther, p.Name, strconv.Itoa(int(value))))
+			m.conn.send(systemMessage(msgRollOther, p.Name, strconv.FormatInt(value, 10)))
 		}
 	}
 	s.finishLootRoll(o, roll)
@@ -159,13 +185,13 @@ func (s *Server) finishLootRoll(o *object, roll *lootRoll) {
 		return
 	}
 	o.loot.active = nil
-	best := int32(0)
+	roll.best = 0
 	roll.winner = nil
 	for _, reply := range roll.replies {
 		p := reply.player
 		// Strictly greater preserves Java's first-response tie winner.
-		if reply.value > best && s.spawned[p.ID] == p && p.group == roll.group {
-			best, roll.winner = reply.value, p
+		if reply.value > roll.best && s.spawned[p.ID] == p && p.group == roll.group {
+			roll.best, roll.winner = reply.value, p
 		}
 	}
 	if roll.winner == nil {
@@ -182,18 +208,25 @@ func (s *Server) awardLootRoll(o *object, roll *lootRoll) {
 	if winner == nil || s.spawned[winner.ID] != winner || winner.group != roll.group {
 		return
 	}
-	if !s.receiveRolledLoot(winner, roll.item) {
-		return
-	}
-	t := s.data.Items[roll.item.item]
-	for _, p := range roll.participants {
-		if s.spawned[p.ID] != p || p.group != roll.group || p.conn == nil {
-			continue
+	if roll.distribution == distributionBid {
+		if !s.awardLootBid(roll) {
+			s.untrackLootRoll(o)
+			return
 		}
-		if p == winner {
-			p.conn.send(systemMessage(msgRollWonMe, descriptionID(t.NameID)))
-		} else {
-			p.conn.send(systemMessage(msgRollWonOther, winner.Name, descriptionID(t.NameID)))
+	} else {
+		if !s.receiveRolledLoot(winner, roll.item, nil) {
+			return
+		}
+		t := s.data.Items[roll.item.item]
+		for _, p := range roll.participants {
+			if s.spawned[p.ID] != p || p.group != roll.group || p.conn == nil {
+				continue
+			}
+			if p == winner {
+				p.conn.send(systemMessage(msgRollWonMe, descriptionID(t.NameID)))
+			} else {
+				p.conn.send(systemMessage(msgRollWonOther, winner.Name, descriptionID(t.NameID)))
+			}
 		}
 	}
 	loot := o.loot
@@ -259,12 +292,57 @@ func (s *Server) cancelLootRolls(o *object) {
 	o.loot = nil
 }
 
+// awardLootBid is DropService.winningBidActions: the winner pays its bid, shared among the other members who were asked,
+// when it receives the item. A winner who no longer has the kinah loses the item to everyone.
+func (s *Server) awardLootBid(roll *lootRoll) bool {
+	winner, bid := roll.winner, roll.best
+	if winner.kinah.Count < bid {
+		roll.item.roll = nil
+		roll.item.free = true
+		return false
+	}
+	// Java divides by the members asked less the winner, and pays those still here.
+	share := bid / int64(len(roll.participants)-1)
+	var others []*player
+	payments := []store.KinahChange{{Before: *winner.kinah, Count: winner.kinah.Count - bid}}
+	for _, p := range roll.participants {
+		if p == winner || s.spawned[p.ID] != p || p.group != roll.group || p.conn == nil {
+			continue
+		}
+		others = append(others, p)
+		if share > 0 {
+			payments = append(payments, store.KinahChange{Before: *p.kinah, Count: p.kinah.Count + share})
+		}
+	}
+	if !s.receiveRolledLoot(winner, roll.item, payments) {
+		return false
+	}
+	winner.kinah.Count -= bid
+	winner.conn.send(s.updateItemPacket(winner, winner.kinah))
+	total := strconv.FormatInt(bid, 10)
+	winner.conn.send(systemMessage(msgPayAccountMe, total))
+	for _, p := range others {
+		if share > 0 {
+			p.kinah.Count += share
+			p.conn.send(s.updateItemPacket(p, p.kinah))
+		}
+		p.conn.send(systemMessage(msgPayAccountOthr, winner.Name, total))
+		p.conn.send(systemMessage(msgPayDistribute, total, strconv.Itoa(len(roll.participants)-1), strconv.FormatInt(share, 10)))
+	}
+	return true
+}
+
 type lootReceiver interface {
 	ReceiveLoot(context.Context, int32, []store.LootStack, []store.Item) error
 }
 
-// receiveRolledLoot plans the whole drop before committing. A full inventory or failed write leaves the corpse's item reserved.
-func (s *Server) receiveRolledLoot(p *player, drop *dropItem) bool {
+type bidReceiver interface {
+	ReceiveBidLoot(context.Context, int32, []store.LootStack, []store.Item, []store.KinahChange) error
+}
+
+// receiveRolledLoot plans the whole drop before committing, with a winning bid's payments if any.
+// A full inventory or failed write leaves the corpse's item reserved.
+func (s *Server) receiveRolledLoot(p *player, drop *dropItem, payments []store.KinahChange) bool {
 	t := s.data.Items[drop.item]
 	if t == nil || drop.count < 1 || drop.count > math.MaxInt32 {
 		return false
@@ -297,11 +375,6 @@ func (s *Server) receiveRolledLoot(p *player, drop *dropItem) bool {
 		p.conn.send(systemMessage(msgInventoryFull))
 		return false
 	}
-	db, ok := s.items.(lootReceiver)
-	if !ok {
-		s.log.Error("group roll persistence unavailable")
-		return false
-	}
 	var inserts []store.Item
 	for remaining > 0 {
 		count := min(stack, remaining)
@@ -311,7 +384,13 @@ func (s *Server) receiveRolledLoot(p *player, drop *dropItem) bool {
 	// Connections do not yet expose a lifecycle context; bound the atomic receipt meanwhile.
 	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Second)
 	defer cancel()
-	if err := db.ReceiveLoot(ctx, p.ID, updates, inserts); err != nil {
+	err := errors.New("group loot persistence unavailable")
+	if db, ok := s.items.(bidReceiver); ok && payments != nil {
+		err = db.ReceiveBidLoot(ctx, p.ID, updates, inserts, payments)
+	} else if db, ok := s.items.(lootReceiver); ok && payments == nil {
+		err = db.ReceiveLoot(ctx, p.ID, updates, inserts)
+	}
+	if err != nil {
 		for _, item := range inserts {
 			s.ids.release(item.UniqueID)
 		}

@@ -129,7 +129,7 @@ func TestEnterWorldPacketsMatchJava(t *testing.T) {
 		"SM_STATUPDATE_MP":       statUpdate(smStatupdateMp, p.life.MP, p.stats.current(data.MaxMP)),
 		"SM_FRIEND_LIST":         friendList(),
 		"SM_BLOCK_LIST":          blockList(),
-		"SM_ABNORMAL_STATE":      abnormalState(),
+		"SM_ABNORMAL_STATE":      s.abnormalStatePacket(p),
 		"SM_STATUPDATE_HP":       statUpdate(smStatupdateHp, p.life.HP, p.stats.current(data.MaxHP)),
 		"SM_ENTER_WORLD_CHECK":   enterWorldCheck(),
 	} {

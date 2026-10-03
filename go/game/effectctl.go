@@ -1,6 +1,7 @@
 package game
 
 import (
+	"maps"
 	"math"
 	"slices"
 	"time"
@@ -60,6 +61,7 @@ type effectController struct {
 	// What the effects watch for.
 	attackedHooks map[*effect][]func(attacker creature)
 	attackHooks   map[*effect][]func(target creature)
+	skillHooks    map[*effect][]func(sk *skill) // ObserverType.SKILLUSE: the creature begins to use a skill
 	shields       []*effect
 	// always are the hits guaranteed by effects (AlwaysBlock, AlwaysDodge, AlwaysParry, AlwaysResist), each with how many are left.
 	always  []*alwaysHit
@@ -202,6 +204,23 @@ func (c *effectController) attacking(target creature) {
 	}
 }
 
+// usingSkill is ObserveController.notifySkilluseObservers.
+func (c *effectController) usingSkill(sk *skill) {
+	for _, hooks := range maps.Clone(c.skillHooks) {
+		for _, hook := range hooks {
+			hook(sk)
+		}
+	}
+}
+
+// onSkillUse adds a SKILLUSE observer of the effect, removed when it ends.
+func (c *effectController) onSkillUse(e *effect, hook func(sk *skill)) {
+	if c.skillHooks == nil {
+		c.skillHooks = map[*effect][]func(*skill){}
+	}
+	c.skillHooks[e] = append(c.skillHooks[e], hook)
+}
+
 // applyShields is ObserveController.checkShieldStatus: shields take their part of each hit.
 func (c *effectController) applyShields(list []attackResult) {
 	for _, shield := range slices.Clone(c.shields) {
@@ -244,6 +263,7 @@ type effect struct {
 	effected  creature
 	duration  int32
 	endTime   time.Time
+	item      *data.ItemTemplate // the item its skill was used from, if any
 
 	r1, r2, r3   int32
 	spellStatus  int32
@@ -476,6 +496,7 @@ func (e *effect) end() {
 	fx := e.effected.fxc()
 	delete(fx.attackedHooks, e)
 	delete(fx.attackHooks, e)
+	delete(fx.skillHooks, e)
 	fx.clear(e)
 }
 

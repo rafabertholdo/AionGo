@@ -32,6 +32,7 @@ type Data struct {
 	GoodsLists       map[int32][]int32       // the item ids of each goods list
 	Portals          map[int32]*Portal       // by npc template id
 	summonStats      map[summonKey]*SummonStats
+	PetSkills        map[[2]int32]int32        // the skill a summon uses for an order skill, by order skill and summon npc
 	PortalList       []*Portal                 // in the file's order
 	Teleporters      map[int32]*Teleporter     // by npc template id
 	TeleLocations    map[int32]*TeleLocation   // by location id
@@ -145,6 +146,20 @@ func Load(dir string) (*Data, error) {
 	}
 	if d.summonStats, err = loadSummonStats(dir); err != nil {
 		return nil, err
+	}
+	var pets struct {
+		Skills []struct {
+			Skill int32 `xml:"skill_id,attr"`
+			Pet   int32 `xml:"pet_id,attr"`
+			Order int32 `xml:"order_skill,attr"`
+		} `xml:"pet_skill"`
+	}
+	if err = loadXML(filepath.Join(dir, "pet_skills/pet_skills.xml"), &pets); err != nil {
+		return nil, err
+	}
+	d.PetSkills = map[[2]int32]int32{}
+	for _, k := range pets.Skills {
+		d.PetSkills[[2]int32{k.Order, k.Pet}] = k.Skill
 	}
 	if d.Portals, d.PortalList, err = loadPortals(dir); err != nil {
 		return nil, err

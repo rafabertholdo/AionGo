@@ -31,6 +31,7 @@ type player struct {
 
 	punish           punishment // gag and prison
 	visualState      byte
+	seeState         byte // CreatureSeeState bits: the hidden it sees through
 	friends          []*store.Character
 	group            *group
 	alliance         *alliance
@@ -71,6 +72,7 @@ type player struct {
 	itemCooldowns    map[int32]time.Time // when each use delay group of items is ready again
 	cast             *skill              // what it is casting
 	cooldowns        map[int32]time.Time // when each skill can be used again
+	savedEffects     []store.SavedEffect // player_effects rows, restored once it enters the world
 	moves            int32               // how many times it has set out to move
 	dp               int32               // divine power
 	lookingForGroup  bool                // session-only LFG toggle (CM_PLAYER_STATUS_INFO 9)
@@ -197,12 +199,15 @@ func (s *Server) loadPlayer(ch *character) (*player, error) {
 		}
 	}
 	p.life = *life
+	if p.savedEffects, err = s.store.Effects(id); err != nil {
+		return nil, err
+	}
 	return p, nil
 }
 
 // playerStats is a player's stats from its class template, worn items, passive
 // skills and title, added in the order PlayerService.getPlayer adds them.
-// Godstones are socketed item effects; their combat procs are not applied here.
+// Godstones add no stats: they proc in godstoneProcs.
 func (s *Server) playerStats(p *player) *gameStats {
 	g := newPlayerStats(s.data.PlayerStatsFor(p.Class, p.level), p.level)
 	passives := s.newPassives(p, g)

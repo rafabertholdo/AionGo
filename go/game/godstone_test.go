@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"maps"
 	"math"
 	"reflect"
 	"testing"
@@ -191,5 +192,42 @@ func TestGodstoneSocketRequiresAtomicPersistence(t *testing.T) {
 	godstoneRequest(p, o.id)
 	if p.kinah.Count != 250000 || p.cube[0].Godstone != 0 || p.cube[1].Count != 2 || len(packets.frames) != 0 {
 		t.Fatal("socket mutated without atomic persistence")
+	}
+}
+
+func TestGodstoneProcsUseTheirSkillOnTheTarget(t *testing.T) {
+	d := staticDataOrSkip(t)
+	dd := *d
+	dd.Items = maps.Clone(d.Items)
+	dd.Items[1] = &data.ItemTemplate{ID: 1, Godstone: &data.Godstone{SkillID: 8255, SkillLevel: 1, Probability: 1001}}
+	dd.Items[2] = &data.ItemTemplate{ID: 2, Godstone: &data.Godstone{SkillID: 8256, SkillLevel: 1}}
+	s := testServer(&dd)
+	p, _ := fighter(t, s, 1000)
+	s.spawn(p)
+	o := monster(t, s, 1002)
+	p.targetID = o.id
+	var used []int32
+	p.fx.onSkillUse(&effect{}, func(sk *skill) {
+		used = append(used, sk.tmpl.ID)
+		if sk.first != o || sk.level != 1 {
+			t.Errorf("godstone skill on %v at level %d", sk.first, sk.level)
+		}
+	})
+	weapon := p.equipment[0]
+	offHand := &store.Item{UniqueID: 0x1057c, ItemID: 100600034, Count: 1, Equipped: true, Slot: data.SlotMainOff, Godstone: 1}
+	p.equipment = append(p.equipment, offHand)
+	s.attacking(p, o)
+	if len(used) != 0 {
+		t.Fatalf("a godstone procced without a socketed weapon in hand: %v", used)
+	}
+	weapon.Godstone = 2 // probability 0
+	s.attacking(p, o)
+	if len(used) != 0 {
+		t.Fatal("a godstone of probability 0 procced")
+	}
+	weapon.Godstone = 1
+	s.attacking(p, o)
+	if !reflect.DeepEqual(used, []int32{8255}) {
+		t.Fatalf("godstone skills used %v, want [8255]", used)
 	}
 }

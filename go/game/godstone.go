@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"aionlightning/game/data"
 	"aionlightning/game/store"
 	"aionlightning/wire"
 )
@@ -86,4 +87,33 @@ func (c *conn) godstoneSocket(r *wire.Reader) {
 		c.send(s.updateItemPacket(p, stone))
 		c.send(s.updateItemPacket(p, weapon))
 	})
+}
+
+// attacking is ObserveController.notifyAttackObservers: the effects watching for the creature hitting something,
+// then the godstones of a player's worn weapons.
+func (s *Server) attacking(c, target creature) {
+	c.fxc().attacking(target)
+	if p, ok := c.(*player); ok {
+		s.godstoneProcs(p)
+	}
+}
+
+// godstoneProcs is GodStone's ATTACK observer: each godstone of a weapon in hand may use its skill on the player's target.
+func (s *Server) godstoneProcs(p *player) {
+	for _, item := range p.equipment {
+		if item.Godstone == 0 || item.Slot == data.SlotMainOff || item.Slot == data.SlotSubOff {
+			continue
+		}
+		t := s.data.Items[item.Godstone]
+		if t == nil || t.Godstone == nil {
+			continue
+		}
+		g := t.Godstone
+		if rnd(g.Probability-g.ProbabilityLeft, g.Probability) <= rnd(0, 1000) {
+			continue
+		}
+		if tmpl := s.data.Skills[g.SkillID]; tmpl != nil {
+			(&skill{s: s, tmpl: tmpl, effector: p, level: g.SkillLevel, first: s.creatureByID(p.targetID)}).use()
+		}
+	}
 }

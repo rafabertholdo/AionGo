@@ -438,7 +438,7 @@ func (s *Server) playerAttack(p *player, target creature) {
 	} else {
 		p.lastAttack = now
 	}
-	p.fx.attacking(target)
+	s.attacking(p, target)
 	results := s.physicalAttack(p, target)
 	var damage int32
 	for _, hit := range results {

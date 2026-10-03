@@ -172,3 +172,55 @@ func TestReceiveLootCommitsAndRollsBack(t *testing.T) {
 		})
 	}
 }
+
+func TestReceiveBidLootPaysAtomically(t *testing.T) {
+	s := lootTestStore(t)
+	for index, stale := range []bool{false, true} {
+		t.Run(map[bool]string{false: "success", true: "stale member kinah"}[stale], func(t *testing.T) {
+			base := int32(2000000800 + index*10)
+			winner, member := base+8, base+9
+			stack := Item{UniqueID: base, ItemID: 160000001, Owner: winner, Count: 1}
+			paid := Item{UniqueID: base + 1, ItemID: 182400001, Owner: winner, Count: 1000}
+			shared := Item{UniqueID: base + 2, ItemID: 182400001, Owner: member, Count: 1000}
+			for _, item := range []Item{stack, paid, shared} {
+				if err := s.InsertItem(&item); err != nil {
+					t.Fatal(err)
+				}
+				t.Cleanup(func() {
+					if err := s.DeleteItem(item.UniqueID); err != nil {
+						t.Error(err)
+					}
+				})
+			}
+			if stale {
+				if _, err := s.DB.Exec("UPDATE inventory SET itemCount = 999 WHERE itemUniqueId = ?", shared.UniqueID); err != nil {
+					t.Fatal(err)
+				}
+			}
+			err := s.ReceiveBidLoot(context.Background(), winner, []LootStack{{Before: stack, Count: 2}}, nil,
+				[]KinahChange{{Before: paid, Count: 500}, {Before: shared, Count: 1500}})
+			want := map[int32]int64{stack.UniqueID: 2, paid.UniqueID: 500, shared.UniqueID: 1500}
+			if stale {
+				if err == nil {
+					t.Fatal("accepted a payment to stale kinah")
+				}
+				want = map[int32]int64{stack.UniqueID: 1, paid.UniqueID: 1000, shared.UniqueID: 999}
+			} else if err != nil {
+				t.Fatal(err)
+			}
+			got := map[int32]int64{}
+			for _, owner := range []int32{winner, member} {
+				items, err := s.Items(owner, 0, false)
+				if err != nil {
+					t.Fatal(err)
+				}
+				for _, item := range items {
+					got[item.UniqueID] = item.Count
+				}
+			}
+			if !reflect.DeepEqual(got, want) {
+				t.Fatalf("reloaded %v, want %v", got, want)
+			}
+		})
+	}
+}

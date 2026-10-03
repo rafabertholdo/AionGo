@@ -440,6 +440,137 @@ func init() {
 	for kind, h := range more {
 		effectHandlers[kind] = h
 	}
+	for kind, h := range portedEffects() {
+		effectHandlers[kind] = h
+	}
+}
+
+// portedEffects are SearchEffect, ReturnPointEffect, MpUseOverTimeEffect, OneTimeBoostSkillAttackEffect,
+// MagicCounterAtkEffect and PetOrderUseUltraSkillEffect.
+func portedEffects() map[string]effectHandler {
+	seeState := func(t *effectTemplate) byte {
+		switch v := t.n.Int("value"); v {
+		case 1, 2: // SEARCH1, SEARCH2
+			return byte(v)
+		}
+		return 0
+	}
+	return map[string]effectHandler{
+		"search": {
+			apply: (*effect).applyAdd,
+			start: func(e *effect, t *effectTemplate) {
+				if p, ok := e.effected.(*player); ok {
+					p.seeState |= seeState(t)
+					p.broadcast(playerState(p), true)
+				}
+			},
+			end: func(e *effect, t *effectTemplate) {
+				if p, ok := e.effected.(*player); ok {
+					p.seeState &^= seeState(t)
+					p.broadcast(playerState(p), true)
+				}
+			},
+		},
+		"returnpoint": {
+			calculate: func(e *effect, t *effectTemplate) {
+				if e.item != nil {
+					e.addSuccess(t)
+				}
+			},
+			apply: func(e *effect, t *effectTemplate) {
+				p, ok := e.effector.(*player)
+				if !ok {
+					return
+				}
+				portal := e.s.data.NamedPortal(e.item.ReturnWorld, e.item.ReturnAlias)
+				if portal == nil {
+					e.s.log.Warn("no return portal", "item", e.item.ID, "world", e.item.ReturnWorld, "alias", e.item.ReturnAlias)
+					return
+				}
+				e.s.teleportTo(p, e.item.ReturnWorld, portal.Exit.X, portal.Exit.Y, portal.Exit.Z, byte(p.Heading), 500*time.Millisecond)
+			},
+		},
+		"mpuseovertime": {
+			calculate: func(e *effect, t *effectTemplate) {
+				if e.effected.mana() >= e.effected.gameStats().current(data.MaxMP)*t.n.Int("value")/100 {
+					e.addSuccess(t)
+				}
+			},
+			apply: func(e *effect, t *effectTemplate) {
+				required := e.effected.gameStats().current(data.MaxMP) * t.n.Int("value") / 100
+				interval := time.Duration(t.n.Int("checktime")) * time.Millisecond
+				if interval <= 0 {
+					return
+				}
+				e.periodic[t.position] = e.s.every(0, interval, func() {
+					if e.stopped {
+						return
+					}
+					if e.effected.mana() < required {
+						e.end()
+					}
+					e.s.reduceMP(e.effected, required)
+				})
+			},
+		},
+		"onetimeboostskillattack": {
+			apply: (*effect).applyAdd,
+			start: func(e *effect, t *effectTemplate) {
+				startBuff(e, t)
+				stop, count := t.n.Int("count"), int32(0)
+				e.effected.fxc().onSkillUse(e, func(sk *skill) {
+					if count < stop && sk.tmpl.Type == "PHYSICAL" {
+						count++
+					}
+					if count == stop {
+						e.end()
+					}
+				})
+			},
+			end: endBuff,
+		},
+		"magiccounteratk": {
+			calculate: func(e *effect, t *effectTemplate) {
+				if e.resisted(noResist) {
+					e.addSuccess(t)
+				}
+			},
+			apply: (*effect).applyAdd,
+			start: func(e *effect, t *effectTemplate) {
+				percent, maxDamage := t.n.Int("percent"), t.n.Int("maxdmg")
+				e.effected.fxc().onSkillUse(e, func(sk *skill) {
+					if sk.tmpl.Type != "MAGICAL" {
+						return
+					}
+					_, maxHP := e.effected.hitPoints()
+					if damage := maxHP / 100 * percent; damage <= maxDamage {
+						e.s.gotHit(e.effected, e.effector, e.tmpl.ID, statusDamage, damage)
+					} else {
+						e.s.gotHit(e.effected, e.effector, 0, statusRegular, maxDamage)
+					}
+				})
+			},
+		},
+		"petorderuseultraskill": {
+			calculate: func(e *effect, t *effectTemplate) {
+				if _, ok := e.effector.(*player); ok && e.effected != nil {
+					e.addSuccess(t)
+				}
+			},
+			apply: func(e *effect, t *effectTemplate) {
+				p := e.effector.(*player)
+				if p.summon == nil {
+					return
+				}
+				w := wire.Packet(smSummonUseskill)
+				w.D(p.summon.cid())
+				w.H(uint16(e.s.data.PetSkills[[2]int32{e.tmpl.ID, p.summon.npc.ID}]))
+				w.C(1)
+				w.D(e.effected.cid())
+				p.conn.send(w)
+			},
+		},
+	}
 }
 
 func filterAlways(list []*alwaysHit, e *effect) []*alwaysHit {

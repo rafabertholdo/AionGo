@@ -1,6 +1,7 @@
 package game
 
 import (
+	"context"
 	"math"
 	"math/rand/v2"
 	"slices"
@@ -52,6 +53,8 @@ func (c *conn) enterWorld(r *wire.Reader) {
 	c.player = p
 	c.state = inGame
 	s.visMu.Lock()
+	s.restoreEffects(p, p.savedEffects, time.Now())
+	p.savedEffects = nil
 	s.instanceLogin(p)
 	s.kiskLogin(p, false)
 	s.visMu.Unlock()
@@ -61,6 +64,9 @@ func (c *conn) enterWorld(r *wire.Reader) {
 
 	s.grantStarterSkills(p)
 	c.send(skillList(p))
+	if p.cooldowns != nil {
+		c.send(skillCooldowns(p.cooldowns, time.Now()))
+	}
 	c.send(questList(p))
 	c.send(recipeList(p))
 	c.send(enterWorldCheck())
@@ -151,7 +157,7 @@ func (c *conn) levelReady(*wire.Reader) {
 	// The 1.9 client takes current HP only once its level is loaded.
 	c.send(statUpdate(smStatupdateHp, p.life.HP, p.stats.current(data.MaxHP)))
 	c.send(statUpdate(smStatupdateMp, p.life.MP, p.stats.current(data.MaxMP)))
-	c.send(abnormalState())
+	c.send(s.abnormalStatePacket(p))
 	c.send(s.nearbyQuests(p))
 	if p.life.HP != p.stats.current(data.MaxHP) || p.life.MP != p.stats.current(data.MaxMP) {
 		s.triggerRestore(p)
@@ -433,6 +439,8 @@ func (c *conn) leaveWorld() {
 	s := c.s
 	s.visMu.Lock()
 	p.LastOnline = time.Now()
+	effects := savedEffects(p, p.LastOnline)
+	p.fx.stopEffects()
 	if p.summon != nil {
 		s.releaseSummon(p.summon, unsummonLogout)
 	}
@@ -471,6 +479,7 @@ func (c *conn) leaveWorld() {
 		s.store.SetOnline(p.ID, false),
 		s.saveSentence(p),
 		s.saveSettings(p),
+		s.store.SaveEffects(context.Background(), p.ID, effects),
 		s.saveGameTime(),
 	} {
 		if err != nil {

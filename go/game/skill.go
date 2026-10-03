@@ -191,6 +191,7 @@ func (sk *skill) use() {
 	}
 	s := sk.s
 	sk.mpChange = 0
+	sk.effector.fxc().usingSkill(sk)
 	sk.effector.setCasting(sk)
 	sk.moves = sk.effector.moveCount()
 	sk.duration = sk.tmpl.Duration
@@ -266,6 +267,7 @@ func (sk *skill) endCast() {
 	if len(sk.tmpl.Effects) > 0 {
 		for _, target := range sk.targets {
 			e := s.newEffect(sk.effector, target, sk.tmpl, sk.level, 0)
+			e.item = sk.item
 			e.initialize()
 			status = e.spellStatus
 			effects = append(effects, e)

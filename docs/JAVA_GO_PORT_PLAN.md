@@ -58,12 +58,12 @@ Each row is implemented in AL-Game 1.9. Go gaps and completed fixes are tracked 
 | Area | Java source | Go state | Notes |
 | --- | --- | --- | --- |
 | **LFG / find group (reported broken in client testing)** | `CM_PLAYER_STATUS_INFO` status 9 calls `Player.setLookingForGroup(playerObjId == 2)`; `CM_PLAYER_SEARCH` filters `lfgOnly` on `isLookingForGroup()`; `SM_PLAYER_SEARCH` writes status 2 for LFG players | `game/group.go:playerStatusInfo` handles status 9 with a session-only flag; `game/misc.go:playerSearch` filters on that flag and writes result status 2 | Implemented 2026-10-03. Packet tests cover toggle on/off, normal and LFG-only searches, offline exclusion and truncated toggles. Real-client confirmation remains pending |
-| Godstones | `CM_GODSTONE_SOCKET`, `ItemStoneListDAO` godstone rows, godstone procs | Socketing implemented in `game/godstone.go`: NPC range, unequipped weapon, godstone metadata, service fee and atomic persistence; inventory and appearance packets carry the socket | Combat procs remain missing. Client/capture confirmation remains pending |
-| Group loot roll/bid | `CM_GROUP_LOOT` -> `DropService.handleRoll/handleBid` | Mode 2 rolls implemented in `game/group_loot.go`: quality settings, eligible-member prompts, roll/pass messages, tie handling and atomic winner grants | Mode 3 bids remain unported. Roll capture/client confirmation remains pending |
+| Godstones | `CM_GODSTONE_SOCKET`, `ItemStoneListDAO` godstone rows, godstone procs | Socketing and procs implemented in `game/godstone.go`: NPC range, unequipped weapon, godstone metadata, service fee and atomic persistence; each player attack may use a worn weapon's godstone skill on the target | Implemented 2026-10-03. Client/capture confirmation remains pending |
+| Group loot roll/bid | `CM_GROUP_LOOT` -> `DropService.handleRoll/handleBid` | Modes 2 and 3 implemented in `game/group_loot.go`: quality settings, eligible-member prompts, roll/pass messages, tie handling, bids capped at the bidder's kinah, and atomic item grants with the winner's payment shared among the other members | Implemented 2026-10-03. Capture/client confirmation remains pending |
 | Map channels | `CM_CHANGE_CHANNEL` -> `TeleportService.changeChannel` | No handler | Needs channel isolation of npcs/players |
 | Custom settings | `CM_CUSTOM_SETTINGS` (display/deny flags, `SM_CUSTOM_SETTINGS` broadcast) | No handler; deny/display flags are loaded and used but not saved | Save kinds 2/3 with the logout save |
-| Saved effects | `PlayerEffectsDAO` | Active effects are not persisted | Lost on relog; check expiry and cooldowns |
-| Skill effects | `search` (10 XML uses), `returnpoint` (1), `mpuseovertime` (1), `onetimeboostskillattack` (6), `magiccounteratk` (6), `petorderuseultraskill` (25) | No Go handler | `skilllauncher` (27) is a stub in Java too: new functionality, not a port |
+| Saved effects | `PlayerEffectsDAO` | `game/savedeffects.go` and `store/effects.go`: icon effects and skill cooldowns with a minute or more left are saved at logout and restored at login, with SM_SKILL_COOLDOWN | Implemented 2026-10-03. Restores the time left exactly, where Java lengthens a restored effect on each relog. Item cooldowns (`ItemCooldownsDAO`) remain unsaved |
+| Skill effects | `search` (10 XML uses), `returnpoint` (1), `mpuseovertime` (1), `onetimeboostskillattack` (6), `magiccounteratk` (6), `petorderuseultraskill` (25) | Handlers in `game/skilleffects_more.go`, with SKILLUSE observers, the player see state and pet order skills | Implemented 2026-10-03. `skilllauncher` (27) is a stub in Java too: new functionality, not a port |
 | Legion emblems | `CM_LEGION_UPLOAD_EMBLEM`, `CM_LEGION_SEND_EMBLEM` | Upload requests ignored (`game/legion.go`) | |
 | Logout delay | `AionConnection.onDisconnect` delays logout 15 s outside an orderly shutdown | Immediate logout | Lifecycle/combat difference |
 
@@ -94,7 +94,7 @@ the table above.
 active rolls and uncollected winner reservations. Group settings now retain
 autodistribution and the seven quality rules. Java uses the per-quality rule
 to choose a roll; the global autodistribution field is retained for the UI.
-Mode-3 bid handling remains unported.
+Mode-3 bids are handled the same way, paid in the award's transaction.
 
 `go/game/legion.go` registers upload emblem/info requests as empty handlers and
 explicitly documents that uploaded emblem images are unported. Other legion
@@ -139,10 +139,8 @@ Java apply method is a TODO stub, so a working launcher is new functionality,
 not a port of implemented Java behavior. `buf` and `backdash` also lack Go
 literals but had no occurrences in the scanned skills XML.
 
-Saved active effects need a persistence audit: Java has PlayerEffectsDAO;
-no equivalent player-effects persistence was found in this initial Go scan.
-Check expiry, cooldowns, passive effects, summons, death and reconnect behavior
-as lifecycle concerns, not merely packet implementations.
+Saved active effects and skill cooldowns are now persisted as PlayerEffectsDAO
+does (2026-10-03). Item cooldowns remain unpersisted.
 
 ### World, items and social systems requiring deeper audit
 

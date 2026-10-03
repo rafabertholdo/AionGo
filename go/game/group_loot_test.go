@@ -18,10 +18,11 @@ import (
 
 type recordedRollItems struct {
 	noItems
-	calls   int
-	err     error
-	updates []store.LootStack
-	inserts []store.Item
+	calls    int
+	err      error
+	updates  []store.LootStack
+	inserts  []store.Item
+	payments []store.KinahChange
 }
 
 func (db *recordedRollItems) ReceiveLoot(ctx context.Context, owner int32, updates []store.LootStack, inserts []store.Item) error {
@@ -72,7 +73,7 @@ func (f *rollFixture) start() {
 	f.s.takeLoot(f.players[0], f.corpse.id, 1)
 }
 func (f *rollFixture) answer(player int, score int32) {
-	f.s.answerLootRoll(f.corpse, f.players[player], score)
+	f.s.answerLootRoll(f.corpse, f.players[player], int64(score))
 }
 func rollRequest(groupID, itemID, npcID int32, kind byte, choice int32) []byte {
 	w := wire.Packet(cmGroupLoot)
@@ -429,5 +430,90 @@ func TestGroupRollClosingByNonLooter(t *testing.T) {
 	f.answer(2, 30)
 	if len(f.players[1].cube) != 1 || f.corpse.loot != nil {
 		t.Fatal("roll did not complete after changing looter")
+	}
+}
+
+func (db *recordedRollItems) ReceiveBidLoot(ctx context.Context, owner int32, updates []store.LootStack, inserts []store.Item, payments []store.KinahChange) error {
+	db.payments = payments
+	return db.ReceiveLoot(ctx, owner, updates, inserts)
+}
+
+// newBidFixture is a roll fixture whose group bids for rare items, each member carrying 1000 kinah.
+func newBidFixture() *rollFixture {
+	f := newRollFixture()
+	f.g.qualityRules = &[7]int32{0, 3, 2, 2, 2, 2, 0}
+	for i, p := range f.players {
+		p.kinah = &store.Item{UniqueID: int32(700 + i), ItemID: data.Kinah, Count: 1000, Owner: p.ID}
+	}
+	return f
+}
+
+func bidRequest(groupID, itemID, npcID int32, kind byte, bid int64) []byte {
+	w := wire.Packet(cmGroupLoot)
+	w.D(groupID)
+	w.D(1)
+	w.D(1)
+	w.D(itemID)
+	w.C(0)
+	w.D(npcID)
+	w.C(kind)
+	w.D(0)
+	w.Q(bid)
+	return w.Data[1:]
+}
+
+func TestGroupBidWinnerPaysTheOthers(t *testing.T) {
+	f := newBidFixture()
+	f.start()
+	if got := f.packets[1].last(smGroupLoot); got == nil || got[22] != 3 {
+		t.Fatalf("bid prompt %x, want distribution 3", got)
+	}
+	bid := func(player int, kind byte, amount int64) {
+		f.players[player].conn.groupLoot(wire.NewReader(bidRequest(500, 100, 600, kind, amount)))
+	}
+	bid(0, 2, 1) // a roll answer to a bid is ignored
+	if !f.corpse.loot.active.pending[f.players[0]] {
+		t.Fatal("a roll answered a bid")
+	}
+	bid(0, 3, 500)
+	bid(1, 3, 2000) // more than it has: a pass
+	if f.db.calls != 0 || f.packets[0].last(smSystemMessage) != nil {
+		t.Fatal("a bid was told or awarded early")
+	}
+	bid(2, 3, 300)
+	winner, a, b := f.players[0], f.players[1], f.players[2]
+	if f.db.calls != 1 || len(winner.cube) != 1 || len(a.cube)+len(b.cube) != 0 || f.corpse.loot != nil {
+		t.Fatal("the highest bid did not get the item")
+	}
+	want := []store.KinahChange{{Before: store.Item{UniqueID: 700, ItemID: data.Kinah, Count: 1000, Owner: 10}, Count: 500},
+		{Before: store.Item{UniqueID: 701, ItemID: data.Kinah, Count: 1000, Owner: 11}, Count: 1250},
+		{Before: store.Item{UniqueID: 702, ItemID: data.Kinah, Count: 1000, Owner: 12}, Count: 1250}}
+	if !reflect.DeepEqual(f.db.payments, want) || winner.kinah.Count != 500 || a.kinah.Count != 1250 || b.kinah.Count != 1250 {
+		t.Fatalf("payments %+v", f.db.payments)
+	}
+	if !bytes.Equal(f.packets[0].last(smSystemMessage), systemMessage(msgPayAccountMe, "500").Data) ||
+		!bytes.Equal(f.packets[1].last(smSystemMessage), systemMessage(msgPayDistribute, "500", "2", "250").Data) {
+		t.Fatal("bid messages differ from Java")
+	}
+}
+
+func TestGroupBidPassesAndUnpaidWinner(t *testing.T) {
+	f := newBidFixture()
+	f.start()
+	for i := range f.players {
+		f.answer(i, 0)
+	}
+	if !f.item.free || f.db.calls != 0 || len(f.s.lootRolls) != 0 {
+		t.Fatal("all passes did not free the item")
+	}
+
+	f = newBidFixture()
+	f.start()
+	f.answer(0, 100)
+	f.answer(1, 100) // the first of a tie wins
+	f.players[0].kinah.Count = 99
+	f.answer(2, 0)
+	if !f.item.free || f.item.roll != nil || f.db.calls != 0 || len(f.players[0].cube) != 0 || len(f.s.lootRolls) != 0 {
+		t.Fatal("a winner who could no longer pay got the item")
 	}
 }

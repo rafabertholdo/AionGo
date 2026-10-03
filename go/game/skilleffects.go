@@ -434,7 +434,7 @@ func (s *Server) magicDamage(speller, target creature, base int32, element strin
 // applyDamage is DamageEffect.applyEffect: the target is hit.
 func applyDamage(e *effect, t *effectTemplate) {
 	e.s.gotHit(e.effected, e.effector, e.tmpl.ID, statusRegular, e.r1)
-	e.effector.fxc().attacking(e.effected)
+	e.s.attacking(e.effector, e.effected)
 }
 
 // ---- healing

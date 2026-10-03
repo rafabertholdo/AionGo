@@ -715,7 +715,7 @@ func playerState(p *player) *wire.Writer {
 	w := wire.Packet(smPlayerState)
 	w.D(p.ID)
 	w.C(p.visualState)
-	w.C(0) // see state
+	w.C(p.seeState)
 	w.Bool(p.visualState == visualBlinking)
 	return w
 }
@@ -724,13 +724,6 @@ func weather(code byte) *wire.Writer {
 	w := wire.Packet(smWeather)
 	w.H(uint16(code))
 	w.C(0)
-	return w
-}
-
-func abnormalState() *wire.Writer {
-	w := wire.Packet(smAbnormalState)
-	w.D(0)
-	w.H(0)
 	return w
 }
 

@@ -29,6 +29,8 @@ type ItemTemplate struct {
 	UseDelay      int32 // milliseconds
 	UseDelayID    int32
 	Dye           bool      // whether it can be dyed
+	ReturnWorld   int32     // return_world: the map a return scroll leads to
+	ReturnAlias   string    // return_alias: the named portal there whose exit it leads to
 	Restrict      [12]int32 // the level each class may use it from, or 0 if it can't
 	Actions       []*Node   // what using the item does: skilluse, skilllearn, dye, …
 	Stigma        *Stigma   // what a stigma stone teaches, or nil
@@ -122,6 +124,10 @@ func loadItems(path string) (map[int32]*ItemTemplate, error) {
 					current.UseDelayID = int32(atoi(a.Value))
 				case "dye":
 					current.Dye = a.Value == "true"
+				case "return_world":
+					current.ReturnWorld = int32(atoi(a.Value))
+				case "return_alias":
+					current.ReturnAlias = a.Value
 				}
 			}
 			items[current.ID] = current

@@ -417,3 +417,45 @@ nodes passed in the focused run above. `go vet ./...`, repository-wide gofmt
 and `git diff --check` passed. Existing LFG and godstone worktree changes were
 preserved and included in these checks. No server stack was restarted and no
 image was deployed or published.
+
+## Saved effects, skill effects, godstone procs and loot bids (2026-10-03)
+
+Saved effects: `store.Effects`/`SaveEffects` read and replace a player's
+`player_effects` rows in one transaction. At logout the icon effects with a
+minute or more left are saved with their skill's cooldown, then the other
+cooldowns with a minute or more left, as `PlayerEffectsDAO.storePlayerEffects`.
+The effects' timers stop with the discarded player instead of firing on it
+later. At login the cooldowns that are not over return (with
+`SM_SKILL_COOLDOWN` after the skill list) and the effects resume for the time
+left. `current_time` is stored as the template duration minus the time left,
+so restoring is exact; Java stores the time run and lengthens a restored
+effect on every relog. `CM_LEVEL_READY` sends the player's real
+`SM_ABNORMAL_STATE`, which is byte-identical to the old empty packet without
+effects. Item cooldowns (`ItemCooldownsDAO`) remain unsaved.
+
+Skill effects: `search` sets the player's see state, now written in
+`SM_PLAYER_STATE`; `returnpoint` teleports to the exit of the item's named
+return portal; `mpuseovertime` drains a share of max MP every checktime and
+ends when MP runs short; `onetimeboostskillattack` and `magiccounteratk` use a
+new SKILLUSE observer (`effectController.usingSkill`, notified from
+`skill.use` before casting, as `Skill.useSkill`); `petorderuseultraskill`
+sends `SM_SUMMON_USESKILL` with the summon's skill from `pet_skills.xml`.
+
+Godstone procs: every attack a player makes (auto-attack or a damage effect)
+gives each godstone on a weapon in hand Java's `Rnd(prob-left, prob) >
+Rnd(0, 1000)` chance to use its skill on the player's target. Weapons in the
+off set do not proc.
+
+Loot bids: mode-3 `CM_GROUP_LOOT` uses the roll flow. A bid more than the
+bidder's kinah passes, bids are not announced, and the first of the highest
+bids wins. `Store.ReceiveBidLoot` commits the item, the winner's payment and
+each other member's share (bid / (members asked - 1)) in one transaction,
+each kinah row guarded by its expected count. A winner who can no longer pay
+at award time leaves the item free to all.
+
+Validation: `go test -json ./...` passed **4,577 test nodes with zero failures
+and 15 optional database skips** (13 existing, plus the new effects and bid
+store tests). Those two and the other store transaction tests passed against a
+disposable MariaDB with the repository schema (7 store tests and their
+subtests, zero failures), which was removed afterward. `go vet ./...` and gofmt are clean. Client and
+capture confirmation of all four remain open. No image was built or deployed.

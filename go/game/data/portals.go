@@ -14,6 +14,7 @@ type Point struct {
 // Portal is a portal of portal_templates.xml: an npc that takes players to an instance or another place.
 type Portal struct {
 	NPC      int32   `xml:"npcid,attr"`
+	Name     string  `xml:"name,attr"`
 	Instance bool    `xml:"instance,attr"`
 	Group    bool    `xml:"group,attr"`
 	MinLevel int32   `xml:"minlevel,attr"`
@@ -42,6 +43,19 @@ func loadPortals(dir string) (map[int32]*Portal, []*Portal, error) {
 func (d *Data) InstancePortal(world int32, race string) *Portal {
 	for _, p := range d.PortalList {
 		if p.Instance && p.Exit.MapID == world && (p.Race == "" || p.Race == race || p.Race == "ALL") {
+			return p
+		}
+	}
+	return nil
+}
+
+// NamedPortal is PortalData.getTemplateByNameAndWorld: the portal of the name, if its exit is on the map.
+func (d *Data) NamedPortal(world int32, name string) *Portal {
+	for _, p := range d.PortalList {
+		if p.Name == name {
+			if p.Exit.MapID != world {
+				return nil
+			}
 			return p
 		}
 	}
