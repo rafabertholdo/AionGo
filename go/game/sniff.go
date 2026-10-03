@@ -111,32 +111,47 @@ func sniffConnection(client net.Conn, target string, log *slog.Logger) {
 	keyed := make(chan uint32, 1)
 	go func() {
 		defer client.Close()
+		defer close(keyed)
 		var fromServer *crypt.GameCipher
 		for {
 			payload, err := wire.ReadFrame(server)
 			if err != nil {
 				return
 			}
-			_, _ = client.Write(wire.Frame(payload))
 			plain := append([]byte(nil), payload...)
+			if len(plain) < 3 {
+				return
+			}
 			if fromServer == nil {
+				if len(plain) < 7 || crypt.DecodeServerOpcode(plain[0]) != smKey {
+					return
+				}
 				key := crypt.GameKeyReceived(int32(binary.LittleEndian.Uint32(plain[3:])))
 				fromServer = crypt.NewGameCipher(key)
 				keyed <- key
 			} else {
 				fromServer.Decrypt(plain)
 			}
+			if err := wire.WriteFrame(client, payload); err != nil {
+				return
+			}
 			op := crypt.DecodeServerOpcode(plain[0])
 			log.Info("server", "op", serverNames[op], "size", len(plain), "hex", hex.EncodeToString(plain[3:]))
 		}
 	}()
-	fromClient := crypt.NewGameCipher(<-keyed)
+	key, ok := <-keyed
+	if !ok {
+		return
+	}
+	fromClient := crypt.NewGameCipher(key)
 	for {
 		payload, err := wire.ReadFrame(client)
-		if err != nil {
+		if err != nil || len(payload) < 3 {
 			return
 		}
-		_, _ = server.Write(wire.Frame(payload))
+		if err := wire.WriteFrame(server, payload); err != nil {
+			return
+		}
 		plain := append([]byte(nil), payload...)
 		fromClient.Decrypt(plain)
 		log.Info("client", "op", clientNames[plain[0]], "size", len(plain), "hex", hex.EncodeToString(plain[3:]))

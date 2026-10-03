@@ -64,5 +64,6 @@ func (c *conn) questLevelUp() {
 	c.newSkillLevelUp(1205)
 	c.newSkillLevelUp(2132)
 	c.pearlOfProtectionLevelUp()
+	c.ordersFromTelemachusLevelUp()
 	c.levelUpStartQuests()
 }

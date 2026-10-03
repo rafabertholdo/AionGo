@@ -2,7 +2,6 @@ package login
 
 import (
 	"bytes"
-	"encoding/binary"
 	"maps"
 	"net"
 	"slices"
@@ -334,11 +333,16 @@ func (c *client) send(w *wire.Writer) {
 	c.writeMu.Lock()
 	defer c.writeMu.Unlock()
 	n := len(w.Data)
-	frame := make([]byte, 2+c.engine.EncryptedSize(n))
-	copy(frame[2:], w.Data)
-	size := c.engine.Encrypt(frame[2:], n)
-	binary.LittleEndian.PutUint16(frame, uint16(size+2))
-	_, _ = c.conn.Write(frame[:size+2])
+	if n > wire.MaxPayloadSize || c.engine.EncryptedSize(n) > wire.MaxPayloadSize {
+		c.close()
+		return
+	}
+	payload := make([]byte, c.engine.EncryptedSize(n))
+	copy(payload, w.Data)
+	size := c.engine.Encrypt(payload, n)
+	if err := wire.WriteFrame(c.conn, payload[:size]); err != nil {
+		c.close()
+	}
 }
 
 // fail sends SM_LOGIN_FAIL and closes the connection; it returns false to stop reading.

@@ -20,6 +20,7 @@ ENTRYPOINT ["/chatserver"]
 FROM scratch AS game
 COPY --from=build /out/gameserver /gameserver
 COPY java/AL-Game/data/static_data /data/static_data
+COPY java/AL-Game/data/packets /data/packets
 EXPOSE 7777
 ENTRYPOINT ["/gameserver"]
 

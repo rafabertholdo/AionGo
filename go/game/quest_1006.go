@@ -54,7 +54,7 @@ func (c *conn) ascensionDialog(o *object, script *data.QuestScript, dialogID int
 	if quest.Status != "START" {
 		return false
 	}
-	variable := questVar(quest.Vars, 0)
+	variable := quest.Vars
 	switch o.npc.ID {
 	case ascensionStartNPC:
 		switch dialogID {
@@ -75,7 +75,7 @@ func (c *conn) ascensionDialog(o *object, script *data.QuestScript, dialogID int
 				if !c.s.questRewardsFit(p, []data.QuestItem{{ID: ascensionJournalItem, Count: 1}}) {
 					return true
 				}
-				if c.customQuestProgress(ascensionQuestID, setQuestVar(quest.Vars, 0, 1), "") {
+				if c.customQuestProgress(ascensionQuestID, 1, "") {
 					c.s.addItem(p, ascensionJournalItem, 1)
 					c.send(dialogWindow(o.id, 10, 0))
 					return true
@@ -87,7 +87,9 @@ func (c *conn) ascensionDialog(o *object, script *data.QuestScript, dialogID int
 				if count > 0 {
 					c.s.removeItemsByID(p, ascensionTestimonyItem, count)
 				}
-				if c.customQuestProgress(ascensionQuestID, setQuestVar(quest.Vars, 0, 99), "") {
+				// Ascension uses the whole quest value for its special step 99.
+				// Packing it into a six-bit subvariable would truncate it to 35.
+				if c.customQuestProgress(ascensionQuestID, 99, "") {
 					c.send(dialogWindow(o.id, 0, 0))
 					instance := c.s.newInstance(ascensionInstanceMap)
 					instance.registered[p.ID] = true
@@ -134,14 +136,14 @@ func (c *conn) ascensionDialog(o *object, script *data.QuestScript, dialogID int
 			}
 			return false // Java returns false after the movie; the framework echoes page 1353.
 		}
-		if dialogID == 10001 && variable == 2 && c.customQuestProgress(ascensionQuestID, setQuestVar(quest.Vars, 0, 3), "") {
+		if dialogID == 10001 && variable == 2 && c.customQuestProgress(ascensionQuestID, 3, "") {
 			c.send(dialogWindow(o.id, 10, 0))
 			return true
 		}
 	case ascensionTransportNPC:
 		if dialogID == 25 && variable == 99 {
 			p.broadcast(c.s.playerEmotionTo(p, emoteStartFlyTele, 1001, 0, 0, 0, 0, 0), true)
-			if !c.customQuestProgress(ascensionQuestID, setQuestVar(quest.Vars, 0, 50), "") {
+			if !c.customQuestProgress(ascensionQuestID, 50, "") {
 				return true
 			}
 			world, instanceID := p.WorldID, p.instance
@@ -150,7 +152,7 @@ func (c *conn) ascensionDialog(o *object, script *data.QuestScript, dialogID int
 				if p.conn != c || !p.spawned || p.WorldID != world || p.instance != instanceID || current == nil || current.Status != "START" || questVar(current.Vars, 0) != 50 {
 					return
 				}
-				if c.customQuestProgress(ascensionQuestID, setQuestVar(current.Vars, 0, 51), "") {
+				if c.customQuestProgress(ascensionQuestID, 51, "") {
 					for _, position := range [][3]float32{{224.073, 239.1, 206.7}, {233.5, 241.04, 206.365}, {229.6, 265.7, 205.7}, {222.8, 262.5, 205.7}} {
 						c.spawnAscensionNPC(ascensionMinionNPC, world, instanceID, position[0], position[1], position[2], 0, true)
 					}
@@ -180,7 +182,7 @@ func (c *conn) ascensionItemUse(item *store.Item) bool {
 		p.broadcast(itemUsageAnimation(p.ID, item.UniqueID, item.ItemID, 0, 1, 0), true)
 		c.s.removeItemsByID(p, ascensionJournalItem, 1)
 		c.s.addItem(p, ascensionProofItem, 1)
-		c.customQuestProgress(ascensionQuestID, setQuestVar(current.Vars, 0, 2), "")
+		c.customQuestProgress(ascensionQuestID, 2, "")
 	})
 	return true
 }
@@ -193,12 +195,12 @@ func (c *conn) ascensionKill(dead *object) {
 	if quest == nil || quest.Status != "START" {
 		return
 	}
-	variable := questVar(quest.Vars, 0)
+	variable := quest.Vars
 	if variable >= 51 && variable <= 53 {
 		c.customQuestProgress(ascensionQuestID, quest.Vars+1, "")
 		return
 	}
-	if variable != 54 || !c.customQuestProgress(ascensionQuestID, setQuestVar(quest.Vars, 0, 4), "") {
+	if variable != 54 || !c.customQuestProgress(ascensionQuestID, 4, "") {
 		return
 	}
 	spawned := c.spawnAscensionNPC(ascensionBossNPC, ascensionInstanceMap, c.player.instance, 226.7, 251.5, 205.5, 0, false)
@@ -239,7 +241,7 @@ func (c *conn) ascensionMovieEnd(movieID uint16) bool {
 	if quest == nil || quest.Status != "START" || questVar(quest.Vars, 0) != 4 {
 		return false
 	}
-	if !c.customQuestProgress(ascensionQuestID, setQuestVar(quest.Vars, 0, 5), "") {
+	if !c.customQuestProgress(ascensionQuestID, 5, "") {
 		return false
 	}
 	c.spawnAscensionNPC(ascensionStartNPC, ascensionInstanceMap, c.player.instance, 220.6, 247.8, 206, 0, true)
@@ -254,11 +256,11 @@ func (c *conn) ascensionDeath() {
 	if quest == nil || quest.Status != "START" {
 		return
 	}
-	variable := questVar(quest.Vars, 0)
+	variable := quest.Vars
 	if variable != 4 && (variable < 50 || variable > 55) {
 		return
 	}
-	if c.customQuestProgress(ascensionQuestID, setQuestVar(quest.Vars, 0, 3), "") {
+	if c.customQuestProgress(ascensionQuestID, 3, "") {
 		nameID := int32(0)
 		if template := c.s.data.Quests[ascensionQuestID]; template != nil {
 			nameID = template.NameID
@@ -275,12 +277,12 @@ func (c *conn) ascensionEnterWorld() {
 	if quest == nil || quest.Status != "START" {
 		return
 	}
-	variable := questVar(quest.Vars, 0)
+	variable := quest.Vars
 	if variable != 4 && (variable < 50 || variable > 55) && variable != 99 {
 		return
 	}
 	if c.player.WorldID != ascensionInstanceMap {
-		if c.customQuestProgress(ascensionQuestID, setQuestVar(quest.Vars, 0, 3), "") {
+		if c.customQuestProgress(ascensionQuestID, 3, "") {
 			c.send(systemMessage(ascensionFailMessage, descriptionID(c.s.data.Quests[ascensionQuestID].NameID)))
 		}
 		return
@@ -301,6 +303,13 @@ func (c *conn) spawnAscensionNPC(npcID, worldID, instanceID int32, x, y, z float
 	template := c.s.data.Npcs[npcID]
 	if template == nil {
 		return nil
+	}
+	if weaken && npcID == ascensionMinionNPC && worldID == ascensionInstanceMap {
+		// Zero attack power reaches the combat formula's minimum of one damage.
+		// Use a private template so recalculating stats preserves the trial damage.
+		trialTemplate := *template
+		trialTemplate.Stats.Power = 0
+		template = &trialTemplate
 	}
 	o := &object{id: c.s.ids.nextID(), worldID: worldID, instance: instanceID,
 		x: x, y: y, z: z, heading: heading, homeX: x, homeY: y, homeZ: z, npc: template}

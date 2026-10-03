@@ -1,4 +1,4 @@
-# Quest-system port handoff (2026-09-29)
+# Quest-system port handoff (2026-10-01)
 
 For claim-safe handler work, use [QUEST_HANDLER_AGENT.md](QUEST_HANDLER_AGENT.md) and `scripts/quest-claim.py`; identical Java handlers may share one implementation after each ID is claimed.
 
@@ -51,9 +51,9 @@ be added together as a count of playable quests without mapping handler IDs.
   operation tree. Their event handler covers NPC dialogs, quest variables and
   statuses, item checks, and delayed object use. A catalog test completes all
   five paths, including the Ancient Cube's three-second object use.
-- **199 custom Java handlers are completed and tested.** Coverage includes the original campaign quests, 1006 `Ascension`, 1007 `A Ceremony in Sanctum`, 1031 `The Manduri's Secret`, 1032 `A Ruler's Duty`, 1033 `Sataloca's Heart`, 1034 `Disappearing Aether`, 1035 `Refreshing the Springs`, 1036 `Kaidan Prisoner`, 1037 `Secrets of the Temple`, 1038 `The Shadow's Command`, 1039 `Something in the Water`, 1040 `Scouting the Scouts`, 1041 `A Dangerous Artifact`, 1042 `Keeper of the Kaidan Key`, 1043 `Balaur Conspiracy`, 2006–2007, item-started and NPC chains, level-up dispatch quests, crafting and reward conversations, the Poeta quest 1111 `Insomnia Medicine` and 1114 `The Nymph's Gown`, Elyos Verteron quests 1011–1023, 1130, 1149, 1156–1158, the Elyos quests 1097 `Sword of Transcendence` and 3060 `The Red Journal`, and the four talk-chain quests 4939, 4942, 4943, and 19004, plus the Sanctum talk chains 3934-3936, 3938, 3939, 3965-3967 (game/quest_sanctum_chains.go), and second-porter's 3093, 3200 (shares 4200's chain), 3319, 3326, 3914, 3930-3933 (game/quest_sanctum_chains2.go; `talkChain.startVar` for a start dialog that bumps the variable). The two prologues (1000/2000) and quest 3913 stay on their existing shared handlers; they are tracked as covered, not duplicated as custom handlers. The shared catalog keeps unsupported handlers out of NPC offer markers. `scripts/quest-claim.py status` currently reports 202 registered, ten actively claimed, and 125 free numbered handlers. Registered drafts 1092, 1098, 1162, 1163, 1170, 1183, and 1192 still need focused tests before their claims can be marked done.
+- **215 custom Java handlers are completed and tested.** Coverage includes the original campaign quests, 1006 `Ascension`, 1007 `A Ceremony in Sanctum`, 1031 `The Manduri's Secret`, 1032 `A Ruler's Duty`, 1033 `Sataloca's Heart`, 1034 `Disappearing Aether`, 1035 `Refreshing the Springs`, 1036 `Kaidan Prisoner`, 1037 `Secrets of the Temple`, 1038 `The Shadow's Command`, 1039 `Something in the Water`, 1040 `Scouting the Scouts`, 1041 `A Dangerous Artifact`, 1042 `Keeper of the Kaidan Key`, 1043 `Balaur Conspiracy`, 2006–2007, item-started and NPC chains, level-up dispatch quests, crafting and reward conversations, the Poeta quest 1111 `Insomnia Medicine` and 1114 `The Nymph's Gown`, Elyos Verteron quests 1011–1023, 1130, 1149, 1156–1158, the Elyos quests 1097 `Sword of Transcendence` and 3060 `The Red Journal`, and Asmodian starter/campaign quests 2011–2018, 2123, 2136, 2200, and 2300. New ports also include 1197 `Krall Book`, 1220 `A Secret Delivery`, and 1300 `Orders from Telemachus`. Coverage includes the four talk-chain quests 4939, 4942, 4943, and 19004, plus the Sanctum talk chains 3934-3936, 3938, 3939, 3965-3967 (`game/quest_sanctum_chains.go`), and second-porter's 3093, 3200 (shares 4200's chain), 3319, 3326, 3914, 3930-3933 (`game/quest_sanctum_chains2.go`; `talkChain.startVar` for a start dialog that bumps the variable). The two prologues (1000/2000) and quest 3913 stay on their existing shared handlers; they are tracked as covered, not duplicated as custom handlers. The shared catalog keeps unsupported handlers out of NPC offer markers. `scripts/quest-claim.py status` reports 218 registered, zero actively claimed, and 109 free unported handlers. Ten registered drafts (1092, 1098, 1139, 1141, 1146, 1162, 1163, 1170, 1183, and 1192) remain pending focused tests; because they are already registered, the claim tool excludes them from its free unported count.
 - Multi-handler family coverage includes 17 delayed item starts, 34 three-NPC conversations, 13 simple three-NPC chains, five two-report chains, five item-started two-report chains, eight level-up dispatch quests, three NPC conversations after item start, and six additional quest chains (4200, 4934–4938). The separate talk-chain group contains 4939, 4942, 4943, and 19004. Each family has catalog or behavior tests for its state transitions, rewards, and invalid or repeated events.
-- `game/quest_catalog_test.go` runs each generic XML quest through synthetic start, progress, and completion. `game/data/data_test.go` verifies catalog counts and NPC indexes. Focused tests cover packets, eligibility, multi-counter hunts, drops, choices, titles, AP, cube size, quest families, and special level-up/item flows. `game/quest_workorder_test.go` covers all 492 work orders, and `game/quest_xml_test.go` covers the five specialized XML quests. The latest completed full run, before quests 1075, 1076, and 1091 were integrated, reported 199 passing test nodes, four failures, and four skips. The failures remain in other active claims: Forest Outlaw (1139, two tests), Belbua’s Treasure (1141), and Delicate Mandrake (1146); the skips are optional database tests. Focused tests for A Dangerous Artifact and quests 1051–1059, 1062, and 1071–1076, plus 1091, passed. A new full run after 1075, 1076, and 1091 could not start because Apple `container run` returned `Operation not permitted`; `go vet ./...` passed before those additions. Current formatting and focused-test runs for the registered drafts 1092, 1098, 1162, 1163, 1170, 1183, and 1192 are also blocked because `scripts/run-go.sh` returns `Operation not permitted` before Go starts. The conformance test still reports three prior click-page violations in quests 1031, 1032, and 1034; quest 1057 also has a Java-backed click-page exception at `_1057CreatingAMonster.java:98-99`, alongside 1042's exception at `_1042KeeperoftheKaidanKey.java:90-91`. Reward dialog 17 follows Java's `QuestService.questFinish`: it completes with fixed rewards but no selectable item. The manastone socket test now checks the weapon's hand-specific stat and passed ten consecutive focused runs.
+- `game/quest_catalog_test.go` runs each generic XML quest through synthetic start, progress, and completion. `game/data/data_test.go` verifies catalog counts and NPC indexes. Focused tests cover packets, eligibility, multi-counter hunts, drops, choices, titles, AP, cube size, quest families, and special level-up/item flows. `game/quest_workorder_test.go` covers all 492 work orders, and `game/quest_xml_test.go` covers the five specialized XML quests. The latest repository-wide run (`go/scripts/run-go.sh go test -json ./...`) passed 2,125 test nodes, skipped seven optional database tests, and had zero failures; `go/scripts/run-go.sh go vet ./...` passed. The focused Asmodian Altgard run covered quests 2011–2018, their startup progression, and `TestQuestConformance`, alongside prior coverage for 2123, 2136, 2200, and 2300. Known click-page findings remain in quests 1031, 1032, and 1034; quests 1057, 1042, 1197, 2123, 2016, and 2017 have source-backed Java exceptions. Quest 2018's object-use handler returns control to Java's action-item controller, so it intentionally emits no Go echo. Reward dialog 17 follows Java's `QuestService.questFinish`: it completes with fixed rewards but no selectable item. The manastone socket test now checks the weapon's hand-specific stat and passed ten consecutive focused runs.
 - Quest 1114 `The Nymph's Gown` is registered as an item-started custom quest. Its diary acceptance, Namus and Asteros dialogs, Seirenia's timed clothes interaction, dress cleanup, and both reward records have focused automated coverage.
 - Elyos Verteron quests 1011–1023 cover NPC and level-up starts, dialogs, collection, scripted attacks, item use, zone transitions, timed summons and escorts, death recovery, an instanced gate sequence, kill progress, and reward choices. Quests 1130 and 1156–1158 add Citadel entry, the village seal search, and the linked Gaphyrk attack/movie sequence with selectable rewards. Poeta quest 1001 now advances after the opening movie ends; quest 1097 ports the prerequisite-gated level-50 talk chain; quest 1149 adds Poppy's escort and rescue flow.
 - Quest 1006 `Ascension` ports the journal and testimony item stages, timed trial spawns, minion and boss progression, the boss movie, class choice, death and world recovery, and the Elyos return teleport. Quest metadata now retains `nameId` so its failure message uses the correct localized client string.
@@ -86,7 +86,18 @@ be added together as a count of playable quests without mapping handler IDs.
 - Quest 1075 `New Wings` handles the flight, spawns both no-respawn Balaur at Java's instance coordinates, and preserves the final variable-three dialog fallthrough for its fixed reward.
 - Quest 1076 `Fragment of Memory II` ports its NPC conversations, consumes the collection, uses the follow-up quest item and movie, removes all item copies at the report stage, and awards its fixed experience, kinah, and Abyss Points.
 - Quest 1091 `A Request from Atropos` starts on entering Q1091, completes the report at Atropos, and locks follow-up quests 1092–1094.
-- The local game image and stack were last rebuilt on 2026-09-29 with Elyos quests 1011–1023, 1097, 1130, 1149, and 1156–1158. They are ready for direct client testing; only the first Elyos quest has prior direct client confirmation.
+- Quest 1194 `Reducing Tursin Strength` starts after quest 1193, initializes progress on entering Tursin Garrison, counts ten kills across two Krall types, and offers either selectable weapon reward.
+- Quest 1197 `Krall Book` gives one book from the item NPC, starts after its three-second use animation, and consumes the book copies at Pernos before its fixed reward.
+- Quest 1220 `A Secret Delivery` starts after quest 1219, advances through its report NPCs, and preserves Java’s middle-NPC switch fall-through before the fixed reward.
+- Quest 1300 `Orders from Telemachus` starts on entering Eltnen Fortress or unlocks an existing locked state at level 19; its report locks quests 1031–1043, after which eligible level-up quests activate.
+- Quest 2123 `The Imprisoned Gourmet` starts at Munin, preserves the three proof-item branches and Java's mismatched first-branch removal ID, handles the auxiliary NPC's three-second emotion/update, and finishes with Java's fixed reward.
+- Quest 2136 `The Lost Axe` starts from item 182203130, runs the grave's three-second interaction and movie 59, spawns report NPC 790009 at Java's coordinates, removes all work-item copies at turn-in, and supports both Java report pages.
+- Quest 2200 `Altgard Duties` starts on entering Altgard Fortress, advances at Vandarnt, and locks follow-up quests 2011–2022 on reward dialog 17.
+- Quests 2011–2014 start the Altgard campaign: Fungus Among Us, Encroachers, Dangerous Crop, and Scout It Out. Coverage checks their level-up/prerequisite order, dialogues, kill counters, zone/object interactions, collections, and the 2013 crop-item removal before completion.
+- Quests 2015–2018 continue that chain: Take the Initiative starts after 2014 and tracks three cap counters with a selectable reward; Fear This gates five kills behind its dialogue, collects three items, and accepts item 182203019 only while active; Observatory checks its level-12/prerequisite gate and collection; Impetusium starts at level 13 and covers its quest drop, delayed grave interaction, no-respawn boss spawn, and final collection. Generic cleanup of Java-declared work items on abandonment remains a cross-system gap.
+- Quest 2300 `Morheim Commander's Call` starts on entering Morheim Ice Fortress or unlocks its existing LOCKED state at level 19, advances at Hegesias, and locks quests 2031–2042 at turn-in.
+- A separate local-only image, `aiongo-game-quests1197-1220-1300:local`, was built on 2026-10-01 from this workspace. The running `al19-*` stack remains on its existing Go image, so quests 1197, 1220, and 1300 still need direct client confirmation. The first Elyos quest remains the only direct client-confirmed quest.
+- The local-only image `docker.io/rafabertholdo/aiongo:1.9-game-go-local-ac3102019e50` was rebuilt on 2026-10-01 from the Asmodian Altgard 2011–2018 batch. Its `org.opencontainers.image.revision` label is `ac3102019e50cd55461a10941db321c4377448310a59a8bbf1ac9bc1943e4a64`; it was not published, and the running stack was not restarted. Quests 2011–2018 and the previously ported Asmodian quests have automated coverage but still need direct client confirmation.
 - Start conditions: race when specified, level, permitted class and gender,
   completed prerequisites, and repeat count. Rewards: fixed and selected
   items, experience, kinah, titles, Abyss Points, and cube expansion. The
@@ -98,20 +109,34 @@ be added together as a count of playable quests without mapping handler IDs.
   verifies catalog counts and NPC indexes. Focused tests cover packets,
   eligibility, multi-counter hunts, drops, choices, titles, AP, and cube size.
   `game/quest_workorder_test.go` covers all 492 work orders, and
-  `game/quest_xml_test.go` covers the five specialized XML quests. The last
-  complete run passed 1,982 tests with zero failures and five optional database
-  tests skipped (`AION_TEST_DB` unset); `go vet ./...` passed.
-- The game image was rebuilt with all 161 registered custom handlers and the local
-  `al19-*` stack restarted on 2026-09-29. `al19-game-go` registered with login
-  and chat. The restart
-  script closes an existing Aion client; launch through ReRun again to play.
+  `game/quest_xml_test.go` covers the five specialized XML quests. The latest
+  complete run passed 2,125 test nodes with zero failures and seven optional
+  database tests skipped (`AION_TEST_DB` unset); `go vet ./...` passed.
+- The running `al19-*` stack was last restarted on 2026-09-29 with the game image
+  containing 161 registered custom handlers. `al19-game-go` registered with
+  login and chat. It remains on that image; neither local quest image was deployed.
+  The restart script closes an existing Aion client; launch through ReRun again
+  after a deliberate stack restart.
   The user confirmed Elpas's first quest in the 1.9 client before the catalog
   expansion. The other quests have automated coverage, not individual client
   confirmation.
 
 ## Remaining work
 
-1. **Custom Java handlers (ten actively claimed and 125 free, according to the current claim-tool status).**
+### Batch cadence
+
+To improve throughput, claim a bounded group of related handlers and integrate
+them as one batch. For each quest, record the Java event/branch table and add a
+focused test while the behavior is in view. Reuse family helpers and catalog
+fixtures; avoid repeating source-reading and environment setup for each quest.
+Format once after integration, then run one combined focused-test and
+conformance pass, one repository-wide test suite, one vet pass, and one local
+game image build for the batch. Serialize Go commands because the shared cache
+volumes can attach to only one container at a time. If full checks uncover a
+code fix, rerun the suite and vet before handoff. The contributor and
+integrator steps are in [QUEST_HANDLER_AGENT.md](QUEST_HANDLER_AGENT.md).
+
+1. **Custom Java handlers (zero actively claimed and 109 free unported handlers, according to the current claim-tool status).**
    Use `python3 scripts/quest-claim.py status` to see current work, then atomically claim IDs with `python3 scripts/quest-claim.py next <agent-name> <count>` before porting. Java handlers use NPC talk, kills, item use, movies, zones, timers, groups, and other events; XML templates cannot stand in for them. Keep unsupported quests out of nearby offer markers until every required event is wired and tested. After registration and passing tests, mark each claimed ID done with `python3 scripts/quest-claim.py done <id>`; release abandoned IDs with `release <id>`.
 
    The Java source scan counts 330 handler classes across 14 zone folders; the claim script indexes numbered filenames. `quest-claim.py status` is the source for current registered, claimed, and free counts.
@@ -121,7 +146,7 @@ be added together as a count of playable quests without mapping handler IDs.
    `onDieEvent`, five `onAttackEvent`, two `onQuestFinishEvent`, and one
    `onQuestTimerEndEvent`. Many classes implement several events. Inventory
    each handler's quest ID and required operations before registering markers.
-   Zone entry, LOCKED transitions, quest item use, object interactions, level-up starts, and shared multi-NPC conversations have verified implementations. Continue by claiming the next unported IDs from the claim tool; do not reassign active claims.
+   Zone entry, LOCKED transitions, quest item use, object interactions, level-up starts, and shared multi-NPC conversations have verified implementations. The Asmodian Altgard 2011–2018 campaign batch is complete. Continue with the next coherent startup/campaign family from the claim tool; do not reassign active claims.
 2. **Cross-system parity.** Add group/party kill credit, generic quest work-item cleanup
    on finish and abandon, special reward cases, and
    transactional or idempotent handling for item/experience/kinah rewards.

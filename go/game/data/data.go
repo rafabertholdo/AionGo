@@ -54,6 +54,7 @@ type Data struct {
 	Tribes      Tribes
 	Walkers     map[int32]Route
 	Spawns      map[int32][]*SpawnGroup // by map id, in file order
+	SpawnsByNPC map[int32][]*SpawnGroup // by template id, in file order across maps
 
 	playerStats map[classLevel]*PlayerStats
 }
@@ -85,6 +86,9 @@ func Load(dir string) (*Data, error) {
 		return nil, err
 	}
 	d.SkillTree = append(crafts.Skills, tree.Skills...)
+	for i := range d.SkillTree {
+		d.SkillTree[i].Class = skillTreeClass(d.SkillTree[i].Class)
+	}
 	if d.playerStats, err = loadPlayerStats(filepath.Join(dir, "stats/player")); err != nil {
 		return nil, err
 	}
@@ -300,6 +304,27 @@ type SkillLearn struct {
 	Race       string `xml:"race,attr"`
 	Autolearn  bool   `xml:"autolearn,attr"`
 	Stigma     bool   `xml:"stigma,attr"`
+}
+
+// skillTreeClass matches Java's SkillClass and PlayerClass by enum position.
+// The XML retains legacy names, including the reversed Priest/Cleric names.
+func skillTreeClass(class string) string {
+	switch class {
+	case "FIGHTER":
+		return "GLADIATOR"
+	case "KNIGHT":
+		return "TEMPLAR"
+	case "WIZARD":
+		return "SORCERER"
+	case "ELEMENTALLIST":
+		return "SPIRIT_MASTER"
+	case "CLERIC":
+		return "PRIEST"
+	case "PRIEST":
+		return "CLERIC"
+	default:
+		return class
+	}
 }
 
 // SkillsAt is what a class of race learns on reaching level: race-specific, class-wide and general entries.

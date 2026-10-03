@@ -116,6 +116,16 @@ func (s *Server) handle(nc net.Conn) {
 // send writes a packet: its opcode (encoded, with the server code and its
 // complement) and payload encrypted, after a 2-byte size.
 func (c *conn) send(w *wire.Writer) {
+	if w == nil || len(w.Data) == 0 {
+		return
+	}
+	// The game header adds two bytes to the packet builder's opcode and fields.
+	if len(w.Data) > wire.MaxPayloadSize-2 {
+		c.writeMu.Lock()
+		defer c.writeMu.Unlock()
+		c.failWrite(wire.ErrFrameTooLarge)
+		return
+	}
 	switch w.Data[0] {
 	case smStatupdateHp, smStatupdateMp, smStatupdateDp, smAttackStatus, smTimeCheck, smMove, smNpcInfo, smEmotion, smLookatobject, smPong, smPlayMovie:
 	default:
@@ -135,8 +145,28 @@ func (c *conn) send(w *wire.Writer) {
 		return
 	}
 	c.crypt.encrypt(payload)
-	_ = c.netConn.SetWriteDeadline(time.Now().Add(10 * time.Second))
-	_, _ = c.netConn.Write(wire.Frame(payload))
+	if err := c.netConn.SetWriteDeadline(time.Now().Add(10 * time.Second)); err != nil {
+		c.failWrite(err)
+		return
+	}
+	if err := wire.WriteFrame(c.netConn, payload); err != nil {
+		c.failWrite(err)
+	}
+}
+
+// failWrite closes a stream that cannot continue with its current cipher state.
+// The caller holds writeMu; the reader's deferred cleanup saves player state.
+func (c *conn) failWrite(err error) {
+	if c.closed {
+		return
+	}
+	c.closed = true
+	if c.netConn != nil {
+		_ = c.netConn.Close()
+	}
+	if c.s != nil && c.s.log != nil {
+		c.s.log.Warn("game client write failed", "ip", c.ip, "err", err)
+	}
 }
 
 // close sends a last packet, if any, and closes the connection.
@@ -147,7 +177,9 @@ func (c *conn) close(last *wire.Writer) {
 	c.writeMu.Lock()
 	c.closed = true
 	c.writeMu.Unlock()
-	_ = c.netConn.Close()
+	if c.netConn != nil {
+		_ = c.netConn.Close()
+	}
 }
 
 func (c *conn) disconnected() {

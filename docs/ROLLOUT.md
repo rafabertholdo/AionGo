@@ -58,3 +58,19 @@ before Java comparisons on an older volume. Preserve both `al19-db-data` and
 For the next release, increment `image-manifest.json`, commit the runtime source,
 build and validate, capture a new digest record, then publish new version/source
 tags. Update ReRun's pinned release references in the same rollout.
+
+
+## Command release 0.1.1
+
+Release `0.1.1` builds from runtime commit
+`db9095a618ccda5205449a77b0c99f59c24b225e` on
+[`release/commands-v0.1.1`](https://github.com/rafabertholdo/AionGo/tree/release/commands-v0.1.1).
+The nine ARM64 image pairs are recorded in [releases/v0.1.1.json](../releases/v0.1.1.json).
+The release implements the client `/ping` response, all 61 Java administrator
+command names, and a role-aware `/help` page in the account website. See
+[the command notes](COMMANDS.md) and [validation](../releases/validation-v0.1.1.json).
+
+ReRun's source pins are updated to `0.1.1`. The São Paulo VPS updates its game
+and panel roles to `0.1.1` and keeps the unchanged login, chat and MariaDB roles
+at `0.1.0`. Its databases are backed up before replacement, and its existing
+volume is preserved. No credentials are embedded in these images or records.

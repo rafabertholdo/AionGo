@@ -114,3 +114,115 @@ func TestAscensionTrialKillBossAndRecovery(t *testing.T) {
 		t.Fatalf("death did not recover the player to step 3: %+v", q)
 	}
 }
+
+// The website's preset stops before the trial; Pernos creates the instance.
+func TestAscensionPanelPresetEntersTrial(t *testing.T) {
+	d := staticDataOrSkip(t)
+	for _, class := range []string{"WARRIOR", "SCOUT", "MAGE", "PRIEST"} {
+		t.Run(class, func(t *testing.T) {
+			s := testServer(d)
+			t.Cleanup(func() {
+				s.visMu.Lock()
+				defer s.visMu.Unlock()
+				for _, instance := range s.instances {
+					instance.check.cancel()
+				}
+			})
+			saver := &recordedQuests{}
+			s.quests = saver
+			p := wrathchild(s)
+			p.Race, p.Class, p.level, p.Exp = "ELYOS", class, 9, 140329
+			p.WorldID, p.instance = 210010000, 1
+			p.X, p.Y, p.Z = 242, 1638, 100
+			p.quests = []store.Quest{{ID: ascensionQuestID, Status: "START", Vars: 3}}
+			p.seen = map[int32]*object{}
+			p.cube = []*store.Item{}
+			p.spawned = true
+			packets := &questPackets{}
+			c := &conn{s: s, player: p, tap: packets.tap}
+			p.conn = c
+			s.spawned[p.ID] = p
+			npc := questCatalogNPC(s, p, ascensionStartNPC, 0x31006)
+			npc.npc = d.Npcs[ascensionStartNPC]
+			s.initNpc(npc)
+			c.ascensionEnterWorld()
+			c.dialogSelect(dialogRequest(cmDialogSelect, npc.id, 25, ascensionQuestID))
+			if got := packets.last(smDialogWindow); !bytes.Equal(got, dialogWindow(npc.id, 1693, ascensionQuestID).Data) {
+				t.Fatalf("trial entry dialog = %x", got)
+			}
+			c.dialogSelect(dialogRequest(cmDialogSelect, npc.id, 10002, ascensionQuestID))
+			if p.WorldID != ascensionInstanceMap || p.X != 52 || p.Y != 174 || p.Z != 229 {
+				t.Fatalf("trial entry: world=%d instance=%d position=%f,%f,%f", p.WorldID, p.instance, p.X, p.Y, p.Z)
+			}
+			if p.Class != class || p.quest(ascensionQuestID).Status != "START" || p.quest(ascensionQuestID).Vars != 99 {
+				t.Fatalf("trial state: class=%s quest=%+v", p.Class, p.quest(ascensionQuestID))
+			}
+			instance := s.instances[[2]int32{p.WorldID, p.instance}]
+			if instance == nil || !instance.registered[p.ID] {
+				t.Fatal("character not registered in its trial instance")
+			}
+			if packets.last(smPlayerSpawn) == nil {
+				t.Fatal("missing instance map-load packet")
+			}
+			c.ascensionEnterWorld()
+			if p.quest(ascensionQuestID).Vars != 99 || packets.last(smAscensionMorph) == nil {
+				t.Fatal("trial entry state did not survive the instance map load")
+			}
+			transport := questCatalogNPC(s, p, ascensionTransportNPC, 0x31007)
+			s.initNpc(transport)
+			if !c.ascensionDialog(transport, d.QuestScripts[ascensionQuestID], 25) || p.quest(ascensionQuestID).Vars != 50 {
+				t.Fatalf("trial transport did not start: %+v", p.quest(ascensionQuestID))
+			}
+		})
+	}
+}
+
+func TestAscensionFourMinionsDealOneDamage(t *testing.T) {
+	d := staticDataOrSkip(t)
+	template := d.Npcs[ascensionMinionNPC]
+	if template == nil {
+		t.Fatal("missing trial minion template")
+	}
+	originalPower := template.Stats.Power
+	for _, class := range []string{"WARRIOR", "SCOUT", "MAGE", "PRIEST"} {
+		t.Run(class, func(t *testing.T) {
+			s := testServer(d)
+			p := wrathchild(s)
+			p.Class, p.Race, p.level = class, "ELYOS", 9
+			p.WorldID, p.instance = ascensionInstanceMap, 77
+			p.stats = s.playerStats(p)
+			p.stats.set(data.Evasion, 0, false)
+			p.stats.set(data.Parry, 0, false)
+			p.stats.set(data.Block, 0, false)
+			p.equipment = []*store.Item{}
+			packets := &questPackets{}
+			c := &conn{s: s, player: p, tap: packets.tap}
+			p.conn = c
+			for minionIndex := range 4 {
+				minion := c.spawnAscensionNPC(ascensionMinionNPC, ascensionInstanceMap, p.instance, 224, 239, 206, 0, true)
+				if minion == nil {
+					t.Fatal("failed to spawn trial minion")
+				}
+				minion.stats.recompute(false)
+				for range 50 {
+					if damage := s.physicalDamage(minion, p, 0); damage != 1 {
+						t.Fatalf("minion %d damage = %d", minionIndex, damage)
+					}
+					results := s.physicalAttack(minion, p)
+					// Dodges and parries can prevent the single point of damage.
+					if len(results) != 1 || results[0].damage < 0 || results[0].damage > 1 || results[0].status == statusNormalHit && results[0].damage != 1 {
+						t.Fatalf("minion %d attacks: %+v", minionIndex, results)
+					}
+				}
+			}
+			if template.Stats.Power != originalPower {
+				t.Fatal("trial changed the shared NPC template")
+			}
+			normal := &object{npc: template}
+			s.initNpc(normal)
+			if normal.stats.current(data.MainHandPower) != originalPower {
+				t.Fatal("normal NPC attack power changed")
+			}
+		})
+	}
+}

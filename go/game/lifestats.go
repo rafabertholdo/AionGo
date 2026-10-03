@@ -52,7 +52,7 @@ func (s *Server) startWorldTasks() {
 
 // playerHit is PlayerController.onAttack: the player takes the damage.
 func (s *Server) playerHit(p *player, attacker creature, skillID int32, kind byte, damage int32) {
-	if p.dead {
+	if p.dead || p.adminInvulnerable {
 		return
 	}
 	// Damage is cut to what kills, so that the aggro list doesn't count a hit's excess.
@@ -66,6 +66,9 @@ func (s *Server) playerHit(p *player, attacker creature, skillID int32, kind byt
 
 // reducePlayerHP is CreatureLifeStats.reduceHp for a player.
 func (s *Server) reducePlayerHP(p *player, value int32, attacker creature) {
+	if p.adminInvulnerable && value > 0 {
+		return
+	}
 	hp := p.life.HP - value
 	if hp <= 0 {
 		// Losing a duel doesn't kill: DuelService.onDie.
@@ -300,6 +303,8 @@ func (s *Server) levelUp(p *player) {
 	s.learnNewSkills(p)
 	s.classChangeDialog(p)
 	if p.conn != nil {
+		p.conn.morheimCommandersCallLevelUp()
+		p.conn.altgardStartupLevelUp()
 		p.conn.questLevelUp()
 	}
 	s.updateGroupOf(p, groupUpdate)

@@ -85,7 +85,9 @@ type link struct {
 func (l *link) send(w *wire.Writer) {
 	l.writeMu.Lock()
 	defer l.writeMu.Unlock()
-	_, _ = l.conn.Write(wire.Frame(w.Data))
+	if err := wire.WriteFrame(l.conn, w.Data); err != nil {
+		_ = l.conn.Close()
+	}
 }
 
 // handleGameServer is the game server's side: it registers, then registers and logs out players.

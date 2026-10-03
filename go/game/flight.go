@@ -152,7 +152,7 @@ func (c *conn) flightTeleport(r *wire.Reader) {
 	r.C() // location id
 	distance := r.D()
 	p := c.player
-	if p == nil || r.Err != nil {
+	if p == nil || r.Err != nil || !finitePosition(x, y, z) {
 		return
 	}
 	s := c.s

@@ -17,7 +17,7 @@ func (c *conn) levelUpStartQuests() {
 		if script.ID == josnackDilemmaQuestID || script.ID == pearlOfProtectionQuestID {
 			continue
 		}
-		if (script.ID == 1006 || script.ID == 1007) && c.s.config.SimpleSecondClass {
+		if (script.ID == 1006 || script.ID == 1007) && c.s.currentConfig().SimpleSecondClass {
 			continue
 		}
 		if script.ID == sanctumCeremonyQuestID {

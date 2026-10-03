@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
@@ -9,9 +10,7 @@ import (
 	"aionlightning/wire"
 )
 
-// Admin commands: a chat message that starts with "//" (AdminCommandChatHandler). Only game masters (an account
-// with an access level) may use them, whatever levels AL-Game's administration.properties asks of each command.
-// ponytail: the commands the port needs to test with; the rest of AL-Game's list comes as its systems do.
+// Admin commands use Java's default access level 3; //configure can override individual levels.
 
 const chatSystemNotice = 0x1a // ChatType.SYSTEM_NOTICE
 
@@ -27,12 +26,16 @@ var towns = map[string][4]float32{
 
 // adminCommand runs a "//command params" message of the game master p.
 func (s *Server) adminCommand(p *player, text string) {
-	if p.conn.account.accessLevel == 0 {
+	name, rest, _ := strings.Cut(strings.TrimPrefix(text, "//"), " ")
+	params := strings.Fields(rest)
+	if p.conn.account.accessLevel < s.adminCommandLevel(name) {
 		s.tell(p, "You dont have enough rights to execute this command")
 		return
 	}
-	name, rest, _ := strings.Cut(strings.TrimPrefix(text, "//"), " ")
-	params := strings.Fields(rest)
+	if handler := extendedAdminCommands[name]; handler != nil {
+		handler(s, p, params)
+		return
+	}
 	switch name {
 	case "add":
 		s.adminAdd(p, params)
@@ -60,7 +63,7 @@ func (s *Server) adminCommand(p *player, text string) {
 				return
 			}
 			var err error
-			if v[i], err = strconv.ParseFloat(params[i], 32); err != nil {
+			if v[i], err = strconv.ParseFloat(params[i], 32); err != nil || math.IsNaN(v[i]) || math.IsInf(v[i], 0) {
 				s.tell(p, "All the parameters should be numbers")
 				return
 			}
@@ -185,12 +188,15 @@ func (s *Server) adminSet(p *player, params []string) {
 		target = other
 	}
 	if len(params) < 2 {
-		s.tell(p, "syntax //set <exp|level>")
+		s.tell(p, "syntax //set <class|exp|ap|level|title>")
 		return
 	}
 	n, err := strconv.ParseInt(params[1], 10, 64)
 	if err != nil {
 		s.tell(p, "You should enter valid second params!")
+		return
+	}
+	if s.adminSetMore(p, params, n) {
 		return
 	}
 	switch params[0] {
@@ -201,7 +207,7 @@ func (s *Server) adminSet(p *player, params []string) {
 			s.setExp(target, s.data.ExpStart(int(n)))
 		}
 	default:
-		s.tell(p, "syntax //set <exp|level>")
+		s.tell(p, "syntax //set <class|exp|ap|level|title>")
 	}
 }
 

@@ -16,10 +16,11 @@ import (
 
 // Config is what AL-Game reads from its config files, as the game server needs it.
 type Config struct {
-	ID            byte   // network.login.gsid
-	Name          string // gameserver.name, for logs
-	CountryCode   byte   // gameserver.country.code
-	Mode          byte   // gameserver.mode: 0x80 one race, 0x01 free race, 0x22 per character
+	Shutdown      func(bool) // lifecycle callback, after clients are disconnected
+	ID            byte       // network.login.gsid
+	Name          string     // gameserver.name, for logs
+	CountryCode   byte       // gameserver.country.code
+	Mode          byte       // gameserver.mode: 0x80 one race, 0x01 free race, 0x22 per character
 	HostAddress   [4]byte
 	Port          uint16
 	MaxPlayers    int32
@@ -37,35 +38,43 @@ type Config struct {
 
 // Server is the game server: its links to the login and chat servers, and its players.
 type Server struct {
-	config       Config
-	data         *data.Data
-	store        store.Store
-	items        itemSaver // where items are kept: the store, or a stand-in in tests
-	quests       questSaver
-	skillDB      skillSaver
-	social       socialSaver
-	mailDB       mailSaver
-	legionDB     legionSaver
-	macroDB      macroSaver
-	brokerDB     brokerSaver
-	punishDB     punishSaver
-	petitionDB   petitionSaver
-	petitions    []*store.Petition      // the open ones, oldest first
-	boards       map[string]*board      // the broker of each race
-	kisks        map[int32]*object      // the kisk each player is bound to, by player id
-	legions      map[int32]*legion      // the legions that have been loaded
-	duels        map[int32]int32        // each duelling player's opponent
-	pvpKills     map[[2]int32]int       // how many times a player has killed another, by winner and victim
-	instances    map[[2]int32]*instance // the instances of instance maps, by map and instance id
-	nextInstance map[int32]int32        // the id the next instance of each map gets
-	exchanges    map[int32]*exchange    // each trading player's side of the trade
-	log          *slog.Logger
-	ids          *idFactory
-	names        *namePattern
+	adminDB            adminSaver
+	adminCommands      map[string]byte
+	announcementTasks  []*task
+	adminShutdownTasks []*task
+	adminSpawnGroups   map[*data.SpawnGroup]bool
+	configMu           sync.RWMutex
+	config             Config
+	data               *data.Data
+	store              store.Store
+	items              itemSaver // where items are kept: the store, or a stand-in in tests
+	quests             questSaver
+	skillDB            skillSaver
+	social             socialSaver
+	mailDB             mailSaver
+	legionDB           legionSaver
+	macroDB            macroSaver
+	brokerDB           brokerSaver
+	punishDB           punishSaver
+	petitionDB         petitionSaver
+	petitions          []*store.Petition      // the open ones, oldest first
+	boards             map[string]*board      // the broker of each race
+	kisks              map[int32]*object      // the kisk each player is bound to, by player id
+	legions            map[int32]*legion      // the legions that have been loaded
+	duels              map[int32]int32        // each duelling player's opponent
+	pvpKills           map[[2]int32]int       // how many times a player has killed another, by winner and victim
+	instances          map[[2]int32]*instance // the instances of instance maps, by map and instance id
+	nextInstance       map[int32]int32        // the id the next instance of each map gets
+	exchanges          map[int32]*exchange    // each trading player's side of the trade
+	log                *slog.Logger
+	ids                *idFactory
+	names              *namePattern
 
 	login *loginLink
 	chat  *chatLink
 
+	clientWG sync.WaitGroup
+	clients  map[net.Conn]bool
 	mu       sync.Mutex
 	accounts map[int32]*conn // logged in, by account id
 	players  map[int32]*conn // in the world, by player id
@@ -116,7 +125,7 @@ func NewServer(config Config, d *data.Data, s store.Store, log *slog.Logger) (*S
 	if err != nil {
 		return nil, fmt.Errorf("loading the game time: %w", err)
 	}
-	server := &Server{items: s, quests: s, skillDB: s, social: s, mailDB: s, legionDB: s, macroDB: s, brokerDB: s, punishDB: s, petitionDB: s, config: config, data: d, store: s, log: log, ids: newIDFactory(used), names: names,
+	server := &Server{adminDB: s, items: s, quests: s, skillDB: s, social: s, mailDB: s, legionDB: s, macroDB: s, brokerDB: s, punishDB: s, petitionDB: s, config: config, data: d, store: s, log: log, ids: newIDFactory(used), names: names,
 		accounts: map[int32]*conn{}, players: map[int32]*conn{}, weathers: map[int32]weatherState{}, spawned: map[int32]*player{}, grid: map[cell][]*object{}, byID: map[int32]*object{}, pcells: map[cell]map[int32]*player{},
 		drops: drops, siegeOwners: owners, siegeDB: s, clockBase: clock, clockStart: time.Now()}
 	log.Info("IDFactory", "used", len(used))
@@ -133,7 +142,7 @@ func NewServer(config Config, d *data.Data, s store.Store, log *slog.Logger) (*S
 	if list, err := s.AutoAnnouncements(); err != nil {
 		log.Warn("loading the announcements", "err", err)
 	} else {
-		server.startAnnouncements(list)
+		server.announcementTasks = server.startAnnouncements(list)
 	}
 	server.login = newLoginLink(server)
 	server.chat = newChatLink(server)
@@ -155,7 +164,20 @@ func (s *Server) Serve(l net.Listener) error {
 		if tcp, ok := c.(*net.TCPConn); ok {
 			_ = tcp.SetNoDelay(true)
 		}
-		go s.handle(c)
+
+		s.mu.Lock()
+		if s.clients == nil {
+			s.clients = map[net.Conn]bool{}
+		}
+		s.clients[c] = true
+		s.clientWG.Add(1)
+		s.mu.Unlock()
+		go func() {
+			defer s.clientWG.Done()
+			defer func() { s.mu.Lock(); delete(s.clients, c); s.mu.Unlock() }()
+			s.handle(c)
+		}()
+
 	}
 }
 
@@ -200,4 +222,24 @@ func (f *idFactory) release(id int32) {
 	if id < f.next && id >= firstObjectID {
 		f.next = id
 	}
+}
+
+func (s *Server) currentConfig() Config {
+	s.configMu.RLock()
+	defer s.configMu.RUnlock()
+	return s.config
+}
+
+// CloseClients is called after Serve returns. It waits for character saves before process exit.
+func (s *Server) CloseClients() {
+	s.mu.Lock()
+	clients := make([]net.Conn, 0, len(s.clients))
+	for c := range s.clients {
+		clients = append(clients, c)
+	}
+	s.mu.Unlock()
+	for _, c := range clients {
+		c.Close()
+	}
+	s.clientWG.Wait()
 }

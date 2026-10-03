@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -21,6 +22,7 @@ type itemInfo struct {
 	Quality     string      `json:"q"`
 	Level       int         `json:"l"`
 	Type        string      `json:"t"`
+	MaxStack    int64       `json:"m"`
 	Stats       [][2]string `json:"s"`
 	Bonuses     [][2]string `json:"b"`
 	Description string      `json:"d"`
@@ -30,12 +32,73 @@ type itemInfo struct {
 type assets struct {
 	dir   string
 	items map[int32]itemInfo
+	sets  []gearSetInfo
 	exp   []int64 // total experience at the start of each level, from level 1
+}
+
+type gearSetInfo struct {
+	Key     string  `json:"k"`
+	Name    string  `json:"n"`
+	ItemIDs []int32 `json:"i"`
+}
+
+type itemSearchResult struct {
+	ID   int32  `json:"id"`
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
+const maxItemSearchResults = 50
+
+func (a *assets) searchItems(query, category string) []itemSearchResult {
+	query = strings.ToLower(strings.TrimSpace(query))
+	if category == "all" && query == "" {
+		return nil
+	}
+
+	results := make([]itemSearchResult, 0)
+	for id, item := range a.items {
+		if query != "" && !strings.Contains(strings.ToLower(item.Name), query) &&
+			!strings.Contains(strconv.FormatInt(int64(id), 10), query) {
+			continue
+		}
+		if category == "stigma" && !isStigmaItem(id) {
+			continue
+		}
+		if category == "spellbook" && !isSpellbookItem(item) {
+			continue
+		}
+
+		kind := item.Type
+		switch {
+		case isStigmaItem(id):
+			kind = "Stigma"
+		case strings.Contains(strings.ToLower(item.Icon), "skillbook"):
+			kind = "Skill book"
+		}
+		results = append(results, itemSearchResult{ID: id, Name: item.Name, Type: kind})
+	}
+	sort.Slice(results, func(i, j int) bool {
+		if results[i].Name != results[j].Name {
+			return results[i].Name < results[j].Name
+		}
+		return results[i].ID < results[j].ID
+	})
+	if len(results) > maxItemSearchResults {
+		results = results[:maxItemSearchResults]
+	}
+	return results
+}
+
+func isStigmaItem(id int32) bool { return id > 140000000 && id < 140001000 }
+
+func isSpellbookItem(item itemInfo) bool {
+	return strings.EqualFold(item.Type, "Spellbook") || strings.Contains(strings.ToLower(item.Icon), "skillbook")
 }
 
 func loadAssets(dir string, log *slog.Logger) *assets {
 	a := &assets{dir: dir, items: map[int32]itemInfo{}}
-	for name, into := range map[string]any{"items.json": &a.items, "exp.json": &a.exp} {
+	for name, into := range map[string]any{"items.json": &a.items, "gear-sets.json": &a.sets, "exp.json": &a.exp} {
 		data, err := os.ReadFile(filepath.Join(dir, name))
 		if err == nil {
 			err = json.Unmarshal(data, into)
@@ -110,16 +173,19 @@ type cellView struct {
 }
 
 type characterView struct {
-	User    *user
-	Query   string
-	Matches []string // names like the query, when none is exactly it
-	Found   bool
+	Message, Token string
+	Error          bool
+	User           *user
+	Query          string
+	Matches        []string // names like the query, when none is exactly it
+	Found          bool
 
 	Name, Race, Class string
 	Level             int
 	Online            bool
 	Equipment         []slotView
 	Cube              [][]cellView // cubeTabs pages of cubeTabSlots cells
+	GearSets          []gearSetInfo
 	Used, Limit       int
 	Kinah             int64
 }
@@ -147,6 +213,10 @@ var (
 
 func (p *panel) character(u *user, w http.ResponseWriter, r *http.Request) {
 	v := characterView{User: u, Query: strings.TrimSpace(r.URL.Query().Get("name"))}
+	v.Message, v.Error = r.URL.Query().Get("m"), r.URL.Query().Has("e")
+	if u.Admin() {
+		v.Token = characterToken(u)
+	}
 	if v.Query != "" {
 		if err := p.findCharacter(&v); err != nil {
 			p.log.Error("loading a character", "err", err)
@@ -154,9 +224,27 @@ func (p *panel) character(u *user, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	if v.Found && u.Admin() {
+		v.GearSets = p.assets.sets
+	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := characterPage.Execute(w, v); err != nil {
 		p.log.Error("rendering", "err", err)
+	}
+}
+
+func (p *panel) searchItems(_ *user, w http.ResponseWriter, r *http.Request) {
+	category := r.URL.Query().Get("category")
+	if category == "" {
+		category = "all"
+	}
+	if category != "all" && category != "stigma" && category != "spellbook" {
+		http.Error(w, "unknown item category", http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(p.assets.searchItems(r.URL.Query().Get("q"), category)); err != nil {
+		p.log.Error("encoding item search results", "err", err)
 	}
 }
 

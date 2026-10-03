@@ -68,10 +68,14 @@ XP message; a handler that panics.
    `false` (expect the echo of the same-numbered window) and the plain click (`-1`: main menu unless Java has `case -1`).
    Use `quest_1001_test.go` (recorded Java windows) as the model.
 3. Implement the Go handler to satisfy the table, using the helpers above; send only what Java sends, in Java's order.
-4. Run the conformance test: `go test ./game -run TestQuestConformance`. Your quest must produce no violation. If you
-   believe Java itself breaks a rule, add it to `conformanceExceptions` in `game/quest_conformance_known_test.go` with
-   the Java file:line. Do NOT add your quest to `conformanceKnownFailing` (that list is for the old audit findings and
-   only shrinks; see [QUEST_AUDIT.md](QUEST_AUDIT.md)).
+4. Run the handler's focused test after implementing it. The integrating agent
+   runs `TestQuestConformance` once against the fully registered batch. Your
+   quest must produce no violation. If you are integrating the batch yourself,
+   include conformance in that batch check. If you believe Java itself breaks a
+   rule, add it to `conformanceExceptions` in
+   `game/quest_conformance_known_test.go` with the Java file:line. Do NOT add
+   your quest to `conformanceKnownFailing` (that list is for the old audit
+   findings and only shrinks; see [QUEST_AUDIT.md](QUEST_AUDIT.md)).
 5. Where a real 1.9 client is available, compare packets with `docker/quest-debug.sh` (see below).
 
 **Auditing already ported quests:** `scripts/quest-claim.py audit-next <who> [n]` claims registered handlers that have
@@ -140,13 +144,46 @@ claimed. Port only ids you hold; if `claim` fails, take another.
 
 - Format changed Go files with `scripts/run-go.sh gofmt -w ...` from
   `Apps/AionServer`. Apple `container` attaches Go cache volumes to one
-  container at a time: **coordinate Go commands with the integrating agent**.
-- Run focused tests when the Go cache is free. The integrating agent runs the
-  full suite, reports exact pass/fail/skip counts, runs `go vet ./...`, and
-  rebuilds the local game image after integration.
+  container at a time: coordinate Go commands with the integrating agent and
+  run them sequentially.
+- Run the focused test for each handler you implement. Do not run the
+  repository-wide suite, vet, or image build once per quest.
 - Return Java source path, implemented events and behavior, registration facts,
   test names/results, any blockers, and the files changed. Do not run Git
   commands or modify `External/`.
+
+## Batch cadence for throughput
+
+1. Claim a bounded batch with `scripts/quest-claim.py next <agent-name> <count>`.
+   Group related or straightforward handlers where useful, but only claim work
+   that can be finished and tested in the batch. Every claimed handler still
+   needs its own Java source review, branch table, and focused test coverage.
+2. Contributors implement quest-specific files and run their focused tests.
+   The integrating agent collects the handoffs, applies shared registration
+   and dispatch edits once, updates the porting notes once, and formats all
+   changed Go files together.
+3. Run one combined focused-test command for the batch, including all new quest
+   tests and `TestQuestConformance`. For example, the recent batch used this
+   from the AionGo repository root:
+   `go/scripts/run-go.sh go test ./game -run 'Test(KrallBook|SecretDelivery|OrdersFromTelemachus|QuestConformance)'`.
+   Replace the quest-name prefixes with those in the current batch. Fix any
+   failures before the full checks.
+4. After the batch is integrated, run
+   `go/scripts/run-go.sh go test -json ./...` and
+   `go/scripts/run-go.sh go vet ./...` once each, sequentially. Report exact
+   pass, skip, and failure counts. Then build one local game image with
+   `go/scripts/build-images.sh game`.
+   If that script's clean-tree guard rejects the shared worktree, preserve all
+   edits and build a local-only image directly with `container build
+   --no-cache --platform linux/arm64 --progress plain --cpus 2 --memory 4G -f
+   go/Dockerfile --target game -t <manifest-derived-local-tag> .`. Derive the
+   tag from `image-manifest.json` and a SHA-256 of the local source inputs; use
+   that snapshot hash as the local revision label. Do not publish the local
+   image or restart the live stack. `--no-cache` prevents Apple's persistent
+   builder from reusing a stale worktree context.
+5. If a code fix is needed after the full checks, rerun the repository-wide
+   suite and vet before handoff, then rebuild the local image from the final
+   source. Mark claims done only after integration and tests pass.
 
 An individually coded quest is counted as ported only after all its required
 events are wired, it is registered, and its tests pass. A client marker by

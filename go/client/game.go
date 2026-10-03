@@ -132,12 +132,21 @@ func (g *Game) read() {
 
 // Send sends a client packet: its opcode, the client's code and the opcode's complement, encrypted.
 func (g *Game) Send(w *wire.Writer) {
+	if w == nil || len(w.Data) == 0 {
+		return
+	}
+	if len(w.Data) > wire.MaxPayloadSize-2 {
+		_ = g.conn.Close()
+		return
+	}
 	op := w.Data[0]
 	payload := append([]byte{op, crypt.ClientPacketCode, ^op}, w.Data[1:]...)
 	g.writeMu.Lock()
 	defer g.writeMu.Unlock()
 	g.out.Encrypt(payload)
-	_, _ = g.conn.Write(wire.Frame(payload))
+	if err := wire.WriteFrame(g.conn, payload); err != nil {
+		_ = g.conn.Close()
+	}
 }
 
 // Await returns the next packet with opcode op, dropping those before it.

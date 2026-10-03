@@ -1,7 +1,6 @@
 package login
 
 import (
-	"encoding/binary"
 	"net"
 	"sync"
 	"time"
@@ -59,9 +58,16 @@ func (g *gameServerConn) handle(opcode byte, r *wire.Reader) bool {
 	case 0x03:
 		g.accountDisconnected(r.D())
 	case 0x04:
-		names := make([]string, r.D())
+		count := r.D()
+		if r.Err != nil || count < 0 || int64(count) > int64(r.Remaining()/2) {
+			return false
+		}
+		names := make([]string, int(count))
 		for i := range names {
 			names[i] = r.S()
+		}
+		if r.Err != nil {
+			return false
 		}
 		g.accountList(names)
 	case 0x05:
@@ -80,7 +86,11 @@ func (g *gameServerConn) handle(opcode byte, r *wire.Reader) bool {
 func (g *gameServerConn) register(r *wire.Reader) bool {
 	id := r.C()
 	defaultAddress := r.B(int(r.C()))
-	ranges := make([]ipRange, r.D())
+	count := r.D()
+	if r.Err != nil || count < 0 || int64(count) > int64(r.Remaining()/3) {
+		return false
+	}
+	ranges := make([]ipRange, int(count))
 	for i := range ranges {
 		low, high, address := r.B(int(r.C())), r.B(int(r.C())), r.B(int(r.C()))
 		ranges[i] = ipRange{min: addressValue(low), max: addressValue(high), address: address}
@@ -339,8 +349,9 @@ func requestKickAccount(accountID int32) *wire.Writer {
 func (g *gameServerConn) send(w *wire.Writer) {
 	g.writeMu.Lock()
 	defer g.writeMu.Unlock()
-	frame := binary.LittleEndian.AppendUint16(nil, uint16(len(w.Data)+2))
-	_, _ = g.conn.Write(append(frame, w.Data...))
+	if err := wire.WriteFrame(g.conn, w.Data); err != nil {
+		_ = g.conn.Close()
+	}
 }
 
 // disconnected takes the game server offline and forgets its players.

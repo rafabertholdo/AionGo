@@ -9,7 +9,7 @@ import (
 
 // Alliances of up to 24 players in four groups of six: AL-Game's PlayerAlliance and AllianceService.
 // ponytail: a player who leaves the world leaves the alliance at once (AL-Game waits alliance.removetime),
-// and there are no loot rules, brands or readiness checks.
+// and there are no loot rules or readiness checks.
 
 const (
 	maxAllianceSize           = 24
@@ -48,13 +48,40 @@ type alliance struct {
 	captain *player
 	vice    []*player
 	members []*player // in the order they joined
+	slots   map[*player]int32
 }
 
 func (a *alliance) has(p *player) bool { return slices.Contains(a.members, p) }
 
-// slot is the alliance group (1000-1003) a member is in: the members fill the groups in order.
+// slot is the stable alliance group (1000-1003) a member is in.
 func (a *alliance) slot(p *player) int32 {
+	if !a.has(p) {
+		return 0
+	}
+	if a.slots != nil {
+		return a.slots[p]
+	}
 	return 1000 + int32(slices.Index(a.members, p)/allianceGroupSize)
+}
+
+func (a *alliance) initSlots() {
+	if a.slots != nil {
+		return
+	}
+	a.slots = make(map[*player]int32, len(a.members))
+	for i, p := range a.members {
+		a.slots[p] = 1000 + int32(i/allianceGroupSize)
+	}
+}
+
+func (a *alliance) groupSize(id int32) int {
+	var count int
+	for _, m := range a.members {
+		if a.slot(m) == id {
+			count++
+		}
+	}
+	return count
 }
 
 // inviteToAlliance is AllianceService.invitePlayerToAlliance, with RestrictionsManager.canInviteToAlliance.
@@ -154,14 +181,22 @@ func (s *Server) formAlliance(p, invited *player) {
 
 // addToAlliance is AllianceService.addMemberToAlliance.
 func (s *Server) addToAlliance(a *alliance, p *player) {
+	a.initSlots()
+	var slot int32
+	for id := int32(1000); id < 1004; id++ {
+		if a.groupSize(id) < allianceGroupSize {
+			slot = id
+			break
+		}
+	}
+	if slot == 0 || a.has(p) {
+		return
+	}
 	a.members = append(a.members, p)
+	a.slots[p] = slot
 	p.alliance = a
 	p.conn.send(allianceInfo(a))
-	w := wire.Packet(smShowBrand)
-	w.H(1)
-	w.D(0)
-	w.D(0)
-	p.conn.send(w)
+	p.conn.send(showBrand(0, 0))
 	p.conn.send(systemMessage(msgAllianceEntered))
 	s.updateAlliance(a, p, allianceEnter)
 	for _, m := range a.members {
@@ -300,7 +335,9 @@ func (s *Server) leaveAlliance(p *player, event byte) {
 		return
 	}
 	s.updateAlliance(a, p, event)
+	a.initSlots()
 	a.members = slices.DeleteFunc(a.members, func(m *player) bool { return m == p })
+	delete(a.slots, p)
 	a.vice = slices.DeleteFunc(a.vice, func(m *player) bool { return m == p })
 	p.alliance = nil
 	p.conn.send(wire.Packet(smLeaveGroupMember))
@@ -312,6 +349,7 @@ func (s *Server) leaveAlliance(p *player, event byte) {
 		}
 		s.ids.release(a.id)
 		a.members = nil
+		a.slots = nil
 		return
 	}
 	if a.captain == p {

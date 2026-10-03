@@ -19,6 +19,16 @@ go/scripts/run-go.sh go build ./cmd/...
 run instead of skipping. Set `AION_DATA_PATH` to use a different copy of the
 original data.
 
+Run the baseline checks sequentially with `go/scripts/check-go.sh`. It saves
+test JSON, exact test-node counts (including subtests), optional database skips,
+vet/build output and formatting results under `.build/go-checks/` at the
+repository root. Set `AION_CHECK_DIR` to choose another output directory.
+The wrapper uses the same pinned Go toolchain as `run-go.sh` and builds all
+seven commands. Optional database tests remain skipped when their fixture is
+unavailable; they are not counted as passing. Lint/vulnerability scans and a
+disposable database integration job are tracked separately in
+[the review ledger](../docs/GO_REVIEW_LEDGER.md).
+
 Build and publish images from the repository root with
 `python3 scripts/images.py build` and `python3 scripts/images.py push`.
 `image-manifest.json` pins the client version, server release, platform, and

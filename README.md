@@ -45,20 +45,20 @@ the inventory fixture now explicitly sets the capacity it exercises.
 
 All new images live under
 [`docker.io/rafabertholdo/aiongo`](https://hub.docker.com/r/rafabertholdo/aiongo). Tags combine client
-version, role, implementation, and server release. The initial release includes:
+version, role, implementation, and server release. Release `0.1.1` includes:
 
 | Role | Tag |
 | --- | --- |
-| Database | [`1.9-db-mariadb11-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-db-mariadb11-v0.1.0) |
-| Go login / chat / game | [`1.9-login-go-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-login-go-v0.1.0), [`1.9-chat-go-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-chat-go-v0.1.0), [`1.9-game-go-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-game-go-v0.1.0) |
-| Java 21 login / chat / game | [`1.9-login-java21-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-login-java21-v0.1.0), [`1.9-chat-java21-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-chat-java21-v0.1.0), [`1.9-game-java21-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-game-java21-v0.1.0) |
-| Admin website | [`1.9-panel-go-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-panel-go-v0.1.0) |
-| Packet relay | [`1.9-gamesniff-go-v0.1.0`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-gamesniff-go-v0.1.0) |
+| Database | [`1.9-db-mariadb11-v0.1.1`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-db-mariadb11-v0.1.1) |
+| Go login / chat / game | [`1.9-login-go-v0.1.1`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-login-go-v0.1.1), [`1.9-chat-go-v0.1.1`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-chat-go-v0.1.1), [`1.9-game-go-v0.1.1`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-game-go-v0.1.1) |
+| Java 21 login / chat / game | [`1.9-login-java21-v0.1.1`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-login-java21-v0.1.1), [`1.9-chat-java21-v0.1.1`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-chat-java21-v0.1.1), [`1.9-game-java21-v0.1.1`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-game-java21-v0.1.1) |
+| Admin website | [`1.9-panel-go-v0.1.1`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-panel-go-v0.1.1) |
+| Packet relay | [`1.9-gamesniff-go-v0.1.1`](https://hub.docker.com/r/rafabertholdo/aiongo/tags?name=1.9-gamesniff-go-v0.1.1) |
 
 Each image also receives a source tag ending in `-sha-<12-character Git SHA>`
 and OCI source/revision/version labels. `image-manifest.json` is the source of
 truth. Built references and digests are recorded under `releases/`; see
-[docs/ROLLOUT.md](docs/ROLLOUT.md) for the initial rollout. Increment its release for subsequent publication; do not overwrite an
+[docs/ROLLOUT.md](docs/ROLLOUT.md) for rollout and validation notes. Increment its release for subsequent publication; do not overwrite an
 existing release tag. There is no `latest` tag, and the legacy Java 6 repositories
 and their `:1.9` tags remain untouched. Initial images are Linux arm64 for Apple
 Silicon Macs.
@@ -97,7 +97,9 @@ Never delete `al19-db-data` or `aion-db-data` to update an image.
 The Go website is embedded in `go/cmd/panel` and listens on port 8080. Set
 `AION_DB` to the database address, then run the panel image with
 `-p 127.0.0.1:8080:8080`. It supports account sign-up, GM tools, admin settings,
-and character equipment/inventory views. Client artwork is an optional local
+and character equipment/inventory views. The `/help` page lists player commands
+and shows all 61 administrator commands only to signed-in admins; see
+[the command notes](docs/COMMANDS.md). Client artwork is an optional local
 build input under ignored `.build/panel-assets`; extract it with
 `python3 go/scripts/extract-panel-assets.py <client-folder>`, or override
 `AION_PANEL_ASSETS_PATH` when building. No game client or extracted art is

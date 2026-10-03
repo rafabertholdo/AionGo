@@ -103,7 +103,7 @@ func (s *Server) destroyInstance(in *instance) {
 		}
 		o.respawn.cancel()
 		o.decay.cancel()
-		if o.npc != nil {
+		if o.npc != nil && o.ai != nil {
 			o.ai.handleEvent(evDespawn)
 		}
 		s.removeObject(o)

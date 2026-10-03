@@ -24,8 +24,12 @@ func (l *link) send(w *wire.Writer) bool {
 	if l.conn == nil || !l.up {
 		return false
 	}
-	_, err := l.conn.Write(wire.Frame(w.Data))
-	return err == nil
+	if err := wire.WriteFrame(l.conn, w.Data); err != nil {
+		l.up = false
+		_ = l.conn.Close()
+		return false
+	}
+	return true
 }
 
 // sendAlways writes even before registering, for the registration itself.
@@ -33,7 +37,10 @@ func (l *link) sendAlways(w *wire.Writer) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	if l.conn != nil {
-		_, _ = l.conn.Write(wire.Frame(w.Data))
+		if err := wire.WriteFrame(l.conn, w.Data); err != nil {
+			l.up = false
+			_ = l.conn.Close()
+		}
 	}
 }
 
@@ -51,12 +58,12 @@ func newLoginLink(s *Server) *loginLink {
 // run keeps the link up: connect, register, read, and connect again when it drops.
 func (l *loginLink) run() {
 	for {
-		nc, err := net.Dial("tcp", l.s.config.LoginAddress)
+		nc, err := net.Dial("tcp", l.s.currentConfig().LoginAddress)
 		if err != nil {
 			time.Sleep(retryDelay)
 			continue
 		}
-		l.s.log.Info("connected to the login server", "address", l.s.config.LoginAddress)
+		l.s.log.Info("connected to the login server", "address", l.s.currentConfig().LoginAddress)
 		l.mu.Lock()
 		l.conn, l.up = nc, false
 		l.mu.Unlock()
@@ -75,7 +82,7 @@ func (l *loginLink) run() {
 
 // registration is SM_GS_AUTH: the id, the address players connect to, the port, capacity and password.
 func (l *loginLink) registration() *wire.Writer {
-	config := l.s.config
+	config := l.s.currentConfig()
 	w := wire.Packet(0x00)
 	w.C(config.ID)
 	w.C(4)
@@ -122,6 +129,8 @@ func (l *loginLink) handle(opcode byte, r *wire.Reader) {
 		}
 	case 0x02: // CM_REQUEST_KICK_ACCOUNT
 		l.s.kickAccount(r.D())
+	case 0x04: // CM_LS_CONTROL_RESPONSE
+		l.s.adminAccessResponse(r)
 	case 0x03: // CM_ACCOUNT_RECONNECT_KEY
 		accountID, key := r.D(), r.D()
 		l.mu.Lock()
@@ -230,7 +239,7 @@ func newChatLink(s *Server) *chatLink {
 
 func (l *chatLink) run() {
 	for {
-		nc, err := net.Dial("tcp", l.s.config.ChatAddress)
+		nc, err := net.Dial("tcp", l.s.currentConfig().ChatAddress)
 		if err != nil {
 			time.Sleep(retryDelay)
 			continue
@@ -239,10 +248,11 @@ func (l *chatLink) run() {
 		l.conn, l.up = nc, false
 		l.mu.Unlock()
 		w := wire.Packet(0x00)
-		w.C(l.s.config.ID)
+		w.C(l.s.currentConfig().ID)
 		w.C(4)
-		w.B(l.s.config.HostAddress[:])
-		w.S(l.s.config.ChatPassword)
+		address := l.s.currentConfig().HostAddress
+		w.B(address[:])
+		w.S(l.s.currentConfig().ChatPassword)
 		l.sendAlways(w)
 		for {
 			payload, err := wire.ReadFrame(nc)

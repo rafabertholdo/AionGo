@@ -25,7 +25,7 @@ func connect(t *testing.T, address string) *testLink {
 }
 
 func (l *testLink) send(w *wire.Writer) {
-	if _, err := l.conn.Write(wire.Frame(w.Data)); err != nil {
+	if err := wire.WriteFrame(l.conn, w.Data); err != nil {
 		l.t.Fatal(err)
 	}
 }

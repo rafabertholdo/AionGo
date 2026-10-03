@@ -226,6 +226,10 @@ func (d *Data) loadQuestScripts(dir string) error {
 		{ID: 1170, Kind: QuestCustom, StartNPC: 730000, EndNPC: 730000, NPCStart: true},                                                                                                                                                                            // Headless Stone Statue
 		{ID: 1183, Kind: QuestCustom, StartNPC: 730012, EndNPC: 730012, NPCStart: true, TalkNPCs: []int32{730013, 730014}},                                                                                                                                         // Spirit of Nature
 		{ID: 1192, Kind: QuestCustom, StartNPC: 203098, EndNPC: 203098, NPCStart: true, TalkNPCs: []int32{203701, 203833}},                                                                                                                                         // Verteron Reinforcements
+		{ID: 1194, Kind: QuestCustom, StartNPC: 203098, EndNPC: 203098, NPCStart: true, MonsterInfos: []QuestMonster{{NPCID: 210185, VarID: 0, MaxKill: 10}, {NPCID: 210186, VarID: 0, MaxKill: 10}}},                                                              // Reducing Tursin Strength
+		{ID: 1197, Kind: QuestCustom, StartNPC: 700004, EndNPC: 203129, ItemID: 182200558, ItemUseDelay: 3000},                                                                                                                                                     // Krall Book
+		{ID: 1220, Kind: QuestCustom, StartNPC: 203172, MiddleNPC: 798004, EndNPC: 798046, NPCStart: true},                                                                                                                                                         // A Secret Delivery
+		{ID: 1300, Kind: QuestCustom, StartNPC: 203901, EndNPC: 203901},                                                                                                                                                                                            // Orders from Telemachus
 		{ID: 1097, Kind: QuestCustom, StartNPC: 790001, EndNPC: 790001, NPCStart: true, LevelUpStart: true, LevelUpNPC: 790001, TalkNPCs: []int32{798316, 279034}},                                                                                                 // Sword of Transcendence
 		{ID: 1122, Kind: QuestCustom, StartNPC: 203060, EndNPC: 790001, ItemID: 182200216, NPCStart: true},                                                                                                                                                         // Delivering Pernos's Robe
 		{ID: 1130, Kind: QuestCustom, StartNPC: 203098, EndNPC: 203098},                                                                                                                                                                                            // Summons to the Citadel
@@ -245,6 +249,7 @@ func (d *Data) loadQuestScripts(dir string) error {
 		{ID: 1033, Kind: QuestCustom, StartNPC: 203900, EndNPC: 203900, LevelUpStart: true, LevelUpNPC: 203900, MonsterInfos: []QuestMonster{{NPCID: 210799, VarID: 0, MaxKill: 11}}, TalkNPCs: []int32{203996}},                                                                                                     // Sataloca's Heart
 		{ID: 1034, Kind: QuestCustom, StartNPC: 203903, EndNPC: 203903, LevelUpStart: true, LevelUpNPC: 203903, TalkNPCs: []int32{204032, 204501, 700149}},                                                                                                                                                           // Disappearing Aether
 		{ID: 1035, Kind: QuestCustom, StartNPC: 203917, EndNPC: 203917, LevelUpStart: true, LevelUpNPC: 203917, TalkNPCs: []int32{203992, 700158, 203965, 203968, 203987, 700160, 203934, 700159}},                                                                                                                   // Refreshing the Springs
+		{ID: 2123, Kind: QuestCustom, StartNPC: 203550, EndNPC: 203550, NPCStart: true, TalkNPCs: []int32{700128}},                                                                                                                                                                                                   // The Imprisoned Gourmet
 		{ID: 2125, Kind: QuestCustom, StartNPC: 203540, EndNPC: 203543, NPCStart: true},                                                                                                                                                                                                                              // The Robbery Plot
 		{ID: 1036, Kind: QuestCustom, StartNPC: 203904, EndNPC: 203901, LevelUpStart: true, LevelUpNPC: 203904, TalkNPCs: []int32{204045, 204003, 204004, 204020}},                                                                                                                                                   // Kaidan Prisoner
 		{ID: 2135, Kind: QuestCustom, StartNPC: 203532, EndNPC: 203532, ItemID: 182203131, NPCStart: true},                                                                                                                                                                                                           // For Love of Negi
@@ -272,24 +277,35 @@ func (d *Data) loadQuestScripts(dir string) error {
 		{ID: 1076, Kind: QuestCustom, StartNPC: 278500, EndNPC: 203704, ItemID: 182202006, LevelUpStart: true, LevelUpNPC: 278500, TalkNPCs: []int32{203834, 203786, 203754}},                                                                                                                                        // Fragment of Memory II
 		{ID: 1072, Kind: QuestCustom, StartNPC: 278627, EndNPC: 278554, LevelUpStart: true, LevelUpNPC: 278627, TalkNPCs: []int32{278628, 278629, 278630, 278631, 278632, 278633}},                                                                                                                                   // Abyss Training
 		{ID: 1123, Kind: QuestCustom, StartNPC: 790001, EndNPC: 790001, NPCStart: true},                                                                                                                                                                                                                              // Where's Tutty?
-		{ID: 1100, Kind: QuestCustom, StartNPC: 203067, EndNPC: 203067},                    // Kalio's Call
-		{ID: 2100, Kind: QuestCustom, StartNPC: 203516, EndNPC: 203516},                    // Order of the Captain
-		{ID: 1001, Kind: QuestCustom, StartNPC: 203071, EndNPC: 203067},                    // The Kerub Threat
-		{ID: 2001, Kind: QuestCustom, StartNPC: 203518, EndNPC: 203518},                    // Thinking Ahead
-		{ID: 1002, Kind: QuestCustom, StartNPC: 203076, EndNPC: 203067},                    // Request of the Elim
-		{ID: 1003, Kind: QuestCustom, StartNPC: 203081, EndNPC: 203081},                    // Illegal Logging
-		{ID: 2002, Kind: QuestCustom, StartNPC: 203519, EndNPC: 203516},                    // Where's Rae?
-		{ID: 2003, Kind: QuestCustom, StartNPC: 203539, EndNPC: 203539},                    // Treasure of the Deceased
-		{ID: 1004, Kind: QuestCustom, StartNPC: 203082, EndNPC: 203067},                    // Neutralizing Odium
-		{ID: 1005, Kind: QuestCustom, StartNPC: 203067, EndNPC: 203067},                    // Barring the Gate
-		{ID: 2004, Kind: QuestCustom, StartNPC: 203539, EndNPC: 203539},                    // A Charmed Cube
-		{ID: 2005, Kind: QuestCustom, StartNPC: 203540, EndNPC: 203540},                    // Teaching a Lesson
-		{ID: 2006, Kind: QuestCustom, StartNPC: 203540, EndNPC: 203516},                    // Hit Them Where it Hurts
-		{ID: 2007, Kind: QuestCustom, StartNPC: 203516, EndNPC: 203516},                    // Where's Rae This Time?
-		{ID: 1107, Kind: QuestCustom, StartNPC: 203075, EndNPC: 203075, ItemID: 182200501}, // The Lost Axe
-		{ID: 2107, Kind: QuestCustom, StartNPC: 203516, EndNPC: 203512, ItemID: 182203107}, // Return to Sender
-		{ID: 1205, Kind: QuestCustom, EndNPC: 203087},                                      // A New Skill (Elyos)
-		{ID: 2132, Kind: QuestCustom, EndNPC: 203527},                                      // A New Skill (Asmodians)
+		{ID: 1100, Kind: QuestCustom, StartNPC: 203067, EndNPC: 203067},                                                                                                                                                                                                                                              // Kalio's Call
+		{ID: 2100, Kind: QuestCustom, StartNPC: 203516, EndNPC: 203516},                                                                                                                                                                                                                                              // Order of the Captain
+		{ID: 2011, Kind: QuestCustom, StartNPC: 203558, EndNPC: 203558, MonsterInfos: []QuestMonster{{NPCID: 700092, VarID: 0, MaxKill: 7}}, TalkNPCs: []int32{203572}},                                                                                                                                              // Fungus Among Us
+		{ID: 2012, Kind: QuestCustom, StartNPC: 203559, EndNPC: 203559, MonsterInfos: []QuestMonster{{NPCID: 210715, VarID: 0, MaxKill: 4}}},                                                                                                                                                                         // Encroachers
+		{ID: 2013, Kind: QuestCustom, StartNPC: 203605, EndNPC: 203605, TalkNPCs: []int32{700096}},                                                                                                                                                                                                                   // A Dangerous Crop
+		{ID: 2014, Kind: QuestCustom, StartNPC: 203606, EndNPC: 203631, TalkNPCs: []int32{700009, 203633}, MonsterInfos: []QuestMonster{{NPCID: 700135, VarID: 0, MaxKill: 1}}},                                                                                                                                      // Scout it Out
+		{ID: 2015, Kind: QuestCustom, EndNPC: 203631, MonsterInfos: []QuestMonster{{NPCID: 210510, VarID: 1, MaxKill: 1}, {NPCID: 210504, VarID: 2, MaxKill: 5}, {NPCID: 210506, VarID: 3, MaxKill: 5}}},                                                                                                             // Take the Initiative
+		{ID: 2016, Kind: QuestCustom, EndNPC: 203631, ItemID: 182203019, TalkNPCs: []int32{203621}, MonsterInfos: []QuestMonster{{NPCID: 210455, VarID: 0, MaxKill: 6}, {NPCID: 210458, VarID: 0, MaxKill: 6}, {NPCID: 214032, VarID: 0, MaxKill: 6}}},                                                               // Fear This
+		{ID: 2017, Kind: QuestCustom, EndNPC: 203558, TalkNPCs: []int32{203654}, MonsterInfos: []QuestMonster{{NPCID: 210528, VarID: 0, MaxKill: 6}, {NPCID: 210721, VarID: 0, MaxKill: 6}}},                                                                                                                         // Trespassers at the Observatory
+		{ID: 2018, Kind: QuestCustom, EndNPC: 203649, TalkNPCs: []int32{700097, 700098}, MonsterInfos: []QuestMonster{{NPCID: 210588, VarID: 0, MaxKill: 4}, {NPCID: 210752, VarID: 0, MaxKill: 1}}},                                                                                                                 // Reconstructing Impetusium
+		{ID: 2200, Kind: QuestCustom, EndNPC: 203557},                                       // Altgard Duties
+		{ID: 2300, Kind: QuestCustom, EndNPC: 204301},                                       // Morheim Commander's Call
+		{ID: 1001, Kind: QuestCustom, StartNPC: 203071, EndNPC: 203067},                     // The Kerub Threat
+		{ID: 2001, Kind: QuestCustom, StartNPC: 203518, EndNPC: 203518},                     // Thinking Ahead
+		{ID: 1002, Kind: QuestCustom, StartNPC: 203076, EndNPC: 203067},                     // Request of the Elim
+		{ID: 1003, Kind: QuestCustom, StartNPC: 203081, EndNPC: 203081},                     // Illegal Logging
+		{ID: 2002, Kind: QuestCustom, StartNPC: 203519, EndNPC: 203516},                     // Where's Rae?
+		{ID: 2003, Kind: QuestCustom, StartNPC: 203539, EndNPC: 203539},                     // Treasure of the Deceased
+		{ID: 1004, Kind: QuestCustom, StartNPC: 203082, EndNPC: 203067},                     // Neutralizing Odium
+		{ID: 1005, Kind: QuestCustom, StartNPC: 203067, EndNPC: 203067},                     // Barring the Gate
+		{ID: 2004, Kind: QuestCustom, StartNPC: 203539, EndNPC: 203539},                     // A Charmed Cube
+		{ID: 2005, Kind: QuestCustom, StartNPC: 203540, EndNPC: 203540},                     // Teaching a Lesson
+		{ID: 2006, Kind: QuestCustom, StartNPC: 203540, EndNPC: 203516},                     // Hit Them Where it Hurts
+		{ID: 2007, Kind: QuestCustom, StartNPC: 203516, EndNPC: 203516},                     // Where's Rae This Time?
+		{ID: 1107, Kind: QuestCustom, StartNPC: 203075, EndNPC: 203075, ItemID: 182200501},  // The Lost Axe
+		{ID: 2136, Kind: QuestCustom, EndNPC: 790009, ActionNPC: 700146, ItemID: 182203130}, // The Lost Axe (Asmodian)
+		{ID: 2107, Kind: QuestCustom, StartNPC: 203516, EndNPC: 203512, ItemID: 182203107},  // Return to Sender
+		{ID: 1205, Kind: QuestCustom, EndNPC: 203087},                                       // A New Skill (Elyos)
+		{ID: 2132, Kind: QuestCustom, EndNPC: 203527},                                       // A New Skill (Asmodians)
 		{ID: 1966, Kind: QuestCustom, EndNPC: 278555, ItemID: 182206035, ItemUseDelay: 3000},
 		{ID: 1967, Kind: QuestCustom, EndNPC: 278555, ItemID: 182206036, ItemUseDelay: 3000},
 		{ID: 1968, Kind: QuestCustom, EndNPC: 278556, ItemID: 182206037, ItemUseDelay: 3000},
@@ -530,6 +546,40 @@ func (d *Data) loadQuestScripts(dir string) error {
 			}
 			d.QuestItemUses[script.ItemID] = append(d.QuestItemUses[script.ItemID], script)
 		}
+		if script.ID == 2123 {
+			d.QuestCustomTalks[700128] = append(d.QuestCustomTalks[700128], script)
+		}
+		switch script.ID {
+		case 2011:
+			for _, npcID := range []int32{203558, 203572} {
+				d.QuestCustomTalks[npcID] = append(d.QuestCustomTalks[npcID], script)
+			}
+		case 2012:
+			d.QuestCustomTalks[203559] = append(d.QuestCustomTalks[203559], script)
+		case 2013:
+			for _, npcID := range []int32{203605, 700096} {
+				d.QuestCustomTalks[npcID] = append(d.QuestCustomTalks[npcID], script)
+			}
+		case 2014:
+			for _, npcID := range []int32{203606, 700009, 203633, 203631} {
+				d.QuestCustomTalks[npcID] = append(d.QuestCustomTalks[npcID], script)
+			}
+		case 2015:
+			d.QuestCustomTalks[203631] = append(d.QuestCustomTalks[203631], script)
+		case 2016:
+			for _, npcID := range []int32{203631, 203621} {
+				d.QuestCustomTalks[npcID] = append(d.QuestCustomTalks[npcID], script)
+			}
+			d.QuestItemUses[script.ItemID] = append(d.QuestItemUses[script.ItemID], script)
+		case 2017:
+			for _, npcID := range []int32{203654, 203558} {
+				d.QuestCustomTalks[npcID] = append(d.QuestCustomTalks[npcID], script)
+			}
+		case 2018:
+			for _, npcID := range []int32{203649, 700097, 700098} {
+				d.QuestCustomTalks[npcID] = append(d.QuestCustomTalks[npcID], script)
+			}
+		}
 		if script.ID == 3060 {
 			for _, npcID := range []int32{798190, 798191, 798192, 798193} {
 				d.QuestCustomTalks[npcID] = append(d.QuestCustomTalks[npcID], script)
@@ -572,6 +622,9 @@ func (d *Data) loadQuestScripts(dir string) error {
 		if script.ID == 1130 {
 			d.QuestCustomTalks[203098] = append(d.QuestCustomTalks[203098], script)
 		}
+		if script.ID == 1194 {
+			d.QuestCustomTalks[script.StartNPC] = append(d.QuestCustomTalks[script.StartNPC], script)
+		}
 		if script.ID == 1156 {
 			for _, npcID := range []int32{203128, 700003, 798003} {
 				d.QuestCustomTalks[npcID] = append(d.QuestCustomTalks[npcID], script)
@@ -599,7 +652,7 @@ func (d *Data) loadQuestScripts(dir string) error {
 		if script.ID == 1023 {
 			d.QuestCustomTalks[203183] = append(d.QuestCustomTalks[203183], script)
 		}
-		if script.ID == 1006 || script.ID == 1032 || script.ID == 1039 || script.ID == 1042 || script.ID == 1052 || script.ID == 1059 || script.ID == 1071 || script.ID == 1076 || script.ID == 1107 || script.ID == 1114 || script.ID == 2107 || script.ID == 4200 || script.ID == 3200 || script.ID == 3914 || script.ItemUseDelay > 0 {
+		if script.ID == 1006 || script.ID == 1032 || script.ID == 1039 || script.ID == 1042 || script.ID == 1052 || script.ID == 1059 || script.ID == 1071 || script.ID == 1076 || script.ID == 1107 || script.ID == 1114 || script.ID == 2107 || script.ID == 2136 || script.ID == 4200 || script.ID == 3200 || script.ID == 3914 || script.ItemUseDelay > 0 {
 			d.QuestItemUses[script.ItemID] = append(d.QuestItemUses[script.ItemID], script)
 		}
 		if script.ID == 1052 {

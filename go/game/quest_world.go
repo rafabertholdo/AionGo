@@ -11,6 +11,38 @@ import (
 // monster reward. QuestVars packs five six-bit counters.
 func (s *Server) recordQuestKill(o *object, p *player) {
 	for _, script := range s.data.QuestKills[o.npc.ID] {
+		if script.ID == fungusAmongUsQuestID {
+			p.conn.fungusAmongUsKill(o)
+			continue
+		}
+		if script.ID == encroachersQuestID {
+			p.conn.encroachersKill(o.npc.ID)
+			continue
+		}
+		if script.ID == scoutItOutQuestID {
+			p.conn.scoutItOutKill(o.npc.ID)
+			continue
+		}
+		if script.ID == takeTheInitiativeQuestID {
+			p.conn.takeTheInitiativeKill(o.npc.ID)
+			continue
+		}
+		if script.ID == fearThisQuestID {
+			p.conn.fearThisKill(o.npc.ID)
+			continue
+		}
+		if script.ID == observatoryQuestID {
+			p.conn.observatoryKill(o.npc.ID)
+			continue
+		}
+		if script.ID == impetusiumQuestID {
+			p.conn.impetusiumKill(o.npc.ID)
+			continue
+		}
+		if script.ID == reducingTursinStrengthQuestID {
+			p.conn.reducingTursinStrengthKill(o.npc.ID)
+			continue
+		}
 		if script.ID == mandurisSecretQuestID {
 			p.conn.mandurisSecretKill(o.npc.ID)
 			continue

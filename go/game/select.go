@@ -24,6 +24,7 @@ var handlers = map[byte]func(*conn, *wire.Reader){
 	cmMayQuit:          func(*conn, *wire.Reader) {},
 	cmTimeCheck:        (*conn).timeCheck,
 	cmPing:             func(c *conn, _ *wire.Reader) { w := wire.Packet(smPong); w.C(0); w.C(0); c.send(w) },
+	cmPingRequest:      func(c *conn, _ *wire.Reader) { w := wire.Packet(smPingResponse); w.C(4); c.send(w) },
 	cmQuit:             (*conn).quit,
 }
 
@@ -53,7 +54,7 @@ func className(id int32) (string, bool) {
 
 func (c *conn) versionCheck(r *wire.Reader) {
 	chatAddress, chatPort := c.s.chat.clientAddress()
-	config := c.s.config
+	config := c.s.currentConfig()
 	w := wire.Packet(smVersionCheck)
 	w.C(0)
 	w.C(config.ID)
@@ -201,7 +202,10 @@ func (c *conn) checkNickname(r *wire.Reader) {
 
 // nameCheck is createOK, createInvalidName or createNameUsed.
 func (s *Server) nameCheck(name string) int32 {
-	if !s.names.valid(name) {
+	s.configMu.RLock()
+	valid := s.names.valid(name)
+	s.configMu.RUnlock()
+	if !valid {
 		return createInvalidName
 	}
 	used, err := s.store.NameUsed(name)

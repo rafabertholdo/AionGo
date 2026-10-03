@@ -36,6 +36,10 @@ func (c *conn) useItem(r *wire.Reader) {
 	for _, item := range p.cube {
 		if item.UniqueID == id {
 			for _, script := range s.data.QuestItemUses[item.ItemID] {
+				if script.ID == fearThisQuestID {
+					c.fearThisItemUse(item)
+					return
+				}
 				if script.ID == 1006 {
 					c.ascensionItemUse(item)
 					return
@@ -88,7 +92,7 @@ func (c *conn) useItem(r *wire.Reader) {
 					c.flyingReconnaissanceItemUse(item)
 					return
 				}
-				if script.ID == 1107 || script.ID == 2107 || script.ID == 3914 {
+				if script.ID == 1107 || script.ID == 2107 || script.ID == lostAxeQuestID || script.ID == 3914 {
 					c.questStartItemUse(item, script)
 					return
 				}

@@ -135,11 +135,36 @@ func (c *conn) showDialog(r *wire.Reader) {
 	o.targetID = c.player.ID
 	o.broadcast(c.s.lookAt(o), true)
 	for _, script := range c.s.data.QuestCustomTalks[o.npc.ID] {
+		if script.ID == imprisonedGourmetQuestID {
+			if q := c.player.quest(script.ID); q != nil && (q.Status == "START" || q.Status == "REWARD") && c.customQuestShowDialog(o, script) {
+				return
+			}
+			continue
+		}
+		if script.ID == krallBookQuestID {
+			if c.customQuestShowDialog(o, script) {
+				return
+			}
+			continue
+		}
 		if script.ID == headlessStoneStatueQuestID && o.npc.ID == headlessStoneStatueBodyNPCID {
 			quest := c.player.quest(headlessStoneStatueQuestID)
 			if quest == nil || quest.Status == "NONE" {
 				c.headlessStoneStatueDialog(o, script, -1)
 			}
+		}
+		if script.ID == reducingTursinStrengthQuestID {
+			if q := c.player.quest(script.ID); q != nil && (q.Status == "REWARD" || q.Status == "START") && c.customQuestShowDialog(o, script) {
+				return
+			}
+			continue
+		}
+		if script.ID == fungusAmongUsQuestID || script.ID == encroachersQuestID || script.ID == dangerousCropQuestID || script.ID == scoutItOutQuestID ||
+			script.ID == takeTheInitiativeQuestID || script.ID == fearThisQuestID || script.ID == observatoryQuestID || script.ID == impetusiumQuestID {
+			if q := c.player.quest(script.ID); q != nil && (q.Status == "REWARD" || q.Status == "START") && c.customQuestShowDialog(o, script) {
+				return
+			}
+			continue
 		}
 		if script.ID == 1001 || script.ID == 1006 || script.ID == 1007 || script.ID == 1031 || script.ID == 1032 || script.ID == 1033 || script.ID == 1034 || script.ID == 1035 || script.ID == 1036 || script.ID == 1037 || script.ID == 1038 || script.ID == 1039 || script.ID == 1040 || script.ID == 1041 || script.ID == 1042 || script.ID == 1043 || script.ID == 1051 || script.ID == 1052 || script.ID == 1053 || script.ID == 1054 || script.ID == 1055 || script.ID == 1056 || script.ID == 1057 || script.ID == 1058 || script.ID == 1059 || script.ID == 1062 || script.ID == 1072 || script.ID == 1071 || script.ID == 1075 || script.ID == 1076 || script.ID == 1091 || script.ID == 1092 || script.ID == 1098 || script.ID == 1162 || script.ID == 1163 || script.ID == 1170 || script.ID == 1183 || script.ID == 1192 || script.ID == 1011 || script.ID == 1012 || script.ID == 1013 || script.ID == 1014 || script.ID == 1015 || script.ID == 1016 || script.ID == 1017 || script.ID == 1018 || script.ID == 1019 || script.ID == 1020 || script.ID == 1021 || script.ID == 1022 || script.ID == 1023 || script.ID == 1097 || script.ID == 1130 || script.ID == 1149 || script.ID == 1156 || script.ID == 1157 || script.ID == 1158 || script.ID == forestOutlawQuestID || script.ID == belbuasTreasureQuestID || script.ID == delicateMandrakeQuestID {
 			// Java gives every handler dialog id -1 here; customQuestShowDialog maps each to that (a reward preview
@@ -225,12 +250,22 @@ func (c *conn) showDialog(r *wire.Reader) {
 	}
 	for _, script := range c.s.data.QuestActions[o.npc.ID] {
 		if q := c.player.quest(script.ID); q != nil && q.Status == "START" {
+			if script.ID == lostAxeQuestID {
+				c.lostAxeAction(o, script, -1)
+				return
+			}
 			c.useQuestObject(o, script)
 			return
 		}
 	}
 	for _, script := range c.s.data.QuestEnds[o.npc.ID] {
 		if q := c.player.quest(script.ID); q != nil && q.Status == "REWARD" {
+			if script.ID == secretDeliveryQuestID {
+				if c.customQuestShowDialog(o, script) {
+					return
+				}
+				continue
+			}
 			if script.Kind == data.QuestCustom && c.customQuestShowDialog(o, script) {
 				return
 			}
@@ -263,7 +298,7 @@ func (c *conn) dialogSelect(r *wire.Reader) {
 			c.nymphsGownDialog(nil, script, int32(dialogID))
 		} else if script.ID == 2122 {
 			c.ashesToAshesEvent(nil, nil, script, int32(dialogID))
-		} else if script.ID == 1107 || script.ID == 2107 || script.ID == 3914 || script.ItemUseDelay > 0 {
+		} else if script.ID == 1107 || script.ID == 2107 || script.ID == lostAxeQuestID || script.ID == 3914 || script.ItemUseDelay > 0 {
 			c.itemStartedQuestDialog(script, dialogID)
 		}
 		return

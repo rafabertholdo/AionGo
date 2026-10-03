@@ -93,12 +93,12 @@ func (c *conn) enterWorld(r *wire.Reader) {
 	c.send(s.siegeLocations())
 	c.send(prices())
 	c.send(abyssRank(p.abyss))
-	c.send(message(chatAnnouncement, "Welcome to "+s.config.Name+", on Aion Lightning ported to Go."))
+	c.send(message(chatAnnouncement, "Welcome to "+s.currentConfig().Name+", on Aion Lightning ported to Go."))
 	s.visMu.Lock()
 	s.prisonLogin(p)
 	s.petitionLogin(p)
 	s.classChangeDialog(p)
-	if s.config.HTMLWelcome {
+	if s.currentConfig().HTMLWelcome {
 		s.showHTML(p, s.data.Welcome)
 	}
 	s.visMu.Unlock()
@@ -232,7 +232,7 @@ func (c *conn) move(r *wire.Reader) {
 	case moveGlideUp, moveValidateGlide:
 		glide = r.C()
 	}
-	if r.Err != nil {
+	if r.Err != nil || !finitePosition(x, y, z) || !finitePosition(x2, y2, z2) {
 		return
 	}
 	s := c.s
@@ -289,6 +289,15 @@ func (c *conn) move(r *wire.Reader) {
 	if kind != moveStop {
 		c.endProtectionLocked()
 	}
+}
+
+func finitePosition(x, y, z float32) bool {
+	for _, v := range [...]float32{x, y, z} {
+		if math.IsNaN(float64(v)) || math.IsInf(float64(v), 0) {
+			return false
+		}
+	}
+	return true
 }
 
 // updatePosition is World.updatePosition: the player is there now, and sees and is seen from there.

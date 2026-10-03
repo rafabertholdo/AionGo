@@ -1,0 +1,270 @@
+# Go review coverage and critical fixes
+
+Started 2026-10-02 against the shared worktree. This ledger tracks implemented
+fixes and reviewed scope separately from the Java-to-Go feature inventory.
+A reviewed boundary does not certify its entire package.
+
+## First critical batch: packet boundaries
+
+Skills applied: Go routing, safety, security, error handling, code style and
+testing; project constraints remain in `AGENTS.md`. Existing quest and panel
+edits are preserved. No runtime stack changes or image publication are involved.
+
+| Scope | Finding | Change | Status |
+| --- | --- | --- | --- |
+| `wire/wire.go`: Reader byte counts | Invalid large counts allocated the requested size, and later reads overwrote the first error | Reject counts outside one frame before allocation; preserve the first error and existing bounded short-field padding | Implemented; regression and fuzz checks |
+| `wire/wire.go`: Frame/WriteFrame | Length cast silently wrapped above the 16-bit frame limit; writers discarded partial writes | Return an explicit frame-size error; provide checked whole-frame writing | Implemented; boundary and failure tests |
+| `game/conn.go`: send | Failed/short writes left a rolling cipher stream in use | Reject oversized game packets before encryption; close on deadline/write failure under the write lock | Implemented; failure/boundary/concurrent cipher-order tests |
+| `game/links.go`, `chat/server.go`, `login/gameserver.go`: plain sends | Framing errors and short writes were ignored | Use checked framing and close failed streams | Implemented; full protocol suites required |
+| `login/client.go`, `client/login.go`, `client/game.go`: encrypted sends | Framed/padded lengths were unchecked and write failures ignored | Check padded/header sizes before encryption; use checked writes and close broken streams | Implemented; login boundary and existing handshake tests |
+| `game/world.go`, `flight.go`, `summon.go`: client movement | NaN/infinite coordinates could reach world grids, zones and broadcasts | Validate current and destination coordinates before world access | Implemented; invalid-coordinate and truncated-packet tests |
+| `login/gameserver.go`: registration ranges/account list | Unchecked signed counts could panic or allocate disproportionate memory; truncated names could reach state updates | Bound counts against remaining packet bytes; reject malformed lists before state changes | Implemented; malformed-count/name tests |
+| `game/sniff.go`: handshake relay | Short key packets could panic; upstream failure left the relay waiting forever for a key | Validate headers/key size and close the key channel on upstream termination | Implemented; malformed-key termination tests |
+
+`wire.Frame` now returns `([]byte, error)`. Repository callers use `WriteFrame`
+or explicitly check the returned error. Valid packet bytes and required crypto
+are preserved. Rejected game output closes the connection rather than trying
+to continue a potentially desynchronized stream.
+
+## Reproducible validation
+
+- `go/scripts/check-go.sh`: sequential full tests, vet, seven command builds,
+  formatting checks; logs stored under the ignored `.build/go-checks/` directory.
+- `go/scripts/summarize_tests.py`: separates test-node and package counts,
+  lists failed/skipped tests, and rejects empty or unfinished runs as success.
+- `go/scripts/test_summarize_tests.py`: five tests for counts, optional DB skips,
+  failed builds, interrupted runs, invalid JSON and empty logs.
+- `AGENTS.md`: Go skill routing and protocol/toolchain constraints now explicit.
+
+Baseline before this batch: 2,142 passing test nodes, zero failing nodes,
+seven optional database skips. Those skips mean database integration was not
+verified. Validation results for the completed batch are recorded below.
+
+Completed batch validation:
+
+- Full `go test -json -count=1 ./...`: **2,217 passing test nodes, zero failures,
+  seven optional database skips**. Package results: ten passing packages and
+  seven packages without tests. The seven skipped test nodes are listed in
+  `.build/go-checks/summary.json`; no disposable database was configured.
+- Focused `go test -race -json` across wire/login/game packet tests:
+  **67 passing test nodes, zero failures or skips**; no races reported.
+- Ten-second fuzz runs: `FuzzFrameRoundTrip` passed after 27,819 executions;
+  `FuzzReader` passed after 759,539 executions. These are bounded fuzz runs,
+  not an exhaustive input-space proof.
+- Test-summary tooling: **five Python tests passed, zero failures or skips**.
+- `go vet ./...`, all seven `cmd/...` builds, repository Go formatting,
+  shell syntax and `git diff --check` passed.
+- An intermediate focused race run had three failing test nodes (the login
+  size-boundary parent and its two cases): the fixture set a deadline after
+  intentional pipe closure. Deadline setup was moved before the send; the
+  subsequent focused race and full suite passed. No production race was found
+  in that run.
+
+Logs and machine-readable summaries are under `.build/go-checks/`.
+No new real-client capture, database integration, deployment, image publication
+or live-stack restart was performed. Packet goldens and existing handshake/game
+tests ran in the full suite. This completes the first packet-boundary batch,
+not the entire critical pass or full codebase audit.
+
+## Remaining critical scope
+
+1. Add pinned correctness lint and vulnerability tooling, CI, and an isolated
+   database fixture job. Retain the Apple-host validation workaround until a
+   replacement toolchain has been qualified.
+2. Audit every request parser for `Reader.Err` before mutation. This batch checks
+   movement and two login count paths; it does not validate every game, login
+   or chat request. Assess remaining finite coordinate trust boundaries too.
+3. Review persistence errors, transactions and in-memory/client commit order
+   for inventory, rewards, trades, mail, broker and options loading.
+4. Review server lifecycle, shared-state ownership, shutdown saves, reconnect
+   loops and all timer/goroutine cancellation. Check slow-peer backpressure
+   and lock-held network I/O separately from the cipher-order regression.
+5. Review panel authorization, mutation protection, proxy/cookie policy,
+   request limits and authentication rate limits.
+
+Next persistence slice, confirmed by source inspection in this session:
+`game/inventory.go` mutates item/kinah counts and sends updates even when
+`saveItem` logs an update failure; `game/mail.go` moves/splits an attachment
+before `InsertLetter` can fail; `game/broker.go` charges the registration fee
+and moves the item through separate writes before registration completes.
+These paths need explicit failure behavior and transaction/failure-injection
+coverage. This batch does not change their shared quest/inventory interfaces.
+
+## Full codebase review coverage
+
+| Area | Coverage so far | Remaining |
+| --- | --- | --- |
+| wire | Reader fields, framing and checked writing | Broader consumer error propagation |
+| crypt | Existing protocol tests; game cipher integration exercised | Independent full crypto/usage review |
+| login | Two count parsers and output framing | Remaining requests, persistence, authentication, lifecycle and configuration |
+| chat | Plain output framing | Parsers, authentication, channel/state ownership and lifecycle |
+| client | Output framing and header/padding limits | Parsing, read-channel backpressure and lifecycle |
+| game | Movement/output boundaries, relay key handling | Other handlers, effects, AI, inventory, social systems, world state and lifecycle |
+| game/data | Not reviewed in this batch | Entire package |
+| game/store | Not reviewed in this batch | Entire package with disposable database failure tests |
+| options | Prior plan's sampled concerns only | Load failures, iteration errors and contexts |
+| commands | Not reviewed in this batch | Entire package |
+| cmd | Existing tests and command builds | Each command's configuration, wiring, shutdown and panel paths |
+| Go tooling | Check runner and JSON summary added | CI, pinned scanners and fixture setup |
+
+Quest porting/correctness proceeds alongside this ledger. Coordinate shared
+quest/store changes and continue to serialize container-backed Go commands.
+
+## Kinah persistence slice
+
+`game/inventory.go` now writes a copied kinah item before changing the live
+player balance or sending `SM_UPDATE_ITEM`. `increaseKinah` reports persistence
+failure, and `addItem` propagates that result for kinah grants. Failed decreases
+leave the balance and client state unchanged. The failure-injection regression
+test covers both directions and the `addItem` grant path.
+
+Validation: focused test passed; full `go test -json -count=1 ./...` reported
+2,267 passing test nodes, zero failures, and seven optional database tests
+skipped because `AION_TEST_DB` was not configured. `go vet ./...`, gofmt check,
+and `git diff --check` passed. Trade, mail, broker and non-kinah item writes
+remain open; this slice does not make those multi-item flows atomic.
+
+## Java-to-Go dice roll request
+
+Java source: `java/AL-Game/src/main/java/com/aionemu/gameserver/network/aion/clientpackets/CM_CLIENT_COMMAND_ROLL.java`
+(`readImpl`, `runImpl`). Go registers `CM_CLIENT_COMMAND_ROLL` in
+`game/client_command.go`, rolls inclusively from 1 through a positive maximum,
+sends system message 1400126 to the player, and broadcasts 1400127 to players
+in the player's known list. Nonpositive maxima produce 1, matching Java's
+minimum result at zero and avoiding invalid random bounds; `MaxInt32` is safe.
+Truncated requests are ignored before sending. Nonpositive values are
+malformed; Go returns 1 for them (the Java zero case also returns 1).
+
+Focused tests cover both messages, valid range, nonpositive and maximum integer
+bounds, and truncated input. Full validation: **2,269 passing test nodes, zero
+failures, seven optional database skips**; `go vet ./...` passed. No real-client
+or packet-capture verification was performed, so this remains implemented but
+unverified for 1.9 runtime parity.
+
+## Java-to-Go static door request
+
+Java source: `java/AL-Game/src/main/java/com/aionemu/gameserver/network/aion/clientpackets/CM_OPEN_STATICDOOR.java`
+(`readImpl`, `runImpl`) reads a door object ID and broadcasts `SM_EMOTION`.
+Go registers the request in `game/staticdoor.go`, ignores truncated input, and
+broadcasts the matching switch-door packet to the player and their known list.
+The existing Java packet format is preserved: door ID, emotion type 29, state
+9, and trailing zero `D`. This ports only the broadcast request; door state and
+access mechanics remain outside this behavior.
+
+Focused packet and truncated-input tests passed. Full `go test -json ./...`
+reported **2,271 passing test nodes, zero failures, and seven optional database
+skips**. `go vet ./...`, gofmt, and `git diff --check` passed. No client or
+capture verification was performed.
+
+## Java-to-Go NPC map search request
+
+Skills applied: Aion server reference, Go routing, safety, testing and code style.
+Reviewed `game/object_search.go`, spawn loading and indexing in
+`game/data/{data,world}.go`, and the add/delete/reload paths in
+`game/admin_world.go`. Java references are `CM_OBJECT_SEARCH.runImpl`,
+`SpawnsData.getFirstSpawnByNpcId`, and `SM_SHOW_NPC_ON_MAP.writeImpl`.
+
+Go registers `CM_OBJECT_SEARCH` for in-game clients, reads the template ID,
+and sends one marker for the first nonempty spawn group in static file order.
+The marker writes the NPC ID, world ID twice, and three float coordinates.
+Unknown templates and truncated requests produce no reply. Selection includes
+other worlds and groups with zero pools or special handlers, matching Java's
+lookup behavior rather than the set of active NPC objects.
+
+The new NPC index retains cross-map insertion order and shares spawn groups
+with the world index. Admin addition, deletion and data reload update both;
+the admin test fixture owns both indexes to avoid mutating shared static data.
+Tests cover the response bytes, dispatch registration, group/spot ordering,
+missing templates, all short request lengths, absent players, loader reload,
+and admin addition/deletion. Capture and real-client verification remain open.
+
+Validation: focused run **17 passing test nodes, zero failures or skips**;
+final full `go test -json -count=1 ./...` **2,274 passing test nodes, zero
+failures, seven optional database skips** (ten passing packages, seven without
+tests). `go vet ./...`, repository gofmt check, all `cmd/...` builds and
+`git diff --check` passed. Logs and the list of skipped tests are in
+`.build/object-search/`. No test database, client capture or live-stack change
+was involved.
+
+## Java-to-Go group and alliance target brands
+
+Skills applied: Aion server reference, Go routing, safety, testing and code style.
+Java references: `network/aion/clientpackets/CM_SHOW_BRAND.readImpl/runImpl`,
+`services/GroupService.showBrand`, `services/AllianceService.showBrand`, and
+`network/aion/serverpackets/SM_SHOW_BRAND.writeImpl`, under
+`java/AL-Game/src/main/java/com/aionemu/gameserver/`.
+
+`game/brand.go` registers the in-game request and reads both signed IDs before
+entering player state. Any group/alliance member may broadcast; Java performs
+no leader, brand-range or target-resolution check. Both membership branches
+are independent, matching Java. All group members and connected alliance
+members receive `H(1), D(brand), D(target)`. The packet builder also replaces
+the identical existing zero/zero alliance-join reset. There is no persisted
+brand state in Java or this port; clearing IDs pass through unchanged.
+
+Reviewed the group/alliance membership lists, the `withPlayer` visibility lock,
+and logout's removal from both rosters. No inventory, reward, quest, or database
+write is involved, so the remaining persistence findings do not block this
+bounded request port. Broader lifecycle and lock-held network I/O reviews
+remain open.
+
+Focused checks: **seven passing test nodes, zero failures or skips**. Coverage
+includes literal packet bytes, member rather than leader authority, group and
+alliance recipient isolation, both membership branches, an offline alliance
+entry, solo and absent players, clearing, signed ID extremes, registration and
+all eight truncated request lengths. Capture/client verification remains open.
+
+Final validation: full `go test -json -count=1 ./...` reported **2,281 passing
+test nodes, zero failures, seven optional database skips** (ten passing
+packages, seven without tests). No disposable database fixture was configured.
+`go vet ./...`, all seven command builds, repository gofmt check and
+`git diff --check` passed. Logs and skipped-test names are in `.build/brands/`.
+No quest code, running stack, deployment or published image was changed.
+
+## Java-to-Go alliance subgroup reassignment
+
+Skills applied: Aion server reference, Go routing, safety, testing and code style.
+Java sources under `java/AL-Game/src/main/java/com/aionemu/gameserver/`:
+`CM_ALLIANCE_GROUP_CHANGE.readImpl/runImpl`,
+`AllianceService.handleGroupChange/broadcastAllianceMemberInfo`,
+`PlayerAlliance.hasAuthority/swapPlayers/setAllianceGroupFor/getOpenAllianceGroup`,
+`PlayerAllianceEvent`, `SM_ALLIANCE_MEMBER_INFO` and `SM_PLAYER_ID`.
+
+`game/alliance_group.go` registers the in-game request, reads all three signed
+IDs before accessing player state, and retains Java's captain/vice-captain
+authority and rejection messages. Group zero swaps two members; a group ID
+moves one member. Each changed subject produces event-13 member info followed
+by player-ID info for every connected alliance member, including the subject.
+Swaps broadcast the first subject before the second, after both assignments
+change. Existing packet builders are reused.
+
+`game/alliance.go` now retains subgroup assignments independently of roster
+order. Leaving removes only the departing assignment; joining fills the first
+group with fewer than six members. Roster order and captain/vice status survive
+moves and swaps. Source inspection covered formation, addition, removal,
+member updates, authority and dispatch. The request uses the existing serialized
+player/world dispatch; no new goroutines or database writes are introduced.
+Open inventory transaction findings therefore do not block this slice.
+
+Intentional defensive differences: unknown member IDs, groups outside the four
+advertised IDs (1000–1003), and moves into another full subgroup are ignored
+before mutation. Java assumes valid input and can dereference absent members,
+create arbitrary group IDs, or overfill a subgroup. Valid same-group moves and
+self-swaps retain Java's broadcasts. This port retains Go's existing immediate
+alliance departure on logout; Java's delayed offline-member retention remains
+a separate lifecycle gap. No new alliance persistence is claimed.
+
+Focused coverage includes authority, registration, packet order/recipients,
+ID packet bytes, event/group fields, swaps between full subgroups, capacity,
+stable assignments across movement/leave/join, missing/foreign members, invalid
+groups, all twelve truncated lengths, absent players and disconnected recipients.
+Real-client/capture verification remains open. The existing group-restricted
+kisk check also consumes `alliance.slot`, so it follows subgroup reassignment.
+
+Validation: focused checks **21 passing test nodes, zero failures or skips**;
+full `go test -json -count=1 ./...` **2,301 passing test nodes, zero failures,
+seven optional database skips** (ten passing packages, seven without tests).
+No disposable database fixture was configured. Logs and skipped-test names
+are under `.build/alliance-groups/`. `go vet ./...`, all seven command builds,
+repository gofmt check and `git diff --check` passed. No quest code, running
+stack, deployment or published image was changed.

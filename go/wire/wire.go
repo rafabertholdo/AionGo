@@ -14,6 +14,12 @@ import (
 // ErrShortPacket is a packet that ends before a field it should have.
 var ErrShortPacket = errors.New("packet ends early")
 
+// MaxPayloadSize is the largest payload the two-byte frame length can represent.
+const MaxPayloadSize = math.MaxUint16 - 2
+
+// ErrFrameTooLarge is a payload whose framed length cannot fit in two bytes.
+var ErrFrameTooLarge = errors.New("packet exceeds frame size")
+
 // Reader reads a packet's fields in order, remembering the first error.
 type Reader struct {
 	Data []byte
@@ -26,9 +32,17 @@ func NewReader(data []byte) *Reader {
 }
 
 func (r *Reader) take(n int) []byte {
-	if r.Err != nil || n < 0 || len(r.Data) < n {
-		r.Err = ErrShortPacket
-		return make([]byte, max(n, 0))
+	if n < 0 || n > MaxPayloadSize {
+		if r.Err == nil {
+			r.Err = ErrShortPacket
+		}
+		return nil
+	}
+	if r.Err != nil || len(r.Data) < n {
+		if r.Err == nil {
+			r.Err = ErrShortPacket
+		}
+		return make([]byte, n)
 	}
 	b := r.Data[:n]
 	r.Data = r.Data[n:]
@@ -124,7 +138,26 @@ func ReadFrame(r io.Reader) ([]byte, error) {
 	return payload, err
 }
 
-// Frame prefixes payload with its size, for an unencrypted link.
-func Frame(payload []byte) []byte {
-	return append(binary.LittleEndian.AppendUint16(nil, uint16(len(payload)+2)), payload...)
+// Frame prefixes payload with its size, rejecting lengths that would wrap.
+func Frame(payload []byte) ([]byte, error) {
+	if len(payload) > MaxPayloadSize {
+		return nil, ErrFrameTooLarge
+	}
+	return append(binary.LittleEndian.AppendUint16(nil, uint16(len(payload)+2)), payload...), nil
+}
+
+// WriteFrame writes one whole frame. A short write leaves the stream unusable.
+func WriteFrame(w io.Writer, payload []byte) error {
+	frame, err := Frame(payload)
+	if err != nil {
+		return err
+	}
+	n, err := w.Write(frame)
+	if err != nil {
+		return err
+	}
+	if n != len(frame) {
+		return io.ErrShortWrite
+	}
+	return nil
 }

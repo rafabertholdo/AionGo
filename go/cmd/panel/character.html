@@ -53,6 +53,31 @@ input:checked + .tab { color:#f1ead0; }
 .tip .plus { color:#f1f1f1; }
 .q-junk { color:var(--junk); } .q-common { color:var(--common); } .q-rare { color:var(--rare); } .q-legend { color:var(--legend); }
 .q-unique { color:var(--unique); } .q-epic { color:var(--epic); } .q-mythic { color:var(--mythic); }
+.admin-tools { max-width:540px; margin:16px auto; padding:16px; background:#29271e; border:1px solid #8a7c4c; border-radius:6px; font-size:14px; }
+.admin-tools h2 { margin:0 0 6px; font-size:18px; }
+.admin-tools h3 { margin:0 0 8px; font-size:15px; }
+.admin-tools p { margin:6px 0; }
+.admin-tools form { margin:10px 0; }
+.admin-tools input, .admin-tools select, .admin-tools button { font:inherit; padding:6px; border:1px solid #625a43; border-radius:4px; background:#1d1c16; color:#eee; }
+.admin-tools button { background:#4a4228; color:#f2e6bf; cursor:pointer; }
+.admin-tools button:disabled { opacity:.5; cursor:not-allowed; }
+.admin-tools .error { color:#ff9c9c; }
+.admin-status { color:#c8c3b2; }
+.admin-section { padding:12px 0; border-top:1px solid #504a39; }
+.admin-row { display:flex; flex-wrap:wrap; align-items:end; gap:8px; }
+.admin-row label { display:grid; gap:4px; }
+.admin-row input[type=number] { width:170px; }
+.item-categories { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+.item-categories button { padding:4px 8px; font-size:12px; }
+.item-categories button.active { border-color:#c9b779; background:#615536; }
+.item-results { display:grid; gap:4px; max-height:190px; overflow:auto; margin:8px 0; }
+.item-results button { display:flex; justify-content:space-between; gap:10px; text-align:left; background:#211f18; }
+.item-results button:hover { border-color:#c9b779; }
+.item-results small { color:#b6ae95; white-space:nowrap; }
+.selected-item { min-height:20px; color:#e8d9a0; }
+.admin-tools details { border-top:1px solid #504a39; padding-top:12px; }
+.admin-tools summary { cursor:pointer; color:#e8d9a0; }
+.admin-tools details form { margin-top:12px; }
 .money { color:#e8d9a0; }
 </style>
 </head>
@@ -96,6 +121,79 @@ input:checked + .tab { color:#f1ead0; }
 {{end}}
 
 {{if .Found}}
+{{if .User.Admin}}
+<section class="admin-tools" aria-label="Admin character controls">
+<h2>Admin tools · {{.Name}}</h2>
+{{with .Message}}<p role="status"{{if $.Error}} class="error"{{end}}>{{.}}</p>{{end}}
+<p class="admin-status">{{if .Online}}This character is online. Log out before making changes.{{else}}Changes apply the next time this character logs in.{{end}}</p>
+<section class="admin-section" aria-labelledby="grant-kinah-title">
+<h3 id="grant-kinah-title">Give Kinah</h3>
+<form method="post" action="/admin/character" class="admin-row">
+<input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
+<input type="hidden" name="action" value="kinah">
+<label>Amount <input type="number" name="amount" min="1" max="9223372036854775807" step="1" required placeholder="1000000"></label>
+<button{{if .Online}} disabled{{end}}>Give Kinah</button>
+</form>
+<p>Current balance: <span class="money">{{commas .Kinah}}</span></p>
+</section>
+
+<section class="admin-section" aria-labelledby="grant-item-title">
+<h3 id="grant-item-title">Find an item to give</h3>
+<label for="item-search">Search by item name or ID</label>
+<input id="item-search" type="search" autocomplete="off" placeholder="Search items…" style="width:100%">
+<div class="item-categories" role="group" aria-label="Item category">
+<button type="button" class="active" data-category="all">All items</button>
+<button type="button" data-category="stigma">Stigmas</button>
+<button type="button" data-category="spellbook">Spellbooks</button>
+</div>
+<div class="item-results" id="item-results" role="listbox" aria-label="Matching items"></div>
+<p class="selected-item" id="selected-item" role="status">Choose an item from the search results.</p>
+<form method="post" action="/admin/character" id="grant-item-form" class="admin-row">
+<input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
+<input type="hidden" name="action" value="item"><input type="hidden" name="item_id" id="selected-item-id">
+<label>Quantity <input type="number" name="amount" min="1" max="2147483647" step="1" value="1" required></label>
+<button id="grant-item-button" data-online="{{.Online}}" disabled>Give item</button>
+</form>
+</section>
+
+<section class="admin-section" aria-labelledby="grant-set-title">
+<h3 id="grant-set-title">Give an equipment set</h3>
+<form method="post" action="/admin/character" class="admin-row">
+<input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
+<input type="hidden" name="action" value="set">
+<label>Gear set <select name="set_id" required><option value="">Choose a gear set…</option>{{range .GearSets}}<option value="{{.Key}}">{{.Name}}</option>{{end}}</select></label>
+<button{{if .Online}} disabled{{end}}>Give set</button>
+</form>
+<p>Includes Miragent/Fenris, Anuhart, Adma, Theobomos, Steel Rake, and Slain Archon armor sets.</p>
+</section>
+
+<section class="admin-section" aria-labelledby="expand-cube-title">
+<h3 id="expand-cube-title">Cube</h3>
+<form method="post" action="/admin/character" class="admin-row">
+<input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
+<input type="hidden" name="action" value="expand_cube">
+<span>Capacity: {{.Limit}} / 108</span>
+<button{{if or .Online (ge .Limit 108)}} disabled{{end}}>Expand to maximum</button>
+</form>
+</section>
+
+<details>
+<summary>Character progression</summary>
+<form method="post" action="/admin/character" class="admin-row">
+<input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
+<input type="hidden" name="action" value="level">
+<label>Set level <input type="number" name="level" min="1" max="50" value="{{.Level}}" required></label>
+<button{{if .Online}} disabled{{end}}>Set level</button>
+</form>
+<form method="post" action="/admin/character">
+<input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
+<input type="hidden" name="action" value="ascension">
+<p>Set level 9, complete the starting campaign, advance Ascension to the conversation that enters the trial instance, and move beside Pernos (Elyos) or Munin (Asmodian). Requires a base class. Campaign rewards are not granted. Asmodian Ascension requires the Java server.</p>
+<button{{if .Online}} disabled{{end}}>Prepare for Ascension trial</button>
+</form>
+</details>
+</section>
+{{end}}
 <div class="stage" style="height:640px">
   <!-- Profile: player_info_dialog, 406x431. Its widgets sit below the 17px title band. -->
   <div class="w" style="left:0;top:0;width:406px;height:431px">
@@ -160,5 +258,83 @@ input:checked + .tab { color:#f1ead0; }
   </div>
 </div>
 {{end}}
+<script>
+(() => {
+  const search = document.getElementById('item-search');
+  const results = document.getElementById('item-results');
+  const categories = document.querySelectorAll('.item-categories [data-category]');
+  const selectedID = document.getElementById('selected-item-id');
+  const selectedLabel = document.getElementById('selected-item');
+  const submit = document.getElementById('grant-item-button');
+  const form = document.getElementById('grant-item-form');
+  if (!search || !results || !submit || !form) return;
+
+  const online = submit.dataset.online === 'true';
+  let category = 'all';
+  let timer;
+
+  function clearSelection() {
+    selectedID.value = '';
+    selectedLabel.textContent = 'Choose an item from the search results.';
+    submit.disabled = online;
+  }
+
+  async function loadItems() {
+    clearSelection();
+    results.replaceChildren();
+    const query = search.value.trim();
+    if (!query && category === 'all') {
+      results.textContent = 'Type a name or item ID, or choose Stigmas or Spellbooks to browse those categories.';
+      return;
+    }
+    const params = new URLSearchParams({ q: query, category });
+    try {
+      const response = await fetch(`/admin/items/search?${params}`, { headers: { Accept: 'application/json' } });
+      if (!response.ok) throw new Error('Item search failed. Refresh the page and try again.');
+      const items = await response.json();
+      if (items.length === 0) {
+        results.textContent = 'No matching items.';
+        return;
+      }
+      for (const item of items) {
+        const option = document.createElement('button');
+        option.type = 'button';
+        option.setAttribute('role', 'option');
+        const name = document.createElement('span');
+        name.textContent = item.name || `Item ${item.id}`;
+        const detail = document.createElement('small');
+        detail.textContent = `${item.type || 'Item'} · #${item.id}`;
+        option.append(name, detail);
+        option.addEventListener('click', () => {
+          selectedID.value = item.id;
+          selectedLabel.textContent = `${item.name || `Item ${item.id}`} (#${item.id})`;
+          submit.disabled = online;
+        });
+        results.append(option);
+      }
+    } catch (error) {
+      results.textContent = error.message || 'Item search failed.';
+    }
+  }
+
+  search.addEventListener('input', () => {
+    clearTimeout(timer);
+    timer = setTimeout(loadItems, 140);
+  });
+  for (const button of categories) {
+    button.addEventListener('click', () => {
+      category = button.dataset.category;
+      for (const candidate of categories) candidate.classList.toggle('active', candidate === button);
+      loadItems();
+    });
+  }
+  form.addEventListener('submit', event => {
+    if (!selectedID.value) {
+      event.preventDefault();
+      selectedLabel.textContent = 'Choose an item from the search results first.';
+    }
+  });
+})();
+</script>
 </body>
 </html>

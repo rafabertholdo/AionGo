@@ -8,6 +8,13 @@ type conformanceException struct {
 
 // conformanceExceptions is "<quest id>/<rule>" -> why Java itself breaks the rule. Cite the Java line.
 var conformanceExceptions = map[string]conformanceException{
+	"1197/click":     {Java: "verteron/_1197KrallBook.java:76-85", Reason: "The Krall Book NPC answers a plain click with no dialog packet while offering its item"},
+	"1197/echo":      {Java: "verteron/_1197KrallBook.java:76-85", Reason: "The Krall Book NPC answers every dialog selection with no packet while the quest is absent or NONE"},
+	"2123/echo":      {Java: "ishalgen/_2123TheImprisonedGourmet.java:154-173", Reason: "NPC 700128 handles every dialog selection during the initial quest step, so unknown selections produce no window echo"},
+	"1194/clickpage": {Java: "verteron/_1194ReducingTursinStrength.java:72-75", Reason: "Starter explicitly shows reward page 1352 on a plain click while the quest is REWARD"},
+	"2016/clickpage": {Java: "altgard/_2016FearThis.java:145-150", Reason: "The reward giver explicitly shows page 2375 on a plain click while the quest is REWARD"},
+	"2017/clickpage": {Java: "altgard/_2017TrespassersattheObservatory.java:106-114", Reason: "The reward giver explicitly shows page 2034 on a plain click while the quest is REWARD"},
+	"2018/echo":      {Java: "altgard/_2018ReconstructingImpetusium.java:126-129", Reason: "The jewel-box handler returns true so ActionitemController runs its timed use and drop registration instead of echoing the click"},
 	"1183/clickpage": {Java: "verteron/_1183SpiritOfNature.java:87", Reason: "First helper explicitly handles click by sending page 1352"},
 	"1170/accept":    {Java: "verteron/_1170HeadlessStoneStatue.java:69", Reason: "Body starts the quest on any initial dialog"},
 	"1170/echo":      {Java: "verteron/_1170HeadlessStoneStatue.java:69", Reason: "Body starts and sends page 1011 before returning false for the framework echo"},

@@ -52,21 +52,8 @@ func (c *conn) orderOfTheCaptainDialog(o *object, script *data.QuestScript, dial
 			return
 		}
 		// QuestService.startQuest(..., LOCKED) bypasses normal start conditions.
-		for id := int32(2001); id <= 2007; id++ {
-			if existing := c.player.quest(id); existing != nil && existing.Status != "NONE" {
-				continue
-			}
-			locked := store.Quest{ID: id, Status: "LOCKED"}
-			if err := c.s.quests.SaveQuest(c.player.ID, locked); err != nil {
-				c.s.log.Error("locking follow-up quest", "quest", id, "err", err)
-				return
-			}
-			if existing := c.player.quest(id); existing == nil {
-				c.player.quests = append(c.player.quests, locked)
-			} else {
-				*existing = locked
-			}
-			c.send(questAccepted(1, locked))
+		if !c.lockQuestIDs(rangeQuestIDs(2001, 2007)) {
+			return
 		}
 		c.finishQuest(script, o.id, dialogID)
 	}

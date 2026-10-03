@@ -238,21 +238,45 @@ func (d *Data) loadWorld(dir string) error {
 		}
 		d.Walkers[t.ID] = route
 	}
+	return d.loadSpawns(filepath.Join(dir, "spawns"))
+}
+
+func (d *Data) loadSpawns(dir string) error {
 	d.Spawns = map[int32][]*SpawnGroup{}
+	d.SpawnsByNPC = map[int32][]*SpawnGroup{}
 	var spawns struct {
 		Groups []*SpawnGroup `xml:"spawn"`
 	}
-	for _, file := range xmlFiles(filepath.Join(dir, "spawns")) {
+	for _, file := range xmlFiles(dir) {
 		spawns.Groups = nil
 		if err := loadXML(file, &spawns); err != nil {
 			return err
 		}
 		for _, g := range spawns.Groups {
 			g.Pool = min(g.Pool, int32(len(g.Spots)))
-			d.Spawns[g.Map] = append(d.Spawns[g.Map], g)
+			d.AddSpawnGroup(g)
 		}
 	}
 	return nil
+}
+
+// AddSpawnGroup keeps world and NPC lookups in insertion order, as SpawnsData does.
+func (d *Data) AddSpawnGroup(group *SpawnGroup) {
+	if d.Spawns == nil {
+		d.Spawns = map[int32][]*SpawnGroup{}
+	}
+	if d.SpawnsByNPC == nil {
+		d.SpawnsByNPC = map[int32][]*SpawnGroup{}
+	}
+	d.Spawns[group.Map] = append(d.Spawns[group.Map], group)
+	d.SpawnsByNPC[group.NpcID] = append(d.SpawnsByNPC[group.NpcID], group)
+}
+
+// RemoveSpawnGroup removes the same group from both spawn lookups.
+func (d *Data) RemoveSpawnGroup(group *SpawnGroup) {
+	match := func(candidate *SpawnGroup) bool { return candidate == group }
+	d.Spawns[group.Map] = slices.DeleteFunc(d.Spawns[group.Map], match)
+	d.SpawnsByNPC[group.NpcID] = slices.DeleteFunc(d.SpawnsByNPC[group.NpcID], match)
 }
 
 // xmlFiles lists the xml files under dir, in path order: what an <import> of a folder reads.

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commands · Aion Server</title>
+<style>
+:root{color-scheme:light dark;--bg:#f6f5f2;--card:#fff;--ink:#1d1d1f;--muted:#6b6b70;--line:#e2e0db;--accent:#2f5d8a}
+@media(prefers-color-scheme:dark){:root{--bg:#151517;--card:#1f1f22;--ink:#ececee;--muted:#9a9aa1;--line:#333338;--accent:#7fb0e0}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,system-ui,sans-serif}main{max-width:980px;margin:auto;padding:24px 16px 64px}header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}h1{font-size:26px}h2{font-size:20px}a{color:var(--accent)}.muted{color:var(--muted)}section{margin:24px 0}label{display:block;font-weight:600;margin-bottom:6px}input,select{font:inherit;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}input{width:min(100%,480px)}.filters{display:flex;flex-wrap:wrap;gap:12px}.command{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}.command h3{margin:0 0 8px;font-size:17px}.command p{margin:8px 0}code{font:13px/1.6 ui-monospace,monospace;overflow-wrap:anywhere}.tag{font-size:12px;color:var(--muted);margin-left:12px}pre{white-space:pre-wrap;margin:8px 0}button{font:inherit;border:1px solid var(--line);border-radius:6px;padding:5px 10px;background:var(--bg);color:var(--accent);cursor:pointer}[hidden]{display:none!important}
+</style>
+</head>
+<body><main>
+<header><h1>Game commands</h1><nav><a href="/">Account &amp; server</a>{{with .User}} · {{.Name}}{{end}}</nav></header>
+<p>Type commands in the game's chat box and press Enter. Player commands start with <code>/</code>; administrator commands start with <code>//</code>.</p>
+<div class="filters"><div><label for="search">Find a command</label><input id="search" type="search" placeholder="Search names, syntax or descriptions"></div>{{if .Admin}}<div><label for="category">Category</label><select id="category"><option value="">All categories</option><option>Connection</option><option>Players</option><option>Items</option><option>Movement</option><option>World</option><option>Messages</option><option>Moderation</option><option>Server</option><option>Diagnostics</option></select></div>{{end}}</div>
+<p id="result" class="muted" aria-live="polite"></p>
+<section><h2>Player commands</h2>
+{{range .Player}}{{template "command" .}}{{end}}
+</section>
+{{if .Admin}}<section><h2>Administrator commands</h2><p class="muted">These {{len .Admin}} commands require account access level 3 by default. Administrators can change individual requirements with <code>//configure</code>. Commands that act on the selected player fall back to you unless their description says otherwise.</p>
+{{range .Admin}}{{template "command" .}}{{end}}</section>
+{{else}}<p class="muted"><a href="/?next=/help">Sign in</a> with an administrator account to see administrator commands.</p>{{end}}
+<p id="empty" hidden>No commands match your search.</p>
+</main>
+<script>
+const entries=[...document.querySelectorAll('.command')],search=document.querySelector('#search'),category=document.querySelector('#category');
+function filter(){const term=search.value.trim().toLowerCase();let count=0;for(const entry of entries){entry.hidden=!(entry.textContent.toLowerCase().includes(term)&&(!category||!category.value||entry.dataset.category===category.value));if(!entry.hidden)count++}document.querySelector('#result').textContent=count+' commands';document.querySelector('#empty').hidden=count!==0}
+search.addEventListener('input',filter);category?.addEventListener('change',filter);filter();
+for(const button of document.querySelectorAll('[data-copy]'))button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(button.dataset.copy);button.textContent='Copied';setTimeout(()=>button.textContent='Copy example',1500)}catch{button.textContent='Select the example to copy'}});
+</script>
+</body></html>
+{{define "command"}}<article class="command" data-category="{{.Category}}"><h3>{{.Name}}<span class="tag">{{.Category}}</span></h3><code>{{.Syntax}}</code><p>{{.Description}}</p><pre><code>{{.Example}}</code></pre><button type="button" data-copy="{{.Example}}">Copy example</button></article>{{end}}

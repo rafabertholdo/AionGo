@@ -1,12 +1,51 @@
 package game
 
 import (
+	"fmt"
 	"slices"
 	"strconv"
 
 	"aionlightning/game/store"
 	"aionlightning/wire"
 )
+
+// restoreAutolearnSkills repairs characters created with incomplete skill trees.
+// Book and stigma skills still require their normal learning paths.
+func (s *Server) restoreAutolearnSkills(p *player) error {
+	base := p.Class
+	if index := slices.Index(classNames, p.Class); index >= 0 {
+		base = classNames[index-index%3]
+	}
+	for _, learn := range s.data.SkillTree {
+		if !learn.Autolearn || learn.Stigma || learn.MinLevel > p.level {
+			continue
+		}
+		if learn.Class != "ALL" && learn.Class != p.Class && !(learn.Class == base && learn.MinLevel < 10) {
+			continue
+		}
+		if learn.Race != "" && learn.Race != "ALL" && learn.Race != p.Race {
+			continue
+		}
+		id := learn.SkillID
+		if id == 30001 && p.level >= 10 {
+			id = 30002
+		}
+		i := slices.IndexFunc(p.skills, func(k store.Skill) bool { return k.ID == id })
+		if i >= 0 && p.skills[i].Level >= learn.SkillLevel {
+			continue
+		}
+		skill := store.Skill{ID: id, Level: learn.SkillLevel}
+		if err := s.skillDB.SaveSkill(p.ID, skill); err != nil {
+			return fmt.Errorf("restore player %d skill %d: %w", p.ID, id, err)
+		}
+		if i >= 0 {
+			p.skills[i] = skill
+		} else {
+			p.skills = append(p.skills, skill)
+		}
+	}
+	return nil
+}
 
 // skillSaver keeps a player's skills, recipes and abyss rank; store.Store does.
 type skillSaver interface {

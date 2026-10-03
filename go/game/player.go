@@ -12,20 +12,22 @@ import (
 // player is a character in the world.
 type player struct {
 	*character
-	level     int
-	stats     *gameStats
-	life      store.LifeStats // current HP, MP and FP
-	skills    []store.Skill
-	quests    []store.Quest
-	recipes   []int32
-	settings  *store.Settings
-	macros    []store.Macro
-	titles    []int32
-	abyss     *store.AbyssRank
-	equipment []*store.Item // worn, by slot
-	cube      []*store.Item // carried, kinah aside
-	kinah     *store.Item
-	stones    map[int32][]store.Stone // manastones, by the item they are in
+	adminInvulnerable bool
+	adminAppearance   *store.Appearance
+	level             int
+	stats             *gameStats
+	life              store.LifeStats // current HP, MP and FP
+	skills            []store.Skill
+	quests            []store.Quest
+	recipes           []int32
+	settings          *store.Settings
+	macros            []store.Macro
+	titles            []int32
+	abyss             *store.AbyssRank
+	equipment         []*store.Item // worn, by slot
+	cube              []*store.Item // carried, kinah aside
+	kinah             *store.Item
+	stones            map[int32][]store.Stone // manastones, by the item they are in
 
 	punish           punishment // gag and prison
 	visualState      byte
@@ -98,6 +100,9 @@ func (s *Server) loadPlayer(ch *character) (*player, error) {
 		return nil, err
 	}
 	if p.skills, err = s.store.Skills(id); err != nil {
+		return nil, err
+	}
+	if err = s.restoreAutolearnSkills(p); err != nil {
 		return nil, err
 	}
 	if p.titles, err = s.store.Titles(id); err != nil {

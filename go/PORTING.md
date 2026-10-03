@@ -136,13 +136,17 @@ Wrathchild, which `game/world_test.go` compares the Go packets with.
    catalog tests start and complete all 1,596 XML quests; these are
    synthetic tests, not a client or live database parity check.
    The user confirmed the first Elyos quest at Elpas in the 1.9 client.
-   162 custom Java handlers are now completed and tested, including the first Elyos
+   215 custom Java handlers are now completed and tested, including the first Elyos
    and Asmodian campaign chains, Poeta's The Nymph's Gown and The Kerub Threat,
    Elyos quests 1011–1023, Summons to the Citadel (1130), Missing Poppy (1149),
    Stolen Village Seal (1156), Gaphyrk's Love (1157), Village Seal Found (1158),
-   and Sword of Transcendence (1097), and The Red Journal (3060).
-   **Still open:** the current `scripts/quest-claim.py status` reports three active claims
-   and 162 free numbered handlers (165 registered in Go). Group progress, quest work-item cleanup, reward edge cases,
+   Sword of Transcendence (1097), The Red Journal (3060), the Asmodian startup
+   and campaign quests 2011–2018, 2123, 2136, 2200, and 2300, Reducing Tursin Strength
+   (1194), Krall Book (1197), A Secret Delivery (1220), and Orders from Telemachus (1300).
+   **Still open:** the current `scripts/quest-claim.py status` reports zero active claims,
+   109 free unported handlers, and 218 registered in Go. Ten registered drafts still
+   need focused tests and are excluded from the free count. Group progress, generic
+   quest work-item cleanup on abandonment, reward edge cases,
    and broader client verification remain. See [QUEST_PORTING.md](QUEST_PORTING.md)
    for the source map, exact tests, gaps, and next steps. Do not mark milestone
    9 complete based on the catalog test alone.
@@ -161,8 +165,12 @@ Wrathchild, which `game/world_test.go` compares the Go packets with.
    permissions, chat, levels, disbanding; stored in `legions` and `legion_members`).
    The broker (registering, browsing by kind and sorting, buying, cancelling, settling the account, expiry).
    Small requests: titles, macros, taking off effects, looking at a player, searching for players, a group's loot rules.
+   NPC map search (`CM_OBJECT_SEARCH`): first spawn in static file order, including other maps;
+   Java-compatible `SM_SHOW_NPC_ON_MAP`, with capture/client verification still open.
    Alliances of 24 (invitation merging groups, leaving, banning, captain and vice captains,
-   alliance chat, member info; no loot rules, brands or readiness checks; unverified against 1.9).
+   alliance chat, member info; no loot rules or readiness checks; unverified against 1.9).
+   Group/alliance target brands (`CM_SHOW_BRAND`), including clearing: any member can
+   broadcast Java-compatible `SM_SHOW_BRAND`; capture/client verification remains open.
    Legion emblems (buying, sending; uploaded emblem images aren't).
    Legion history (the tabs). Kisks (the item, binding by use mask, resurrections, destruction).
    Left: the legion warehouse and express mail (AL-Game leaves both off).

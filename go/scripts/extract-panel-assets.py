@@ -6,6 +6,7 @@ bytes of each entry are XORed with one of two tables picked by compressed size)
 and writes, into the output folder:
 
   items.json   item id -> name, icon, quality, level, type, stats, bonuses
+  gear-sets.json curated gear sets and the item ids each grants
   exp.json     total experience at the start of each level (AL-Game's table)
   icons/       item icons as PNG
   skins/       every UI skin of the client's atlases, cut out as PNG
@@ -196,6 +197,34 @@ def item_record(item, strings):
 
 ICON_SIZE = 40  # item icons fill the top-left 40x40 of a 64x64 texture; the client draws only that
 
+GEAR_SET_TERMS = ('miragent', 'fenris', 'anuhart', 'adma', 'theobomos', 'steel beard pirate',
+                  'shulack pirate', 'shulack sailor')
+SLAIN_ARCHON_SETS = {
+    'slain-archon-cloth': ('Slain Archon Cloth Set', [110100940, 113100848, 112100795, 111100838, 114100873]),
+    'slain-archon-leather': ('Slain Archon Leather Set', [110300888, 113300865, 112300789, 111300839, 114300898]),
+    'slain-archon-chain': ('Slain Archon Chain Set', [110500855, 113500831, 112500780, 111500829, 114500841]),
+    'slain-archon-plate': ('Slain Archon Plate Set', [110600840, 113600806, 112600791, 111600817, 114600800]),
+}
+
+
+def extract_gear_sets():
+    """Writes the named 1.9 armor families offered by the character grant tool."""
+    sets = []
+    root = ET.parse(f'{STATIC}/item_sets/item_sets.xml').getroot()
+    for item_set in root.findall('itemset'):
+        name = item_set.get('name', '')
+        if not any(term in name.lower() for term in GEAR_SET_TERMS):
+            continue
+        ids = [int(part.get('itemid')) for part in item_set.findall('itempart') if part.get('itemid')]
+        if ids:
+            sets.append({'k': f"set-{item_set.get('id')}", 'n': name, 'i': ids})
+    for key, (name, ids) in SLAIN_ARCHON_SETS.items():
+        sets.append({'k': key, 'n': name, 'i': ids})
+    sets.sort(key=lambda item_set: item_set['n'].casefold())
+    with open(f'{OUT}/gear-sets.json', 'w') as out:
+        json.dump(sets, out, separators=(',', ':'))
+    return len(sets)
+
 
 def icon_to_png(raw, path):
     Image.open(io.BytesIO(raw)).crop((0, 0, ICON_SIZE, ICON_SIZE)).save(path, optimize=True)
@@ -299,7 +328,8 @@ def main():
 
     exp = [int(e.text) for e in ET.parse(f'{STATIC}/player_experience_table.xml').getroot().iter('exp')]
     json.dump(exp, open(f'{OUT}/exp.json', 'w'))
-    print(f'{len(items)} items, {icons} icons, {skins} skins, {presets} presets, {len(exp)} levels -> {OUT}')
+    gear_sets = extract_gear_sets()
+    print(f'{len(items)} items, {icons} icons, {skins} skins, {presets} presets, {len(exp)} levels, {gear_sets} gear sets -> {OUT}')
 
 
 if __name__ == '__main__':

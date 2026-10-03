@@ -199,8 +199,14 @@ func (c *loginConn) exchange(w *wire.Writer) (byte, *wire.Reader, error) {
 // send pads, checksums and encrypts a packet as the client does: the checksum
 // word, then a last word of filler that the server's check leaves out.
 func (c *loginConn) send(w *wire.Writer) error {
+	if len(w.Data) > wire.MaxPayloadSize {
+		return wire.ErrFrameTooLarge
+	}
 	size := len(w.Data) + 8
 	size += 8 - size%8
+	if size > wire.MaxPayloadSize {
+		return wire.ErrFrameTooLarge
+	}
 	data := make([]byte, size)
 	copy(data, w.Data)
 	var sum uint32
@@ -210,6 +216,9 @@ func (c *loginConn) send(w *wire.Writer) error {
 	binary.LittleEndian.PutUint32(data[size-8:], sum)
 	binary.LittleEndian.PutUint32(data[size-4:], 0xdeadbeef)
 	c.cipher.Encrypt(data)
-	_, err := c.conn.Write(append(binary.LittleEndian.AppendUint16(nil, uint16(size+2)), data...))
-	return err
+	if err := wire.WriteFrame(c.conn, data); err != nil {
+		_ = c.conn.Close()
+		return err
+	}
+	return nil
 }

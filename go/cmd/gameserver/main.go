@@ -14,6 +14,7 @@ import (
 	"net/netip"
 	"os"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -65,7 +66,10 @@ func main() {
 
 	// The panel's settings (au_server_ls.server_options) win over the environment.
 	opts := options.Load(db)
+	shutdown := make(chan bool, 1)
+	var shutdownOnce sync.Once
 	server, err := game.NewServer(game.Config{
+		Shutdown:      func(restart bool) { shutdownOnce.Do(func() { shutdown <- restart }) },
 		ID:            byte(number(os.Getenv("AION_GSID"), 1)),
 		Name:          opts.Get("SERVER_NAME", "Siel"),
 		CountryCode:   byte(number(os.Getenv("SERVER_CC"), 1)),
@@ -92,7 +96,16 @@ func main() {
 	}
 	// ReRun and aion-servers.sh wait for this line, as AL-Game prints it.
 	log.Info("Total Boot Time", "seconds", time.Since(started).Seconds())
-	fail(log, "serving players", server.Serve(clients))
+	go func() {
+		restart := <-shutdown
+		log.Info("administrative shutdown", "restart", restart)
+		clients.Close()
+	}()
+	if err := server.Serve(clients); err != nil {
+		fail(log, "serving players", err)
+	}
+	server.CloseClients()
+	db.Close()
 }
 
 func env(name, fallback string) string {

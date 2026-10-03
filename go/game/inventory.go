@@ -126,8 +126,7 @@ func (s *Server) addItem(p *player, itemID int32, count int64) bool {
 		return false
 	}
 	if itemID == data.Kinah {
-		s.increaseKinah(p, count)
-		return true
+		return s.increaseKinah(p, count)
 	}
 	t := s.data.Items[itemID]
 	if t == nil {
@@ -217,10 +216,16 @@ func (s *Server) saveItem(item *store.Item) {
 }
 
 // increaseKinah is ItemService.increaseKinah.
-func (s *Server) increaseKinah(p *player, amount int64) {
-	p.kinah.Count += amount
-	s.saveItem(p.kinah)
+func (s *Server) increaseKinah(p *player, amount int64) bool {
+	updated := *p.kinah
+	updated.Count += amount
+	if err := s.items.UpdateItem(&updated); err != nil {
+		s.log.Error("saving kinah", "err", err)
+		return false
+	}
+	*p.kinah = updated
 	p.conn.send(s.updateItemPacket(p, p.kinah))
+	return true
 }
 
 // decreaseKinah is ItemService.decreaseKinah: false if the player hasn't that much.
@@ -228,8 +233,13 @@ func (s *Server) decreaseKinah(p *player, amount int64) bool {
 	if p.kinah.Count < amount {
 		return false
 	}
-	p.kinah.Count -= amount
-	s.saveItem(p.kinah)
+	updated := *p.kinah
+	updated.Count -= amount
+	if err := s.items.UpdateItem(&updated); err != nil {
+		s.log.Error("saving kinah", "err", err)
+		return false
+	}
+	*p.kinah = updated
 	p.conn.send(s.updateItemPacket(p, p.kinah))
 	return true
 }

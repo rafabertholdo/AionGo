@@ -1,0 +1,51 @@
+{
+  "release": "0.1.1",
+  "sourceRevision": "db9095a618ccda5205449a77b0c99f59c24b225e",
+  "goTests": {
+    "passed": 2088,
+    "failed": 0,
+    "skipped": 5
+  },
+  "commandRaceTests": {
+    "passed": 16,
+    "failed": 0
+  },
+  "pythonTests": {
+    "passed": 8,
+    "failed": 0
+  },
+  "rerunTests": {
+    "passed": 104,
+    "failed": 0
+  },
+  "downloadKitTests": {
+    "passed": 30,
+    "failed": 0
+  },
+  "goVet": "passed",
+  "format": "gofmt clean",
+  "swiftFiles": "scoped lint and format passed",
+  "repositorySwiftLint": "existing violations: 616 total, 26 serious",
+  "vps": {
+    "address": "15.228.191.246",
+    "databaseBackup": "/opt/aiongo/backups/pre-commands-v0.1.1.sql.gz",
+    "pingPacket": "passed",
+    "adminCommands": "invul toggles, bookmark add/list/delete, spawn/delete, configure show, sys info passed",
+    "databasePersistenceSchema": "passed with rolled-back writes",
+    "help": {
+      "publicHelp": true,
+      "adminHelp": true,
+      "adminPassword": true,
+      "adminCommandCount": 61,
+      "playerCommandCount": 1
+    },
+    "probeAccountRestored": true,
+    "runningImagesMatchPublished": true
+  },
+  "primaryCheckoutIntegration": {
+    "passed": 2142,
+    "failed": 0,
+    "skipped": 7,
+    "goVet": "passed"
+  }
+}

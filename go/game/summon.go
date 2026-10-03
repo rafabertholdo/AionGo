@@ -276,7 +276,7 @@ func (c *conn) summonMove(r *wire.Reader) {
 	if kind == moveStartMouse || kind == moveStartKeyboard {
 		to = [3]float32{r.F(), r.F(), r.F()}
 	}
-	if r.Err != nil {
+	if r.Err != nil || !finitePosition(x, y, z) || !finitePosition(to[0], to[1], to[2]) {
 		return
 	}
 	c.withPlayer(func(s *Server, p *player) {

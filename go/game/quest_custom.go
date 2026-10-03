@@ -126,6 +126,34 @@ func (c *conn) customQuestDialogID(o *object, script *data.QuestScript, d int32)
 	case 1192:
 		c.dialogResult(c.verteronReinforcementsDialog(o, script, d))
 		return
+	case reducingTursinStrengthQuestID:
+		c.dialogResult(c.reducingTursinStrengthDialog(o, script, d))
+		return
+	case krallBookQuestID:
+		c.dialogResult(c.krallBookDialog(o, script, d))
+		return
+	case secretDeliveryQuestID:
+		c.dialogResult(c.secretDeliveryDialog(o, script, d))
+		return
+	case imprisonedGourmetQuestID:
+		c.dialogResult(c.imprisonedGourmetDialog(o, script, d))
+		return
+	case lostAxeQuestID:
+		c.dialogResult(c.lostAxeAsmodianDialog(o, script, d))
+		return
+	case fungusAmongUsQuestID, encroachersQuestID, dangerousCropQuestID, scoutItOutQuestID,
+		takeTheInitiativeQuestID, fearThisQuestID, observatoryQuestID, impetusiumQuestID:
+		c.dialogResult(c.altgardStartupQuestDialog(o, script, d))
+		return
+	case altgardDutiesQuestID:
+		c.dialogResult(c.altgardDutiesDialog(o, script, d))
+		return
+	case morheimCommandersCallQuestID:
+		c.dialogResult(c.morheimCommandersCallDialog(o, script, d))
+		return
+	case ordersFromTelemachusQuestID:
+		c.dialogResult(c.ordersFromTelemachusDialog(o, script, d))
+		return
 	case 3060:
 		c.dialogResult(c.redJournalDialog(o, script, d))
 		return
@@ -280,6 +308,17 @@ func (c *conn) customQuestDialogID(o *object, script *data.QuestScript, d int32)
 
 func (c *conn) customQuestShowDialog(o *object, script *data.QuestScript) bool {
 	switch script.ID {
+	case imprisonedGourmetQuestID:
+		return c.imprisonedGourmetDialog(o, script, -1)
+	case lostAxeQuestID:
+		return c.lostAxeAsmodianDialog(o, script, -1)
+	case fungusAmongUsQuestID, encroachersQuestID, dangerousCropQuestID, scoutItOutQuestID,
+		takeTheInitiativeQuestID, fearThisQuestID, observatoryQuestID, impetusiumQuestID:
+		return c.altgardStartupQuestDialog(o, script, -1)
+	case altgardDutiesQuestID:
+		return c.altgardDutiesDialog(o, script, -1)
+	case morheimCommandersCallQuestID:
+		return c.morheimCommandersCallDialog(o, script, -1)
 	case 1006:
 		return c.ascensionDialog(o, script, -1)
 	case 1007:
@@ -354,6 +393,12 @@ func (c *conn) customQuestShowDialog(o *object, script *data.QuestScript) bool {
 		return c.spiritOfNatureDialog(o, script, -1)
 	case 1192:
 		return c.verteronReinforcementsDialog(o, script, -1)
+	case reducingTursinStrengthQuestID:
+		return c.reducingTursinStrengthDialog(o, script, -1)
+	case krallBookQuestID:
+		return c.krallBookDialog(o, script, -1)
+	case secretDeliveryQuestID:
+		return c.secretDeliveryDialog(o, script, -1)
 	case 3060:
 		return c.redJournalDialog(o, script, -1)
 	case 1001:

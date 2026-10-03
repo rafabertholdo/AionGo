@@ -17,9 +17,9 @@ class ImageTests(unittest.TestCase):
     def test_go_and_java_have_separate_release_tags(self):
         manifest = images.load_manifest()
         self.assertEqual(images.references(manifest, "game-go", "abcdef0123456789")[0],
-                         "docker.io/rafabertholdo/aiongo:1.9-game-go-v0.1.0")
+                         f"docker.io/rafabertholdo/aiongo:1.9-game-go-v{manifest['release']}")
         self.assertEqual(images.references(manifest, "game-java21", "abcdef0123456789")[0],
-                         "docker.io/rafabertholdo/aiongo:1.9-game-java21-v0.1.0")
+                         f"docker.io/rafabertholdo/aiongo:1.9-game-java21-v{manifest['release']}")
 
     def test_build_contexts_and_targets_match_each_role(self):
         manifest = images.load_manifest()
