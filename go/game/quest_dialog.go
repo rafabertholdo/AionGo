@@ -3,6 +3,7 @@ package game
 import (
 	"slices"
 	"sort"
+	"strconv"
 
 	"aionlightning/game/data"
 	"aionlightning/game/store"
@@ -130,150 +131,22 @@ func (c *conn) showDialog(r *wire.Reader) {
 	if o == nil || o.npc == nil || o.dead {
 		return
 	}
-	// CM_SHOW_DIALOG: the npc turns to the player, then the quest engine gets dialog id -1 and, if no handler answers,
-	// the client is shown the main menu (window 10), from which it picks a quest and sends CM_DIALOG_SELECT 25.
+	// CM_SHOW_DIALOG: the npc turns to the player, then its controller's onDialogRequest asks the quest engine with
+	// dialog id -1 (every handler on the npc in turn). NpcController answers an unanswered click with the main menu
+	// (window 10), from which the client picks a quest and sends CM_DIALOG_SELECT 25; ActionitemController plays the
+	// use animation only when a handler answered, and otherwise does nothing.
 	o.targetID = c.player.ID
 	o.broadcast(c.s.lookAt(o), true)
-	for _, script := range c.s.data.QuestCustomTalks[o.npc.ID] {
-		if script.ID == imprisonedGourmetQuestID {
-			if q := c.player.quest(script.ID); q != nil && (q.Status == "START" || q.Status == "REWARD") && c.customQuestShowDialog(o, script) {
-				return
-			}
-			continue
+	answered := c.questTalk(o, -1, 0)
+	if o.npc.Type == "USEITEM" {
+		if answered {
+			c.useActionObject(o)
 		}
-		if script.ID == krallBookQuestID {
-			if c.customQuestShowDialog(o, script) {
-				return
-			}
-			continue
-		}
-		if script.ID == headlessStoneStatueQuestID && o.npc.ID == headlessStoneStatueBodyNPCID {
-			quest := c.player.quest(headlessStoneStatueQuestID)
-			if quest == nil || quest.Status == "NONE" {
-				c.headlessStoneStatueDialog(o, script, -1)
-			}
-		}
-		if script.ID == reducingTursinStrengthQuestID {
-			if q := c.player.quest(script.ID); q != nil && (q.Status == "REWARD" || q.Status == "START") && c.customQuestShowDialog(o, script) {
-				return
-			}
-			continue
-		}
-		if script.ID == fungusAmongUsQuestID || script.ID == encroachersQuestID || script.ID == dangerousCropQuestID || script.ID == scoutItOutQuestID ||
-			script.ID == takeTheInitiativeQuestID || script.ID == fearThisQuestID || script.ID == observatoryQuestID || script.ID == impetusiumQuestID {
-			if q := c.player.quest(script.ID); q != nil && (q.Status == "REWARD" || q.Status == "START") && c.customQuestShowDialog(o, script) {
-				return
-			}
-			continue
-		}
-		if script.ID == 1001 || script.ID == 1006 || script.ID == 1007 || script.ID == 1031 || script.ID == 1032 || script.ID == 1033 || script.ID == 1034 || script.ID == 1035 || script.ID == 1036 || script.ID == 1037 || script.ID == 1038 || script.ID == 1039 || script.ID == 1040 || script.ID == 1041 || script.ID == 1042 || script.ID == 1043 || script.ID == 1051 || script.ID == 1052 || script.ID == 1053 || script.ID == 1054 || script.ID == 1055 || script.ID == 1056 || script.ID == 1057 || script.ID == 1058 || script.ID == 1059 || script.ID == 1062 || script.ID == 1072 || script.ID == 1071 || script.ID == 1075 || script.ID == 1076 || script.ID == 1091 || script.ID == 1092 || script.ID == 1098 || script.ID == 1162 || script.ID == 1163 || script.ID == 1170 || script.ID == 1183 || script.ID == 1192 || script.ID == 1011 || script.ID == 1012 || script.ID == 1013 || script.ID == 1014 || script.ID == 1015 || script.ID == 1016 || script.ID == 1017 || script.ID == 1018 || script.ID == 1019 || script.ID == 1020 || script.ID == 1021 || script.ID == 1022 || script.ID == 1023 || script.ID == 1097 || script.ID == 1130 || script.ID == 1149 || script.ID == 1156 || script.ID == 1157 || script.ID == 1158 || script.ID == forestOutlawQuestID || script.ID == belbuasTreasureQuestID || script.ID == delicateMandrakeQuestID {
-			// Java gives every handler dialog id -1 here; customQuestShowDialog maps each to that (a reward preview
-			// in REWARD and, for the few handlers with a `case -1`, their own page). Anything else is the main menu.
-			if q := c.player.quest(script.ID); q != nil && (q.Status == "REWARD" || q.Status == "START") && c.customQuestShowDialog(o, script) {
-				return
-			}
-			continue
-		}
-		if script.ID == 1114 && c.nymphsGownDialog(o, script, -1) {
-			return
-		}
-		if (script.ID == 1309 || script.ID == 1323 || script.ID == 2274) && c.player.quest(script.ID) != nil && c.delayedItemQuestNPCDialog(o, script, ^uint16(0)) {
-			return
-		}
-		if script.ID == 1006 || script.ID == 1007 || script.ID == 1031 || script.ID == 1032 || script.ID == 1033 || script.ID == 1034 || script.ID == 1035 || script.ID == 1036 || script.ID == 1037 || script.ID == 1038 || script.ID == 1039 || script.ID == 1040 || script.ID == 1041 || script.ID == 1042 || script.ID == 1043 || script.ID == 1051 || script.ID == 1052 || script.ID == 1053 || script.ID == 1054 || script.ID == 1055 || script.ID == 1056 || script.ID == 1057 || script.ID == 1058 || script.ID == 1059 || script.ID == 1062 || script.ID == 1072 || script.ID == 1071 || script.ID == 1075 || script.ID == 1076 || script.ID == 1091 || script.ID == 1092 || script.ID == 1098 || script.ID == 1162 || script.ID == 1163 || script.ID == 1170 || script.ID == 1183 || script.ID == 1192 {
-			if q := c.player.quest(script.ID); q != nil && (q.Status == "REWARD" || q.Status == "START") && c.answered(func() { c.customQuestDialogID(o, script, -1) }) {
-				return
-			}
-			continue
-		}
-		if script.LevelUpStart && script.LevelUpNPC == o.npc.ID {
-			q := c.player.quest(script.ID)
-			if q != nil && q.Status == "START" && c.levelUpQuestDialog(o, script, -1) {
-				return
-			}
-		}
-		if chain := talkChains[script.ID]; chain != nil && c.talkChainClick(o, script, chain) {
-			return
-		}
-		if script.ID == 2007 {
-			q := c.player.quest(2007)
-			if q != nil && q.Status == "START" && c.wheresRaeThisTimeDialog(o, script, -1) {
-				return
-			}
-		}
-		if script.ID == 2006 && c.hitThemWhereItHurtsDialog(o, script, -1) {
-			return
-		}
-		if script.ID == 2004 {
-			q := c.player.quest(2004)
-			if q != nil && q.Status == "START" && c.aCharmedCubeEvent(o, script, -1, false) {
-				return
-			}
-		}
-		if script.ID == 1005 {
-			q := c.player.quest(1005)
-			if q != nil && q.Status == "START" && c.answered(func() { c.barringTheGateDialog(o, script, -1) }) {
-				return
-			}
-		}
-		if script.ID == 1004 && o.npc.ID == 700030 {
-			q := c.player.quest(1004)
-			if q != nil && q.Status == "START" && c.answered(func() { c.neutralizingOdiumDialog(o, script, -1) }) {
-				return
-			}
-		}
-		if script.ID == 2002 && c.wheresRaeEvent(o, script, -1, false) {
-			return
-		}
-		if script.ID == 1002 && o.npc.ID == 730010 {
-			q := c.player.quest(1002)
-			if q != nil && q.Status == "START" && c.answered(func() { c.requestOfTheElimDialog(o, script, -1) }) {
-				return
-			}
-		}
-		if script.ID == 2001 && c.thinkingAheadEvent(o, script, -1, false) {
-			return
-		}
-		if script.ID == 2122 {
-			q := c.player.quest(script.ID)
-			if o.npc.ID == 730029 && q != nil && q.Status == "START" || o.npc.ID == 203551 && q != nil && q.Status == "REWARD" || o.npc.ID == 700148 && q != nil && q.Status == "START" {
-				if c.answered(func() { c.ashesToAshesEvent(o, nil, script, -1) }) {
-					return
-				}
-			}
-		}
+		return
 	}
-	for _, script := range c.s.data.QuestXMLTalks[o.npc.ID] {
-		if c.xmlQuestDialog(o, script, -1) {
-			return
-		}
+	if !answered {
+		c.send(dialogWindow(id, 10, 0))
 	}
-	for _, script := range c.s.data.QuestActions[o.npc.ID] {
-		if q := c.player.quest(script.ID); q != nil && q.Status == "START" {
-			if script.ID == lostAxeQuestID {
-				c.lostAxeAction(o, script, -1)
-				return
-			}
-			c.useQuestObject(o, script)
-			return
-		}
-	}
-	for _, script := range c.s.data.QuestEnds[o.npc.ID] {
-		if q := c.player.quest(script.ID); q != nil && q.Status == "REWARD" {
-			if script.ID == secretDeliveryQuestID {
-				if c.customQuestShowDialog(o, script) {
-					return
-				}
-				continue
-			}
-			if script.Kind == data.QuestCustom && c.customQuestShowDialog(o, script) {
-				return
-			}
-			c.send(dialogWindow(id, 5, script.ID))
-			return
-		}
-	}
-	c.send(dialogWindow(id, 10, 0))
 }
 
 func (c *conn) dialogSelect(r *wire.Reader) {
@@ -354,7 +227,13 @@ func (c *conn) answered(handler func()) bool {
 func (c *conn) npcTalkScripts(npcID int32) []*data.QuestScript {
 	var scripts []*data.QuestScript
 	seen := map[int32]bool{}
-	for _, list := range [][]*data.QuestScript{c.s.data.QuestCustomTalks[npcID], c.s.data.QuestXMLTalks[npcID], c.s.data.QuestStarts[npcID], c.s.data.QuestEnds[npcID]} {
+	var translated []*data.QuestScript
+	for _, id := range javaTalkNPCs[npcID] {
+		if script := c.s.data.QuestScripts[id]; script != nil {
+			translated = append(translated, script)
+		}
+	}
+	for _, list := range [][]*data.QuestScript{c.s.data.QuestCustomTalks[npcID], c.s.data.QuestXMLTalks[npcID], c.s.data.QuestStarts[npcID], c.s.data.QuestEnds[npcID], c.s.data.QuestActions[npcID], translated} {
 		for _, script := range list {
 			if !seen[script.ID] {
 				seen[script.ID] = true
@@ -386,10 +265,26 @@ func (c *conn) dialogSilent() { c.dialogReplies.Add(1) }
 func (c *conn) questDialog(o *object, script *data.QuestScript, d int32) {
 	dialogID := uint16(d)
 	if script.Kind == data.QuestWorkOrder {
-		c.workOrderDialog(o, script, dialogID)
+		c.dialogResult(c.workOrderDialog(o, script, dialogID))
 		return
 	}
 	if script.Kind == data.QuestCustom {
+		if port := javaDialogs[script.ID]; port != nil {
+			c.dialogResult(c.javaPort(func() bool { return port(c, o, script, d) }))
+			return
+		}
+		if d == -1 {
+			if script.ID == lostAxeQuestID && o.npc.ID == lostAxeActionNPCID {
+				c.lostAxeAction(o, script, -1)
+				return
+			}
+			// The click-specific ports first; any other handler sees dialog -1 like Java's onDialogEvent does.
+			if c.answered(func() { c.dialogResult(c.customQuestShowDialog(o, script)) }) {
+				c.dialogSilent()
+				return
+			}
+			c.dialogPassed.Store(false)
+		}
 		if script.ID == 2122 {
 			c.ashesToAshesEvent(o, nil, script, d)
 			return
@@ -397,71 +292,18 @@ func (c *conn) questDialog(o *object, script *data.QuestScript, d int32) {
 		c.customQuestDialogID(o, script, d)
 		return
 	}
-	if script.Kind == data.QuestXML && c.xmlQuestDialog(o, script, d) {
-		return
-	}
-	questID := script.ID
-	id := o.id
-	p := c.player
-	if o.npc.ID == script.StartNPC && c.s.canStartQuest(p, script) {
-		switch dialogID {
-		case 25:
-			c.send(dialogWindow(id, 1011, questID))
-		case 1007:
-			c.send(dialogWindow(id, 4, questID))
-		case 1002:
-			c.startQuest(script, id)
-		case 1003:
-			c.send(dialogWindow(id, 1004, questID))
+	switch script.Kind {
+	case data.QuestXML:
+		if c.xmlQuestDialog(o, script, d) {
+			return
 		}
-		return
-	}
-	if o.npc.ID != script.EndNPC {
-		return
-	}
-	q := p.quest(questID)
-	if q == nil {
-		return
-	}
-	if q.Status == "REWARD" {
-		if dialogID == 1009 || d == -1 {
-			c.send(dialogWindow(id, 5, questID))
-		} else if dialogID >= 8 && dialogID <= 17 {
-			c.finishQuest(script, id, dialogID)
-		}
-		return
-	}
-	if q.Status != "START" {
-		return
-	}
-	if script.Kind == data.QuestMonsterHunt && !monsterHuntComplete(q, script) {
-		return
-	}
-	switch dialogID {
-	case 25:
-		window := uint16(2375)
-		if script.Kind == data.QuestMonsterHunt {
-			window = 1352
-		}
-		c.send(dialogWindow(id, window, questID))
-	case 1009:
-		if script.Kind != data.QuestItemCollecting {
-			if c.readyQuestReward(q, id) && script.Kind == data.QuestReportTo && script.ItemID != 0 {
-				c.s.removeItemsByID(p, script.ItemID, 1)
-			}
-		}
-	case 33:
-		if script.Kind == data.QuestItemCollecting {
-			if !c.s.hasQuestItems(p, c.s.data.Quests[questID]) {
-				c.send(dialogWindow(id, 2716, questID))
-				return
-			}
-			if c.readyQuestReward(q, id) {
-				for _, item := range c.s.data.Quests[questID].CollectItems {
-					c.s.removeItemsByID(p, item.ID, item.Count)
-				}
-			}
-		}
+		c.dialogResult(c.xmlQuestFallback(o, script, d))
+	case data.QuestReportTo:
+		c.dialogResult(c.reportToDialog(o, script, d))
+	case data.QuestMonsterHunt:
+		c.dialogResult(c.monsterHuntDialog(o, script, d))
+	case data.QuestItemCollecting:
+		c.dialogResult(c.itemCollectingDialog(o, script, d))
 	}
 }
 
@@ -483,14 +325,21 @@ func monsterHuntComplete(q *store.Quest, script *data.QuestScript) bool {
 	return true
 }
 
-func (c *conn) startQuest(script *data.QuestScript, objectID int32) {
+// startQuest is QuestService.startQuest followed by defaultQuestStartDialog's window 1003; false when the player may
+// not start the quest (nothing is sent then).
+func (c *conn) startQuest(script *data.QuestScript, objectID int32) bool {
+	if !c.beginQuest(script) {
+		return false
+	}
+	c.send(dialogWindow(objectID, 1003, script.ID))
+	return true
+}
+
+// beginQuest is QuestService.startQuest(env, START): the start checks, then the quest update and the nearby quests.
+func (c *conn) beginQuest(script *data.QuestScript) bool {
 	p := c.player
 	if !c.s.canStartQuest(p, script) || p.level < c.s.data.Quests[script.ID].MinLevel {
-		return
-	}
-	if script.Kind == data.QuestReportTo && script.ItemID != 0 && p.cubeFull() {
-		c.send(systemMessage(msgInventoryFull))
-		return
+		return false
 	}
 	started := store.Quest{ID: script.ID, Status: "START"}
 	q := p.quest(script.ID)
@@ -499,19 +348,16 @@ func (c *conn) startQuest(script *data.QuestScript, objectID int32) {
 	}
 	if err := c.s.quests.SaveQuest(p.ID, started); err != nil {
 		c.s.log.Error("starting quest", "quest", script.ID, "err", err)
-		return
+		return false
 	}
 	if q == nil {
 		p.quests = append(p.quests, started)
 	} else {
 		*q = started
 	}
-	if script.Kind == data.QuestReportTo && script.ItemID != 0 {
-		c.s.addItem(p, script.ItemID, 1)
-	}
 	c.send(questAccepted(1, started))
 	c.send(c.s.nearbyQuests(p))
-	c.send(dialogWindow(objectID, 1003, script.ID))
+	return true
 }
 
 func (c *conn) readyQuestReward(q *store.Quest, objectID int32) bool {
@@ -554,11 +400,24 @@ func (c *conn) finishQuest(script *data.QuestScript, objectID int32, dialogID ui
 }
 
 func (c *conn) finishQuestReward(script *data.QuestScript, objectID int32, dialogID uint16, rewardIndex int) {
+	if !c.questFinish(script, dialogID, rewardIndex) {
+		return
+	}
+	c.send(dialogWindow(objectID, 10, 0))
+	if script.ID == 1006 {
+		c.ascensionQuestFinish()
+	}
+}
+
+// questFinish is QuestService.questFinish(env, reward): false when the quest is not waiting for its reward (or the
+// reward does not exist, where Java throws); with no room for the items only the full-inventory message is sent and
+// it still returns true, as Java does.
+func (c *conn) questFinish(script *data.QuestScript, dialogID uint16, rewardIndex int) bool {
 	p := c.player
 	q := p.quest(script.ID)
 	template := c.s.data.Quests[script.ID]
 	if q == nil || q.Status != "REWARD" || template == nil || rewardIndex < 0 || rewardIndex >= len(template.Rewards) {
-		return
+		return false
 	}
 	reward := template.Rewards[rewardIndex]
 	items := slices.Clone(reward.Items)
@@ -569,15 +428,15 @@ func (c *conn) finishQuestReward(script *data.QuestScript, objectID int32, dialo
 		} else {
 			choices = reward.SelectableItems
 		}
-		index := int(dialogID - 8)
-		if index >= len(choices) {
-			return
+		index := int(dialogID) - 8
+		if index < 0 || index >= len(choices) {
+			return false
 		}
 		items = append(items, choices[index])
 	}
 	if !c.s.questRewardsFit(p, items) {
 		c.send(systemMessage(msgInventoryFull))
-		return
+		return true
 	}
 	complete := *q
 	complete.Status = "COMPLETE"
@@ -608,7 +467,7 @@ func (c *conn) finishQuestReward(script *data.QuestScript, objectID int32, dialo
 	}
 	if err := c.s.quests.CompleteQuest(p.ID, complete, completion); err != nil {
 		c.s.log.Error("finishing quest", "quest", script.ID, "err", err)
-		return
+		return false
 	}
 	*q = complete
 	// QuestService.questFinish sends in this order: the items, kinah and experience, then the title, abyss points and
@@ -620,15 +479,18 @@ func (c *conn) finishQuestReward(script *data.QuestScript, objectID int32, dialo
 	}
 	if completion.Abyss != nil {
 		*p.abyss = *completion.Abyss
-		afterRewards = append(afterRewards, abyssRank(p.abyss))
+		// PlayerCommonData.addAp: the "earned abyss points" message, then the rank.
+		afterRewards = append(afterRewards, systemMessage(msgEarnedAP, strconv.Itoa(int(reward.AbyssPoints))), abyssRank(p.abyss))
 	}
+	// CubeExpandService.expand / WarehouseService.expand: the "slots added" message, then the new size.
 	if p.CubeSize != completion.CubeSize {
 		p.CubeSize = completion.CubeSize
-		afterRewards = append(afterRewards, cubeSizeUpdate(p))
+		afterRewards = append(afterRewards, systemMessage(msgCubeExpanded, "9"), cubeSizeUpdate(p))
 	}
+	warehouseExpanded := p.WarehouseSize != completion.WarehouseSize
 	p.WarehouseSize = completion.WarehouseSize
 	for _, item := range items {
-		c.s.addItem(p, item.ID, item.Count)
+		c.s.addItem(p, item.ID, c.s.javaItemCount(item))
 	}
 	if reward.Kinah > 0 {
 		c.s.increaseKinah(p, reward.Kinah)
@@ -639,13 +501,14 @@ func (c *conn) finishQuestReward(script *data.QuestScript, objectID int32, dialo
 	for _, w := range afterRewards {
 		c.send(w)
 	}
+	if warehouseExpanded {
+		c.send(systemMessage(msgWarehouseExpanded, "8"))
+		c.s.sendWarehouseInfo(p, false)
+	}
 	c.send(questAccepted(2, complete))
 	c.send(c.s.nearbyQuests(p))
 	c.questLevelUp()
-	c.send(dialogWindow(objectID, 10, 0))
-	if script.ID == 1006 {
-		c.ascensionQuestFinish()
-	}
+	return true
 }
 
 func raceID(race string) int32 {

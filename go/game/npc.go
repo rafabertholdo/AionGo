@@ -74,6 +74,10 @@ func (s *Server) aggressiveTo(o *object, c creature) bool {
 	if !ok {
 		return false
 	}
+	// The quest's aerial scouting movie must not attract nearby monsters.
+	if p.transformed == flyingReconnaissanceModelID {
+		return false
+	}
 	// Player.isAggroFrom: not for npcs ten levels below it.
 	if o.npc.Level+10 <= int32(p.level) {
 		return false

@@ -76,7 +76,14 @@ XP message; a handler that panics.
    `game/quest_conformance_known_test.go` with the Java file:line. Do NOT add
    your quest to `conformanceKnownFailing` (that list is for the old audit
    findings and only shrinks; see [QUEST_AUDIT.md](QUEST_AUDIT.md)).
-5. Where a real 1.9 client is available, compare packets with `docker/quest-debug.sh` (see below).
+   Before hand-porting, try `scripts/quest-java-port.py --check <id>`: it translates the Java onDialogEvent (and an
+   unlocking onLvlUpEvent) line for line into `game/quest_java_dialogs.go` (`scripts/quest-java-port.py <id>` writes
+   it), and says which Java call it cannot map when it cannot. Translated handlers take precedence over hand ports in
+   `questDialog`; keep only their other events (kills, items, zones) hand-ported.
+5. Run `scripts/quest-parity.sh <id>` (Java handler vs Go handler over every state, npc and dialog; see
+   [QUEST_TRIAGE.md](QUEST_TRIAGE.md) section 0). A non-seeded difference is a bug unless you can name the Java line
+   that makes it unreachable.
+6. Where a real 1.9 client is available, compare packets with `docker/quest-debug.sh` (see below).
 
 **Auditing already ported quests:** `scripts/quest-claim.py audit-next <who> [n]` claims registered handlers that have
 open rows in QUEST_AUDIT.md (claims live in `.quest-claims/audit-<id>`, separate from port claims). Fix the handler

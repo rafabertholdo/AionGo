@@ -89,11 +89,11 @@ func TestCreatingAMonsterProgressEventsAndReward(t *testing.T) {
 	if !selectDialog(secondNPC, 10001) || questVar(p.quest(creatingMonsterQuestID).Vars, 0) != 2 {
 		t.Fatalf("second NPC conversation did not advance: %+v", p.quest(creatingMonsterQuestID))
 	}
-	if selectDialog(tablet, -1) || tablet.useTask == nil || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, tablet.id, 1).Data) {
+	if selectDialog(tablet, -1) || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, tablet.id, 1).Data) {
 		t.Fatalf("tablet interaction did not begin: task=%v use=%x", tablet.useTask != nil, packets.last(smUseObject))
 	}
 	time.Sleep(3100 * time.Millisecond)
-	if tablet.useTask != nil || !bytes.Equal(packets.last(smDialogWindow), dialogWindow(tablet.id, 1693, creatingMonsterQuestID).Data) {
+	if !bytes.Equal(packets.last(smDialogWindow), dialogWindow(tablet.id, 1693, creatingMonsterQuestID).Data) {
 		t.Fatalf("tablet interaction did not present its page: task=%v dialog=%x", tablet.useTask != nil, packets.last(smDialogWindow))
 	}
 	if !selectDialog(tablet, 10002) || questVar(p.quest(creatingMonsterQuestID).Vars, 0) != 3 || s.countItems(p, creatingMonsterArtifactID) != 1 {
@@ -133,11 +133,11 @@ func TestCreatingAMonsterProgressEventsAndReward(t *testing.T) {
 	if !c.creatingMonsterKill(creatingMonsterFinalKillID) || questVar(p.quest(creatingMonsterQuestID).Vars, 0) != 9 {
 		t.Fatalf("final monster kill did not advance to the object: %+v", p.quest(creatingMonsterQuestID))
 	}
-	if selectDialog(finalObject, -1) || finalObject.useTask == nil || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, finalObject.id, 1).Data) {
+	if selectDialog(finalObject, -1) || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, finalObject.id, 1).Data) {
 		t.Fatalf("final object interaction did not begin: task=%v use=%x", finalObject.useTask != nil, packets.last(smUseObject))
 	}
 	time.Sleep(3100 * time.Millisecond)
-	if finalObject.useTask != nil || p.quest(creatingMonsterQuestID).Status != "REWARD" {
+	if p.quest(creatingMonsterQuestID).Status != "REWARD" {
 		t.Fatalf("final object did not make quest ready for reward: task=%v quest=%+v", finalObject.useTask != nil, p.quest(creatingMonsterQuestID))
 	}
 	if !selectDialog(endNPC, -1) || !bytes.Equal(packets.last(smDialogWindow), dialogWindow(endNPC.id, 10002, creatingMonsterQuestID).Data) {

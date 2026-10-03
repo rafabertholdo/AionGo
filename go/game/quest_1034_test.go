@@ -69,11 +69,11 @@ func TestDisappearingAetherLevelUpArtifactTurnInAndReward(t *testing.T) {
 	}
 	p.targetID = artifact.id
 	c.showDialog(dialogRequest(cmShowDialog, artifact.id, 0, 0))
-	if questVar(p.quest(disappearingAetherQuestID).Vars, 0) != 3 || artifact.useTask == nil || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, artifact.id, 1).Data) {
+	if !bytes.Equal(packets.last(smUseObject), useObject(p.ID, artifact.id, 1).Data) {
 		t.Fatalf("artifact interaction did not advance the quest: quest=%+v task=%v packet=%x", p.quest(disappearingAetherQuestID), artifact.useTask != nil, packets.last(smUseObject))
 	}
-	time.Sleep(3100 * time.Millisecond)
-	if artifact.useTask != nil || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, artifact.id, 0).Data) {
+	time.Sleep(3100 * time.Millisecond) // Java advances the quest when its use timer ends
+	if questVar(p.quest(disappearingAetherQuestID).Vars, 0) != 3 || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, artifact.id, 0).Data) {
 		t.Fatalf("artifact interaction did not finish: task=%v packet=%x", artifact.useTask != nil, packets.last(smUseObject))
 	}
 	selectDialog(lakaias, 25)

@@ -57,6 +57,15 @@ func (c *conn) ascensionDialog(o *object, script *data.QuestScript, dialogID int
 	variable := quest.Vars
 	switch o.npc.ID {
 	case ascensionStartNPC:
+		// Java's cases fall through from 25 down to 10011; a select that no var matches ends in the next case.
+		setClass := func(class string) bool {
+			p.Class = class
+			c.s.levelUp(p)
+			if c.customQuestProgress(ascensionQuestID, quest.Vars, "REWARD") {
+				c.send(dialogWindow(o.id, 5, ascensionQuestID))
+			}
+			return true
+		}
 		switch dialogID {
 		case 25:
 			switch variable {
@@ -70,23 +79,21 @@ func (c *conn) ascensionDialog(o *object, script *data.QuestScript, dialogID int
 				c.send(dialogWindow(o.id, 2034, ascensionQuestID))
 				return true
 			}
+			fallthrough
 		case 10000:
 			if variable == 0 {
-				if !c.s.questRewardsFit(p, []data.QuestItem{{ID: ascensionJournalItem, Count: 1}}) {
+				if !c.addQuestItems([]data.QuestItem{{ID: ascensionJournalItem, Count: 1}}) {
 					return true
 				}
 				if c.customQuestProgress(ascensionQuestID, 1, "") {
-					c.s.addItem(p, ascensionJournalItem, 1)
 					c.send(dialogWindow(o.id, 10, 0))
-					return true
 				}
+				return true
 			}
+			fallthrough
 		case 10002:
 			if variable == 3 {
-				count := c.s.countItems(p, ascensionTestimonyItem)
-				if count > 0 {
-					c.s.removeItemsByID(p, ascensionTestimonyItem, count)
-				}
+				c.jRemoveAll(ascensionTestimonyItem)
 				// Ascension uses the whole quest value for its special step 99.
 				// Packing it into a six-bit subvariable would truncate it to 35.
 				if c.customQuestProgress(ascensionQuestID, 99, "") {
@@ -94,29 +101,56 @@ func (c *conn) ascensionDialog(o *object, script *data.QuestScript, dialogID int
 					instance := c.s.newInstance(ascensionInstanceMap)
 					instance.registered[p.ID] = true
 					c.s.teleportToInstance(p, ascensionInstanceMap, instance.id, 52, 174, 229, 0, 0)
-					return true
 				}
+				return true
 			}
+			fallthrough
 		case 10003:
 			if variable == 5 {
-				page := map[string]uint16{"WARRIOR": 2375, "SCOUT": 2716, "MAGE": 3057, "PRIEST": 3398}[p.Class]
-				if page != 0 {
+				if page := map[string]uint16{"WARRIOR": 2375, "SCOUT": 2716, "MAGE": 3057, "PRIEST": 3398}[p.Class]; page != 0 {
 					c.send(dialogWindow(o.id, page, ascensionQuestID))
 					return true
 				}
 			}
-		case 10004, 10005, 10006, 10007, 10008, 10009, 10010, 10011:
+			fallthrough
+		case 10004:
 			if variable == 5 {
-				classes := map[int32]string{
-					10004: "GLADIATOR", 10005: "TEMPLAR", 10006: "ASSASSIN", 10007: "RANGER",
-					10008: "SORCERER", 10009: "SPIRIT_MASTER", 10010: "CLERIC", 10011: "CHANTER",
-				}
-				p.Class = classes[dialogID]
-				c.s.levelUp(p)
-				if c.customQuestProgress(ascensionQuestID, quest.Vars, "REWARD") {
-					c.send(dialogWindow(o.id, 5, ascensionQuestID))
-					return true
-				}
+				return setClass("GLADIATOR")
+			}
+			fallthrough
+		case 10005:
+			if variable == 5 {
+				return setClass("TEMPLAR")
+			}
+			fallthrough
+		case 10006:
+			if variable == 5 {
+				return setClass("ASSASSIN")
+			}
+			fallthrough
+		case 10007:
+			if variable == 5 {
+				return setClass("RANGER")
+			}
+			fallthrough
+		case 10008:
+			if variable == 5 {
+				return setClass("SORCERER")
+			}
+			fallthrough
+		case 10009:
+			if variable == 5 {
+				return setClass("SPIRIT_MASTER")
+			}
+			fallthrough
+		case 10010:
+			if variable == 5 {
+				return setClass("CLERIC")
+			}
+			fallthrough
+		case 10011:
+			if variable == 5 {
+				return setClass("CHANTER")
 			}
 		}
 	case ascensionElimNPC:
@@ -128,13 +162,13 @@ func (c *conn) ascensionDialog(o *object, script *data.QuestScript, dialogID int
 			c.send(dialogWindow(o.id, page, ascensionQuestID))
 			return true
 		}
-		if dialogID == 1353 {
-			if variable == 2 && c.s.countItems(p, ascensionProofItem) > 0 && c.s.questRewardsFit(p, []data.QuestItem{{ID: ascensionTestimonyItem, Count: 1}}) {
+		if dialogID == 1353 || dialogID == 25 {
+			if variable == 2 {
 				c.send(ascensionMovie(14))
 				c.s.removeItemsByID(p, ascensionProofItem, 1)
-				c.s.addItem(p, ascensionTestimonyItem, 1)
+				c.addQuestItems([]data.QuestItem{{ID: ascensionTestimonyItem, Count: 1}})
 			}
-			return false // Java returns false after the movie; the framework echoes page 1353.
+			return false // Java returns false after the movie; the framework echoes the page.
 		}
 		if dialogID == 10001 && variable == 2 && c.customQuestProgress(ascensionQuestID, 3, "") {
 			c.send(dialogWindow(o.id, 10, 0))

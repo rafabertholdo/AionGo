@@ -31,7 +31,8 @@ func TestAscensionLevelUpOfferAndStart(t *testing.T) {
 	s.spawned[p.ID] = p
 
 	c.levelUpStartQuests()
-	if q := p.quest(ascensionQuestID); q == nil || q.Status != "START" || len(saver.saved) != 1 {
+	// QuestEngine.onLvlUp also starts the class skill quest 1205 at this level.
+	if q := p.quest(ascensionQuestID); q == nil || q.Status != "START" || len(saver.saved) == 0 || saver.saved[0].ID != ascensionQuestID {
 		t.Fatalf("level-up did not start Ascension: quest=%+v saves=%+v", q, saver.saved)
 	}
 	if got := packets.last(smQuestAccepted); len(got) == 0 || got[0] != smQuestAccepted {

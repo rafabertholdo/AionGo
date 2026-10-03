@@ -26,6 +26,7 @@ func TestKrallBookItemStartAndReport(t *testing.T) {
 	}
 	s.initNpc(bookGiver)
 	bookGiver.watchers[p.ID] = p
+	p.targetID = bookGiver.id // the client selects the npc first; Java despawns player.getTarget()
 	c.showDialog(dialogRequest(cmShowDialog, bookGiver.id, 0, 0))
 	if s.countItems(p, krallBookItemID) != 1 || p.seen[bookGiver.id] != nil {
 		t.Fatalf("book interaction did not grant one book and despawn the giver: count=%d", s.countItems(p, krallBookItemID))

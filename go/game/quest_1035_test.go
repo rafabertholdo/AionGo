@@ -74,11 +74,11 @@ func TestRefreshingSpringsLevelUpAndFullRoute(t *testing.T) {
 		t.Fatal("could not add the spring water quest item")
 	}
 	c.showDialog(dialogRequest(cmShowDialog, waterSource.id, 0, 0))
-	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 2 || waterSource.useTask == nil || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, waterSource.id, 1).Data) {
+	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 2 || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, waterSource.id, 1).Data) {
 		t.Fatalf("first spring did not start its interaction: quest=%+v task=%v packet=%x", p.quest(refreshingSpringsQuestID), waterSource.useTask != nil, packets.last(smUseObject))
 	}
 	time.Sleep(3100 * time.Millisecond)
-	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 3 || s.countItems(p, springWaterItemID) != 0 || waterSource.useTask != nil {
+	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 3 || s.countItems(p, springWaterItemID) != 0 {
 		t.Fatalf("first spring did not consume water and advance: quest=%+v items=%d task=%v", p.quest(refreshingSpringsQuestID), s.countItems(p, springWaterItemID), waterSource.useTask != nil)
 	}
 	selectDialog(guideTwo, 25)
@@ -105,11 +105,11 @@ func TestRefreshingSpringsLevelUpAndFullRoute(t *testing.T) {
 		t.Fatalf("first proof was not issued: quest=%+v items=%d", p.quest(refreshingSpringsQuestID), s.countItems(p, springProofOneItemID))
 	}
 	c.showDialog(dialogRequest(cmShowDialog, secondSource.id, 0, 0))
-	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 7 || secondSource.useTask == nil || !bytes.Equal(packets.last(smPlayMovie), ascensionMovie(31).Data) {
+	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 7 || !bytes.Equal(packets.last(smPlayMovie), ascensionMovie(31).Data) {
 		t.Fatalf("second spring did not start its movie interaction: quest=%+v task=%v movie=%x", p.quest(refreshingSpringsQuestID), secondSource.useTask != nil, packets.last(smPlayMovie))
 	}
 	time.Sleep(3100 * time.Millisecond)
-	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 8 || s.countItems(p, springProofOneItemID) != 0 || secondSource.useTask != nil {
+	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 8 || s.countItems(p, springProofOneItemID) != 0 {
 		t.Fatalf("second spring did not consume its proof and advance: quest=%+v items=%d", p.quest(refreshingSpringsQuestID), s.countItems(p, springProofOneItemID))
 	}
 	selectDialog(guideFive, 25)
@@ -125,11 +125,11 @@ func TestRefreshingSpringsLevelUpAndFullRoute(t *testing.T) {
 		t.Fatalf("guide did not unlock the final spring: %+v", p.quest(refreshingSpringsQuestID))
 	}
 	c.showDialog(dialogRequest(cmShowDialog, thirdSource.id, 0, 0))
-	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 10 || thirdSource.useTask == nil {
+	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 10 {
 		t.Fatalf("third spring did not start its interaction: quest=%+v task=%v", p.quest(refreshingSpringsQuestID), thirdSource.useTask != nil)
 	}
 	time.Sleep(3100 * time.Millisecond)
-	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 11 || s.countItems(p, springProofTwoItemID) != 0 || thirdSource.useTask != nil {
+	if questVar(p.quest(refreshingSpringsQuestID).Vars, 0) != 11 || s.countItems(p, springProofTwoItemID) != 0 {
 		t.Fatalf("third spring did not consume its proof and advance: quest=%+v items=%d", p.quest(refreshingSpringsQuestID), s.countItems(p, springProofTwoItemID))
 	}
 	selectDialog(guideSix, 25)

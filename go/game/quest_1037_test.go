@@ -87,15 +87,24 @@ func TestSecretsOfTempleLevelUpCollectRitualAndReward(t *testing.T) {
 	if questVar(p.quest(secretsOfTempleQuestID).Vars, 0) != 3 || s.countItems(p, secretsOfTempleRitualItem) != 1 {
 		t.Fatalf("scribe did not issue the ritual item: quest=%+v item=%d", p.quest(secretsOfTempleQuestID), s.countItems(p, secretsOfTempleRitualItem))
 	}
+	// Java: each of the five ritual sites plays movie 33 and, when its use timer ends, raises the variable; the fifth
+	// (at 7) takes the ritual item and opens the reward.
+	p.targetID = ritualSite.id
 	c.showDialog(dialogRequest(cmShowDialog, ritualSite.id, 0, 0))
-	if quest := p.quest(secretsOfTempleQuestID); quest.Status != "REWARD" || questVar(quest.Vars, 0) != 4 ||
-		s.countItems(p, secretsOfTempleRitualItem) != 0 || ritualSite.useTask == nil ||
-		!bytes.Equal(packets.last(smPlayMovie), ascensionMovie(33).Data) || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, ritualSite.id, 1).Data) {
-		t.Fatalf("ritual site did not start and complete the quest: quest=%+v item=%d task=%v movie=%x use=%x", quest, s.countItems(p, secretsOfTempleRitualItem), ritualSite.useTask != nil, packets.last(smPlayMovie), packets.last(smUseObject))
+	if !bytes.Equal(packets.last(smPlayMovie), movie(0, 33).Data) || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, ritualSite.id, 1).Data) {
+		t.Fatalf("ritual site did not start: movie=%x use=%x", packets.last(smPlayMovie), packets.last(smUseObject))
 	}
 	time.Sleep(3100 * time.Millisecond)
-	if ritualSite.useTask != nil || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, ritualSite.id, 0).Data) {
-		t.Fatalf("ritual site interaction did not finish: task=%v use=%x", ritualSite.useTask != nil, packets.last(smUseObject))
+	if questVar(p.quest(secretsOfTempleQuestID).Vars, 0) != 4 || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, ritualSite.id, 0).Data) {
+		t.Fatalf("ritual site interaction did not finish: quest=%+v use=%x", p.quest(secretsOfTempleQuestID), packets.last(smUseObject))
+	}
+	lastSite := npc(700152, 0x31073)
+	p.quest(secretsOfTempleQuestID).Vars = setQuestVar(p.quest(secretsOfTempleQuestID).Vars, 0, 7) // the three sites between
+	p.targetID = lastSite.id
+	c.showDialog(dialogRequest(cmShowDialog, lastSite.id, 0, 0))
+	time.Sleep(3100 * time.Millisecond)
+	if quest := p.quest(secretsOfTempleQuestID); quest.Status != "REWARD" || s.countItems(p, secretsOfTempleRitualItem) != 0 {
+		t.Fatalf("last ritual site did not open the reward: quest=%+v item=%d", quest, s.countItems(p, secretsOfTempleRitualItem))
 	}
 	c.showDialog(dialogRequest(cmShowDialog, guide.id, 0, 0))
 	if !bytes.Equal(packets.last(smDialogWindow), dialogWindow(guide.id, 5, secretsOfTempleQuestID).Data) {

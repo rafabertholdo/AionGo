@@ -65,7 +65,7 @@ func TestNewWingsFlightSpawnAndReward(t *testing.T) {
 	if !selectDialog(first, 25) || !bytes.Equal(packets.last(smDialogWindow), dialogWindow(first.id, 1011, newWingsQuestID).Data) {
 		t.Fatalf("opening page = %x", packets.last(smDialogWindow))
 	}
-	if selectDialog(first, 1013) || !bytes.Equal(packets.last(smPlayMovie), playMovie(272).Data) {
+	if selectDialog(first, 1013) || !bytes.Equal(packets.last(smPlayMovie), movie(0, 272).Data) {
 		t.Fatalf("movie branch did not preserve Java's unhandled response: movie=%x", packets.last(smPlayMovie))
 	}
 	if !selectDialog(first, 10000) || questVar(p.quest(newWingsQuestID).Vars, 0) != 1 || !bytes.Equal(packets.last(smDialogWindow), dialogWindow(first.id, 10, 0).Data) {

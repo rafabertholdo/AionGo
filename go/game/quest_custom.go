@@ -214,9 +214,6 @@ func (c *conn) customQuestDialogID(o *object, script *data.QuestScript, d int32)
 	case 1158:
 		c.villageSealFoundDialog(o, script, d)
 		return
-	case forestOutlawQuestID:
-		c.forestOutlawDialog(o, script, d)
-		return
 	case belbuasTreasureQuestID:
 		c.belbuasTreasureDialog(o, script, d)
 		return
@@ -234,10 +231,10 @@ func (c *conn) customQuestDialogID(o *object, script *data.QuestScript, d int32)
 	}
 	switch script.ID {
 	case 1528, 1527, 1609, 1628, 1909, 1452, 1324, 2693, 2651, 1314, 2222, 1218, 1131:
-		c.simpleThreeNPCQuestDialog(o, script, u)
+		c.dialogResult(c.simpleThreeNPCQuestDialog(o, script, d))
 		return
 	case 1553, 1620, 1578, 1605, 1483:
-		c.twoReportsQuestDialog(o, script, u)
+		c.dialogResult(c.twoReportsQuestDialog(o, script, d))
 		return
 	case 2578, 2846, 2847, 2848, 4053:
 		c.itemTwoReportQuestDialog(o, script, u)
@@ -444,8 +441,6 @@ func (c *conn) customQuestShowDialog(o *object, script *data.QuestScript) bool {
 		return c.gaphyrksLoveShowDialog(o, script)
 	case 1158:
 		return c.villageSealFoundDialog(o, script, -1)
-	case forestOutlawQuestID:
-		return c.forestOutlawShowDialog(o, script)
 	case belbuasTreasureQuestID:
 		return c.belbuasTreasureDialog(o, script, -1)
 	case delicateMandrakeQuestID:

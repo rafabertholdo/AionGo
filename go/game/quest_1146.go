@@ -52,27 +52,13 @@ func (c *conn) delicateMandrakeDialog(o *object, script *data.QuestScript, dialo
 			c.send(dialogWindow(o.id, 1004, delicateMandrakeQuestID))
 			return true
 		case 1002:
-			template := c.s.data.Quests[delicateMandrakeQuestID]
-			if template == nil || player.level < template.MinLevel || !c.s.canStartQuest(player, script) {
-				return false
-			}
-			if !c.s.questRewardsFit(player, []data.QuestItem{{ID: delicateMandrakeWorkItemID, Count: 1}}) {
-				c.send(systemMessage(msgInventoryFull))
-				return true
-			}
-			c.startQuest(script, o.id)
-			quest = player.quest(delicateMandrakeQuestID)
-			if quest == nil || quest.Status != "START" {
-				return false
-			}
-			if !c.s.addItem(player, delicateMandrakeWorkItemID, 1) {
-				return false
-			}
+			// Java: the work item (its result ignored) and the timer come first, whether or not the quest starts.
+			c.addQuestItems([]data.QuestItem{{ID: delicateMandrakeWorkItemID, Count: 1}})
 			c.send(delicateMandrakeTimerPacket(delicateMandrakeTimerSeconds))
 			c.s.later(time.Duration(delicateMandrakeTimerSeconds)*time.Second, func() {
 				c.delicateMandrakeTimerEnd()
 			})
-			return true
+			return c.startQuest(script, o.id)
 		default:
 			return false
 		}
@@ -80,27 +66,26 @@ func (c *conn) delicateMandrakeDialog(o *object, script *data.QuestScript, dialo
 	if o.npc.ID != delicateMandrakeEndNPCID {
 		return false
 	}
-	if quest.Status == "START" {
-		if dialogID != -1 || questVar(quest.Vars, 0) != 0 {
-			return false
-		}
-		if c.s.countItems(player, delicateMandrakeTurnInItemID) == 0 {
+	// Java checks only the variable here, in any status.
+	if dialogID == -1 && questVar(quest.Vars, 0) == 0 {
+		if c.jRemoveAll(delicateMandrakeTurnInItemID) {
+			quest.Vars = setQuestVar(quest.Vars, 0, 2)
+			c.send(delicateMandrakeTimerPacket(0)) // QuestService.questTimerEnd
+			quest.Status = "REWARD"
+			c.jSave(quest)
+			c.jUpdate(quest)
+		} else {
 			c.send(dialogWindow(o.id, 10, 0))
-			return true
 		}
-		if !c.customQuestProgress(delicateMandrakeQuestID, setQuestVar(quest.Vars, 0, 2), "REWARD") {
-			return false
-		}
-		c.s.removeItemsByID(player, delicateMandrakeTurnInItemID, 1)
-		c.send(delicateMandrakeTimerPacket(0))
-		c.send(dialogWindow(o.id, 5, delicateMandrakeQuestID))
-		return true
+		return c.defaultQuestEndDialog(o, script, -1)
 	}
+	// Java returns false for everything else, so its reward can never be taken (8-17 is echoed). Go keeps the turn-in
+	// working: 1009 shows the reward, 17 finishes (see parityDeviation).
 	if quest.Status != "REWARD" {
 		return false
 	}
 	switch {
-	case dialogID == -1 || dialogID == 1009:
+	case dialogID == 1009:
 		c.send(dialogWindow(o.id, 5, delicateMandrakeQuestID))
 	case dialogID == 17:
 		c.finishQuest(script, o.id, uint16(dialogID))

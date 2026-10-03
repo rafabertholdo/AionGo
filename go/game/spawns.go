@@ -42,6 +42,7 @@ type object struct {
 	restore, decay, respawn *task
 	loot                    *lootState   // what it left when it died
 	useTask                 *task        // a player collecting a quest action item
+	actionTask              *task        // ActionitemController.onDialogRequest use timer
 	gathering               *interaction // a player gathering it
 	owner                   *player      // who made it, if it is a trap or a servant
 	kisk                    *kisk        // what it is besides, if it is a kisk

@@ -91,10 +91,6 @@ func (s *Server) recordQuestKill(o *object, p *player) {
 			p.conn.indratuLegionKill(o)
 			continue
 		}
-		if script.ID == forestOutlawQuestID {
-			p.conn.forestOutlawKill(o.npc.ID)
-			continue
-		}
 		if script.ID == 1011 {
 			p.conn.dangerFromAboveKill(o)
 			continue
@@ -184,6 +180,29 @@ func useObject(playerID, objectID int32, action byte) *wire.Writer {
 // useQuestObject is ActionitemController.onDialogRequest for starter quest
 // objects such as the Kerub grain sack. Its loot becomes available after the
 // three-second use animation, and only to the player who used it.
+// useActionObject is ActionitemController.onDialogRequest after a quest handler answered: the 3 s use animation,
+// then the object dies and drops its loot.
+func (c *conn) useActionObject(o *object) {
+	p := c.player
+	if p == nil || o.actionTask != nil || o.dead {
+		return
+	}
+	s := c.s
+	c.send(useObject(p.ID, o.id, 1))
+	p.broadcast(s.playerEmotionTo(p, emoteStartQuestLoot, 0, o.id, 0, 0, 0, 0), true)
+	o.actionTask = s.later(3*time.Second, func() {
+		o.actionTask = nil
+		if p.conn != c || !p.spawned || p.seen[o.id] != o || o.dead {
+			return
+		}
+		c.send(useObject(p.ID, o.id, 0))
+		o.dead, o.hp = true, 0
+		s.npcDied(o, p)
+		s.registerDrop(o, p)
+		s.openLoot(p, o.id)
+	})
+}
+
 func (c *conn) useQuestObject(o *object, script *data.QuestScript) {
 	p := c.player
 	if p == nil || o.useTask != nil || o.dead || p.quest(script.ID) == nil || p.quest(script.ID).Status != "START" {

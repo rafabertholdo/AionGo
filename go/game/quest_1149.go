@@ -61,40 +61,43 @@ func (c *conn) missingPoppyDialog(o *object, script *data.QuestScript, dialogID 
 	variable := questVar(quest.Vars, 0)
 	switch o.npc.ID {
 	case missingPoppyNPC:
+		// Java's cases fall through: -1 -> 25 -> 10000.
 		switch dialogID {
+		case -1:
+			if variable == 1 {
+				if distance3D(o.x, o.y, o.z, 1255, 2223, 144) > 5 {
+					o.move.distance = 4
+					o.move.follow = true
+					o.targetID = p.ID
+					c.s.scheduleMove(o)
+					return true
+				}
+				if !c.customQuestProgress(missingPoppyQuestID, quest.Vars, "REWARD") {
+					return false
+				}
+				c.send(missingPoppyMovie())
+				o.move.stop()
+				o.dead, o.hp = true, 0
+				c.s.npcDied(o, nil)
+				c.s.despawnNpc(o, false)
+				return true
+			}
+			fallthrough
 		case 25:
 			if variable == 0 {
 				c.send(dialogWindow(o.id, 1352, missingPoppyQuestID))
 				return true
 			}
+			fallthrough
 		case 10000:
-			if variable == 0 && c.customQuestProgress(missingPoppyQuestID, setQuestVar(quest.Vars, 0, 1), "") {
-				o.move.distance = 4
-				o.move.follow = true
-				o.targetID = p.ID
-				c.s.scheduleMove(o)
-				c.send(dialogWindow(o.id, 0, 0))
-				return true
-			}
-		case -1:
-			if variable != 1 {
+			if !c.customQuestProgress(missingPoppyQuestID, setQuestVar(quest.Vars, 0, variable+1), "") {
 				return false
 			}
-			if distance3D(o.x, o.y, o.z, 1255, 2223, 144) > 5 {
-				o.move.distance = 4
-				o.move.follow = true
-				o.targetID = p.ID
-				c.s.scheduleMove(o)
-				return true
-			}
-			if !c.customQuestProgress(missingPoppyQuestID, quest.Vars, "REWARD") {
-				return false
-			}
-			c.send(missingPoppyMovie())
-			o.move.stop()
-			o.dead, o.hp = true, 0
-			c.s.npcDied(o, nil)
-			c.s.despawnNpc(o, false)
+			o.move.distance = 4
+			o.move.follow = true
+			o.targetID = p.ID
+			c.s.scheduleMove(o)
+			c.send(dialogWindow(o.id, 0, 0))
 			return true
 		}
 	}

@@ -90,7 +90,7 @@ func TestLoadsEntireQuestScriptCatalog(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := map[string]int{QuestReportTo: 170, QuestMonsterHunt: 315, QuestItemCollecting: 613, QuestWorkOrder: 492, QuestXML: 5}
+	want := map[string]int{QuestReportTo: 170, QuestMonsterHunt: 316, QuestItemCollecting: 613, QuestWorkOrder: 492, QuestXML: 5}
 	counts := map[string]int{}
 	for _, script := range d.QuestScripts {
 		counts[script.Kind]++

@@ -67,7 +67,7 @@ func TestSimpleThreeNPCQuestCatalog(t *testing.T) {
 				t.Fatalf("final NPC progress = %+v", q)
 			}
 			before := p.Exp
-			rewardDialog := uint16(17)
+			rewardDialog := int32(17)
 			if len(template.Rewards[0].SelectableItems) > 0 || len(template.ClassRewards(p.Class)) > 0 {
 				rewardDialog = 8
 			}

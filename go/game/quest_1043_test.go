@@ -78,19 +78,18 @@ func TestBalaurConspiracyPrerequisitesFallthroughKillAndReward(t *testing.T) {
 	if questVar(p.quest(balaurConspiracyQuestID).Vars, 0) != 1 {
 		t.Fatalf("opening dialogue did not advance: %+v", p.quest(balaurConspiracyQuestID))
 	}
-	selectDialog(startNPC, 25) // Java falls through the start NPC case to the second NPC case.
-	if !bytes.Equal(packets.last(smDialogWindow), dialogWindow(startNPC.id, 1352, balaurConspiracyQuestID).Data) {
+	// Java's 25 at variable 1 falls through into the 10000 case: the variable goes up and the main menu follows.
+	selectDialog(startNPC, 25)
+	if !bytes.Equal(packets.last(smDialogWindow), dialogWindow(startNPC.id, 10, 0).Data) {
 		t.Fatalf("stage-one fallthrough page = %x", packets.last(smDialogWindow))
 	}
-	selectDialog(startNPC, 10001)
 	if questVar(p.quest(balaurConspiracyQuestID).Vars, 0) != 2 {
 		t.Fatalf("dialog fallthrough did not advance to two: %+v", p.quest(balaurConspiracyQuestID))
 	}
-	selectDialog(secondNPC, 25)
-	if !bytes.Equal(packets.last(smDialogWindow), dialogWindow(secondNPC.id, 1693, balaurConspiracyQuestID).Data) {
+	selectDialog(secondNPC, 25) // the same Java fall-through: the variable goes up, then the main menu
+	if !bytes.Equal(packets.last(smDialogWindow), dialogWindow(secondNPC.id, 10, 0).Data) {
 		t.Fatalf("Balaur lead page = %x", packets.last(smDialogWindow))
 	}
-	selectDialog(secondNPC, 10002)
 	if questVar(p.quest(balaurConspiracyQuestID).Vars, 0) != 3 {
 		t.Fatalf("Balaur lead did not advance to the hunt: %+v", p.quest(balaurConspiracyQuestID))
 	}

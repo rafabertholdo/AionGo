@@ -43,12 +43,24 @@ func TestThreeNPCQuestCatalog(t *testing.T) {
 			if q := p.quest(id); q == nil || q.Status != "START" {
 				t.Fatalf("quest did not start: %+v", q)
 			}
-			c.threeNPCQuestDialog(middle, script, 25)
-			c.threeNPCQuestDialog(middle, script, 10000)
-			if p.quest(id).Vars != 1 {
-				t.Fatal("middle NPC did not advance")
+			if shape, ok := reportsQuests[id]; ok {
+				// The report npcs, pages and dialog ids read from the Java handler.
+				for i, r := range shape.reports {
+					o := questCatalogNPC(s, p, r.npc, 0x30010+int32(i))
+					c.threeNPCQuestDialog(o, script, 25)
+					c.threeNPCQuestDialog(o, script, uint16(r.dialog))
+					if questVar(p.quest(id).Vars, 0) != int32(i+1) {
+						t.Fatalf("report npc %d did not advance: %+v", r.npc, p.quest(id))
+					}
+				}
+			} else {
+				c.threeNPCQuestDialog(middle, script, 25)
+				c.threeNPCQuestDialog(middle, script, 10000)
+				if p.quest(id).Vars != 1 {
+					t.Fatal("middle NPC did not advance")
+				}
 			}
-			if script.MiddleNPC2 != 0 {
+			if _, ok := reportsQuests[id]; !ok && script.MiddleNPC2 != 0 {
 				second := questCatalogNPC(s, p, script.MiddleNPC2, 0x30004)
 				c.threeNPCQuestDialog(second, script, 25)
 				c.threeNPCQuestDialog(second, script, 10001)
@@ -56,7 +68,7 @@ func TestThreeNPCQuestCatalog(t *testing.T) {
 					t.Fatal("second middle NPC did not advance")
 				}
 			}
-			if script.MiddleNPC3 != 0 {
+			if _, ok := reportsQuests[id]; !ok && script.MiddleNPC3 != 0 {
 				third := questCatalogNPC(s, p, script.MiddleNPC3, 0x30005)
 				c.threeNPCQuestDialog(third, script, 25)
 				c.threeNPCQuestDialog(third, script, 10002)

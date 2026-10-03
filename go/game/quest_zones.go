@@ -15,8 +15,6 @@ var questZoneHandlers = []questZoneHandler{
 	{mapID: 210010000, name: "Q1123", handle: (*conn).wheresTuttyEnterZone},
 	{mapID: 210030000, name: "Q1012", handle: (*conn).maskedLoiterersEnterZone},
 	{mapID: 210030000, name: "MYSTERIOUS_SHIPWRECK", handle: (*conn).aNestOfLepharistsEnterZone},
-	{mapID: 210030000, name: "TURSIN_OUTPOST", handle: (*conn).flyingReconnaissanceEnterZone},
-	{mapID: 210030000, name: "TURSIN_OUTPOST_ENTRANCE", handle: (*conn).flyingReconnaissanceEnterZone},
 	{mapID: 210030000, name: "TURSIN_GARRISON", handle: (*conn).reducingTursinStrengthEnterZone},
 	{mapID: 210030000, name: "VERTERON_CITADEL", handle: (*conn).summonsToCitadelEnterZone},
 	{mapID: 210020000, name: "ELTNEN_FORTRESS", handle: (*conn).ordersFromTelemachusEnterZone},

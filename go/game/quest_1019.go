@@ -8,15 +8,16 @@ import (
 )
 
 const (
-	flyingReconnaissanceQuestID int32 = 1019
-	flyingReconnaissanceItemID  int32 = 182200023
-	flyingReconnaissancePassID  int32 = 182200505
-	flyingReconnaissanceNPC     int32 = 203146
-	flyingReconnaissanceTursin  int32 = 203098
-	flyingReconnaissanceGuide   int32 = 203147
-	flyingReconnaissanceScout   int32 = 210158
-	flyingReconnaissanceTotem   int32 = 700037
-	flyingReconnaissanceBoss    int32 = 210697
+	flyingReconnaissanceQuestID  int32 = 1019
+	flyingReconnaissanceItemID   int32 = 182200023
+	flyingReconnaissancePotionID int32 = 182200505
+	flyingReconnaissanceModelID  int32 = 210360 // transforming plumis
+	flyingReconnaissanceNPC      int32 = 203146
+	flyingReconnaissanceTursin   int32 = 203098
+	flyingReconnaissanceGuide    int32 = 203147
+	flyingReconnaissanceScout    int32 = 210158
+	flyingReconnaissanceTotem    int32 = 700037
+	flyingReconnaissanceBoss     int32 = 210697
 )
 
 // flyingReconnaissanceLevelUp ports the Java LOCKED-to-START level-up event.
@@ -55,13 +56,10 @@ func (c *conn) flyingReconnaissanceDialog(o *object, script *data.QuestScript, d
 			c.send(dialogWindow(o.id, 2034, flyingReconnaissanceQuestID))
 			return true
 		}
-		if o.npc.ID != flyingReconnaissanceTursin {
-			return false
-		}
 		switch {
-		case dialogID == 1009:
+		case dialogID == 1009 || dialogID == -1:
 			c.send(dialogWindow(o.id, 5, flyingReconnaissanceQuestID))
-		case dialogID >= 8 && dialogID <= 11:
+		case dialogID >= 8 && dialogID <= 17:
 			c.finishQuestReward(script, o.id, uint16(dialogID), 0)
 		default:
 			return false
@@ -84,12 +82,12 @@ func (c *conn) flyingReconnaissanceDialog(o *object, script *data.QuestScript, d
 			if variable != 0 {
 				return false
 			}
-			if !c.s.questRewardsFit(c.player, []data.QuestItem{{ID: flyingReconnaissancePassID, Count: 1}}) {
+			if !c.s.questRewardsFit(c.player, []data.QuestItem{{ID: flyingReconnaissancePotionID, Count: 1}}) {
 				c.send(systemMessage(msgInventoryFull))
 				return true
 			}
 			if c.customQuestProgress(flyingReconnaissanceQuestID, setQuestVar(quest.Vars, 0, 1), "") {
-				c.s.addItem(c.player, flyingReconnaissancePassID, 1)
+				c.s.addItem(c.player, flyingReconnaissancePotionID, 1)
 				c.send(dialogWindow(o.id, 10, 0))
 				return true
 			}
@@ -137,35 +135,51 @@ func (c *conn) flyingReconnaissanceDialog(o *object, script *data.QuestScript, d
 		}
 	case flyingReconnaissanceTotem:
 		if dialogID == -1 && variable >= 6 && variable < 9 {
-			return c.flyingReconnaissanceUseTotem(o, quest)
+			handled := c.flyingReconnaissanceUseTotem(o, quest)
+			c.dialogNotHandled() // Java returns false after starting its own use task.
+			return handled
 		}
 	}
 	return false
 }
 
-// flyingReconnaissanceEnterZone handles the outpost report and its entrance
-// movie. The source registers the outpost zone but compares the event to the
-// entrance subzone in a nested condition; accept either zone to preserve the
-// intended movie behavior while advancing only on the outpost event.
-func (c *conn) flyingReconnaissanceEnterZone(zoneName string) bool {
-	if c == nil || c.player == nil || c.player.WorldID != 210030000 {
+// flyingReconnaissancePotionUse repairs the missing potion action in the Java
+// reference. Its item has no actions and the entrance movie condition is
+// unreachable in onEnterZoneEvent. The client movie performs the aerial scout.
+func (c *conn) flyingReconnaissancePotionUse(item *store.Item) bool {
+	p := c.player
+	if p == nil || item == nil || item.ItemID != flyingReconnaissancePotionID || p.cubeItem(item.UniqueID) != item {
 		return false
 	}
-	quest := c.player.quest(flyingReconnaissanceQuestID)
-	if quest == nil {
+	q := p.quest(flyingReconnaissanceQuestID)
+	if q == nil || q.Status != "START" || (questVar(q.Vars, 0) != 1 && questVar(q.Vars, 0) != 2) || p.WorldID != 210030000 || p.zone == nil ||
+		(p.zone.Name != "TURSIN_OUTPOST_ENTRANCE" && p.zone.Name != "TURSIN_OUTPOST") || p.transformed != 0 {
 		return false
 	}
-	if zoneName == "TURSIN_OUTPOST_ENTRANCE" {
-		c.send(playMovie(18))
-		return true
-	}
-	if zoneName != "TURSIN_OUTPOST" {
+	// Stage 2 with an unused potion also repairs progress saved by the old zone handler.
+	if questVar(q.Vars, 0) == 1 && !c.customQuestProgress(flyingReconnaissanceQuestID, setQuestVar(q.Vars, 0, 2), "") {
 		return false
 	}
-	if quest.Status != "START" || questVar(quest.Vars, 0) != 1 {
+	p.broadcast(itemUsageAnimation(p.ID, item.UniqueID, item.ItemID, 0, 1, 0), true)
+	p.fx.set(effectShapeChange)
+	p.transformed = flyingReconnaissanceModelID
+	p.broadcast(transformPacket(p), true)
+	c.s.removeItemsByID(p, item.ItemID, 1)
+	c.send(playMovie(18))
+	// Restore even if the client never acknowledges the movie.
+	c.s.later(time.Minute, func() { c.flyingReconnaissanceMovieEnd(18) })
+	return true
+}
+
+func (c *conn) flyingReconnaissanceMovieEnd(movieID uint16) bool {
+	p := c.player
+	if p == nil || movieID != 18 || p.conn != c || p.transformed != flyingReconnaissanceModelID {
 		return false
 	}
-	return c.customQuestProgress(flyingReconnaissanceQuestID, setQuestVar(quest.Vars, 0, 2), "")
+	p.transformed = 0
+	p.fx.unset(effectShapeChange)
+	p.broadcast(transformPacket(p), true)
+	return true
 }
 
 // flyingReconnaissanceAttack ports the attack event on the named scout. The

@@ -9,3 +9,4 @@
 .env
 panel-assets/
 *.dump
+java/AL-Game/cache/

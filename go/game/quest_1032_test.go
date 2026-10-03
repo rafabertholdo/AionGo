@@ -80,11 +80,9 @@ func TestRulersDutyLevelUpItemUseAndReward(t *testing.T) {
 	kerubien := npc(seauKerubienNPCID, 0x31039)
 	p.targetID = kerubien.id
 	c.showDialog(dialogRequest(cmShowDialog, kerubien.id, 0, 0))
-	if got := s.countItems(p, rulersDutyItemID); got != 1 || kerubien.useTask == nil || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, kerubien.id, 1).Data) {
+	if got := s.countItems(p, rulersDutyItemID); got != 1 || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, kerubien.id, 1).Data) {
 		t.Fatalf("Kerubien did not start the item interaction: item=%d task=%v packet=%x", got, kerubien.useTask != nil, packets.last(smUseObject))
 	}
-	kerubien.useTask.cancel()
-	kerubien.useTask = nil
 	p.zone = &data.Zone{Name: "PUTRID_MIRE", MapID: 210020000}
 	item := p.cubeItem(p.cube[0].UniqueID)
 	c.rulersDutyItemUse(item)

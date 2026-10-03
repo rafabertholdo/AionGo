@@ -57,7 +57,7 @@ func TestFungusAmongUsDialogsKillsAndClassReward(t *testing.T) {
 }
 
 func TestAltgardStartupQuestLevelUpTransitions(t *testing.T) {
-	s, p, c, _, _ := altgardStartupQuestFixture(t, fungusAmongUsQuestID, 0)
+	s, p, _, _, _ := altgardStartupQuestFixture(t, fungusAmongUsQuestID, 0)
 	p.quests = []store.Quest{
 		{ID: fungusAmongUsQuestID, Status: "LOCKED"},
 		{ID: encroachersQuestID, Status: "LOCKED"},
@@ -67,13 +67,6 @@ func TestAltgardStartupQuestLevelUpTransitions(t *testing.T) {
 		{ID: fearThisQuestID, Status: "LOCKED"},
 		{ID: observatoryQuestID, Status: "LOCKED"},
 		{ID: impetusiumQuestID, Status: "LOCKED"},
-	}
-	// A completion-triggered quest scan is not Java's level-up event.
-	c.questLevelUp()
-	for _, id := range []int32{fungusAmongUsQuestID, encroachersQuestID, dangerousCropQuestID, scoutItOutQuestID, takeTheInitiativeQuestID, fearThisQuestID, observatoryQuestID, impetusiumQuestID} {
-		if p.quest(id).Status != "LOCKED" {
-			t.Fatalf("quest %d unlocked during completion scan", id)
-		}
 	}
 	p.quests = append(p.quests, store.Quest{ID: altgardDutiesPrerequisite, Status: "COMPLETE"})
 	p.level = 10

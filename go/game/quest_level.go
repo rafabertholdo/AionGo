@@ -1,10 +1,21 @@
 package game
 
+import (
+	"maps"
+	"slices"
+)
+
 // questLevelUp dispatches Java QuestEngine.onLvlUp. QuestService calls it
 // after quest completion as well as when the character actually levels up.
 func (c *conn) questLevelUp() {
 	if c == nil || c.player == nil {
 		return
+	}
+	// QuestEngine.onLvlUp for the translated handlers that unlock a LOCKED campaign quest.
+	for _, id := range slices.Sorted(maps.Keys(javaLevelUps)) {
+		if script := c.s.data.QuestScripts[id]; script != nil {
+			c.javaPort(func() bool { return javaLevelUps[id](c, script) })
+		}
 	}
 	c.kerubThreatLevelUp()
 	c.thinkingAheadLevelUp()
@@ -18,7 +29,6 @@ func (c *conn) questLevelUp() {
 	c.maskedLoiterersLevelUp()
 	c.huntingLepharistRevolutionariesLevelUp()
 	c.frillneckHuntLevelUp()
-	c.forestOutlawLevelUp()
 	c.sourcePollutionLevelUp()
 	c.heldSacredLevelUp()
 	c.mandurisSecretLevelUp()

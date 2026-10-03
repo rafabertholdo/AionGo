@@ -7,40 +7,40 @@ import (
 	"aionlightning/game/store"
 )
 
-// levelUpStartQuests ports Java's QuestEngine.onLvlUp registrations for
-// handlers that create a quest as soon as its minimum level is reached.
+// javaLevelUpCreates are the handlers whose Java onLvlUpEvent creates the quest once the player reaches its minimum
+// level (qs == null, checkLevelRequirement, QuestService.startQuest). The campaign chains are not here: their Java
+// onLvlUpEvent only unlocks a LOCKED row that an orders quest (1100, 1130, 1300, ...) created.
+var javaLevelUpCreates = []int32{1006, 1007, 1205, 1913, 1914, 1915, 1916, 1929, 2008, 2009, 2098, 2132, 2900, 2901, 2902, 2903, 2904}
+
+// javaSkillQuestVars are _1205ANewSkill / _2132ANewSkill: started straight into REWARD with the starting class's var.
+var javaSkillQuestVars = map[string]int32{"WARRIOR": 1, "SCOUT": 2, "MAGE": 3, "PRIEST": 4}
+
+// levelUpStartQuests is QuestEngine.onLvlUp for javaLevelUpCreates.
 func (c *conn) levelUpStartQuests() {
 	if c == nil || c.player == nil {
 		return
 	}
-	for _, script := range c.s.data.QuestScripts {
-		if script.ID == josnackDilemmaQuestID || script.ID == pearlOfProtectionQuestID {
+	for _, id := range javaLevelUpCreates {
+		script := c.s.data.QuestScripts[id]
+		if script == nil {
 			continue
 		}
-		if (script.ID == 1006 || script.ID == 1007) && c.s.currentConfig().SimpleSecondClass {
+		if (id == 1006 || id == 1007) && c.s.currentConfig().SimpleSecondClass {
 			continue
 		}
-		if script.ID == sanctumCeremonyQuestID {
+		if id == sanctumCeremonyQuestID {
 			ascension := c.player.quest(ascensionQuestID)
 			if ascension == nil || ascension.Status != "COMPLETE" {
 				continue
 			}
 		}
-		if !script.LevelUpStart || c.player.quest(script.ID) != nil {
+		template := c.s.data.Quests[id]
+		if c.player.quest(id) != nil || template == nil || c.player.level < template.MinLevel || !c.beginQuest(script) {
 			continue
 		}
-		template := c.s.data.Quests[script.ID]
-		if template == nil || c.player.level < template.MinLevel || !c.s.canStartQuest(c.player, script) {
-			continue
+		if id == 1205 || id == 2132 {
+			c.updateQuest(id, func(q *store.Quest) { q.Status, q.Vars = "REWARD", javaSkillQuestVars[c.player.Class] })
 		}
-		started := store.Quest{ID: script.ID, Status: "START"}
-		if err := c.s.quests.SaveQuest(c.player.ID, started); err != nil {
-			c.s.log.Error("starting level-up quest", "quest", script.ID, "err", err)
-			continue
-		}
-		c.player.quests = append(c.player.quests, started)
-		c.send(questAccepted(1, started))
-		c.send(c.s.nearbyQuests(c.player))
 	}
 }
 

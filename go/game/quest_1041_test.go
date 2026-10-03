@@ -159,8 +159,9 @@ func TestDangerousArtifactLevelUpObjectsAndReward(t *testing.T) {
 	if quest := p.quest(dangerousArtifactQuestID); quest.Status != "REWARD" || !bytes.Equal(packets.last(smPlayMovie), ascensionMovie(38).Data) {
 		t.Fatalf("final report did not open reward after movie 38: quest=%+v movie=%x", quest, packets.last(smPlayMovie))
 	}
-	c.showDialog(dialogRequest(cmShowDialog, laigas.id, 0, 0))
-	selectDialog(laigas, 8)
+	// Java takes the reward at Telemachus (REWARD -> defaultQuestEndDialog there only).
+	c.showDialog(dialogRequest(cmShowDialog, telemachus.id, 0, 0))
+	selectDialog(telemachus, 8)
 	if quest := p.quest(dangerousArtifactQuestID); quest.Status != "COMPLETE" || quest.CompleteCount != 1 || s.countItems(p, template.Rewards[0].SelectableItems[0].ID) != 1 || !bytes.Equal(packets.last(smTitleList), titleList(p).Data) {
 		t.Fatalf("selectable reward did not complete the quest: quest=%+v item=%d title=%x", quest, s.countItems(p, template.Rewards[0].SelectableItems[0].ID), packets.last(smTitleList))
 	}

@@ -9,9 +9,19 @@ possible. Background: [QUEST_DEBUG.md](QUEST_DEBUG.md) (the two-server rig), [QU
 ## 0. Always first (2 minutes, no client needed)
 
 ```sh
+scripts/quest-parity.sh <id> [<id>...]            # Java handler vs Go handler, every state x npc x dialog, ~1 min (all quests: no ids)
 python3 scripts/quest-java-table.py <id>          # what the Java handler does: npcs, dialog ids, guards, actions, L<line> numbers
 scripts/run-go.sh go test ./game -run 'TestQuestConformance|Quest<id>'   # framework rules + the quest's own tests
 ```
+
+`quest-parity.sh` runs the real Java handlers in-process (`QuestTraceDump`, no database, no client, no servers) over
+every reachable quest state, each registered npc, a plain click and a sweep of dialog ids, then replays the same probes
+on the Go handlers (`TestQuestJavaParity`). Each failure line is one probe: state, npc, dialog, and the differing
+dialog windows / quest updates / movies / system messages, quest state, inventory or experience. States marked
+`(seeded state)` were not reached by dialogs alone (kills, items, timers) and may be unreachable in game; fix the
+others first. All differences go to `go/.build/quest_parity_report.tsv`. After a Go-only change rerun with
+`SKIP_JAVA=1`. Probes where the Java handler threw (e.g. a reward index past the list) are skipped. Kill, item-use,
+level-up and movie-end events are not probed yet.
 
 Read the table against the Go handler (`game/data/quest_scripts.go` says which Go function serves the quest: custom
 handler, template kind, talk chain, level-up start). Most bugs are visible here: a Java `return false` ported as an

@@ -21,7 +21,7 @@ func TestRequestOfTheElimFluteInteraction(t *testing.T) {
 			f.p.targetID = elder.id
 			f.packets.frames = nil
 			f.c.showDialog(dialogRequest(cmShowDialog, elder.id, 0, 0))
-			if elder.useTask == nil || !bytes.Equal(f.packets.last(smUseObject), useObject(f.p.ID, elder.id, 1).Data) ||
+			if !bytes.Equal(f.packets.last(smUseObject), useObject(f.p.ID, elder.id, 1).Data) ||
 				!bytes.Equal(f.packets.last(smEmotion), f.s.playerEmotionTo(f.p, emoteStartQuestLoot, 0, elder.id, 0, 0, 0, 0).Data) {
 				t.Fatal("elder interaction did not start the flute")
 			}
@@ -30,7 +30,7 @@ func TestRequestOfTheElimFluteInteraction(t *testing.T) {
 			}
 			time.Sleep(3 * time.Second)
 			synctest.Wait()
-			if elder.useTask != nil || !bytes.Equal(f.packets.last(smUseObject), useObject(f.p.ID, elder.id, 0).Data) ||
+			if !bytes.Equal(f.packets.last(smUseObject), useObject(f.p.ID, elder.id, 0).Data) ||
 				!bytes.Equal(f.packets.last(smEmotion), f.s.playerEmotionTo(f.p, emoteEndQuestLoot, 0, elder.id, 0, 0, 0, 0).Data) {
 				t.Fatalf("flute did not end the quest interaction: emotion=%x", f.packets.last(smEmotion))
 			}

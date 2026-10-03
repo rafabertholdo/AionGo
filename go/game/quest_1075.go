@@ -79,7 +79,7 @@ func (c *conn) newWingsDialog(o *object, script *data.QuestScript, dialogID int3
 			// An unmatched Java case 25 falls into the movie case.
 			fallthrough
 		case 1013:
-			c.send(playMovie(272))
+			c.send(movie(0, 272))
 			return false
 		case 10000:
 			if variable == 0 {

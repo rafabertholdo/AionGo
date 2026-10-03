@@ -87,6 +87,9 @@ func (c *conn) playMovieEnd(r *wire.Reader) {
 	if r.Err != nil {
 		return
 	}
+	if c.flyingReconnaissanceMovieEnd(movieID) {
+		return
+	}
 	if c.gaphyrksLoveMovieEnd(movieID) {
 		return
 	}
@@ -166,8 +169,13 @@ func questAccepted(action byte, q store.Quest) *wire.Writer {
 
 // playMovie is SM_PLAY_MOVIE: a cutscene movie in the 1.9 client.
 func playMovie(id uint16) *wire.Writer {
+	return movie(1, id)
+}
+
+// movie is SM_PLAY_MOVIE(type, movieId) as the Java handlers send it (type 1: cutscene movie, 0: cutscene).
+func movie(kind byte, id uint16) *wire.Writer {
 	w := wire.Packet(smPlayMovie)
-	w.C(1)
+	w.C(kind)
 	w.D(0)
 	w.D(0)
 	w.H(id)

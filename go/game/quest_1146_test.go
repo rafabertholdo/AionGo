@@ -2,6 +2,7 @@ package game
 
 import (
 	"bytes"
+	"slices"
 	"testing"
 
 	"aionlightning/game/data"
@@ -53,9 +54,11 @@ func TestDelicateMandrakeStartAndInventoryGuard(t *testing.T) {
 	for len(p.cube) < p.cubeLimit() {
 		p.cube = append(p.cube, &store.Item{UniqueID: int32(len(p.cube)) + 0x60000, ItemID: data.Kinah, Count: 1})
 	}
-	if !c.delicateMandrakeDialog(start, script, 1002) || p.quest(delicateMandrakeQuestID) != nil || s.countItems(p, delicateMandrakeWorkItemID) != 0 || packets.last(smSystemMessage) == nil {
-		t.Fatal("full inventory accepted the quest without its timer work item")
+	// Java ignores addItems' result: the full-inventory message, then the timer and the quest start anyway.
+	if !c.delicateMandrakeDialog(start, script, 1002) || p.quest(delicateMandrakeQuestID) == nil || s.countItems(p, delicateMandrakeWorkItemID) != 0 || packets.last(smSystemMessage) == nil {
+		t.Fatal("full inventory: Java starts the quest without its work item")
 	}
+	p.quests = nil
 	p.cube = []*store.Item{}
 	if !c.delicateMandrakeDialog(start, script, 1002) {
 		t.Fatal("NPC did not accept the quest")
@@ -63,8 +66,11 @@ func TestDelicateMandrakeStartAndInventoryGuard(t *testing.T) {
 	if q := p.quest(delicateMandrakeQuestID); q == nil || q.Status != "START" || s.countItems(p, delicateMandrakeWorkItemID) != 1 {
 		t.Fatalf("quest acceptance = %+v, work item=%d", q, s.countItems(p, delicateMandrakeWorkItemID))
 	}
-	if !bytes.Equal(packets.last(smQuestAccepted), delicateMandrakeTimerPacket(delicateMandrakeTimerSeconds).Data) {
-		t.Fatalf("quest timer packet = %x", packets.last(smQuestAccepted))
+	// Java sends the timer before the quest update.
+	if !slices.ContainsFunc(packets.frames, func(f []byte) bool {
+		return bytes.Equal(f, delicateMandrakeTimerPacket(delicateMandrakeTimerSeconds).Data)
+	}) {
+		t.Fatalf("quest timer packet missing")
 	}
 	if c.delicateMandrakeDialog(start, script, 1002) {
 		t.Fatal("repeated acceptance was handled while quest was already active")
@@ -83,7 +89,8 @@ func TestDelicateMandrakeTurnInAndRewards(t *testing.T) {
 	if !s.addItem(p, delicateMandrakeWorkItemID, 1) {
 		t.Fatal("could not add the quest timer work item")
 	}
-	if !c.delicateMandrakeDialog(end, script, -1) || p.quest(delicateMandrakeQuestID).Status != "START" || packets.last(smDialogWindow) == nil {
+	// Java: no item -> the main menu, then defaultQuestEndDialog(-1), false while the quest is not in REWARD.
+	if c.delicateMandrakeDialog(end, script, -1) || p.quest(delicateMandrakeQuestID).Status != "START" || !bytes.Equal(packets.last(smDialogWindow), dialogWindow(end.id, 10, 0).Data) {
 		t.Fatal("missing mandrake item changed quest status")
 	}
 	if !s.addItem(p, delicateMandrakeTurnInItemID, 1) {
@@ -92,7 +99,7 @@ func TestDelicateMandrakeTurnInAndRewards(t *testing.T) {
 	if !c.delicateMandrakeDialog(end, script, -1) || p.quest(delicateMandrakeQuestID).Status != "REWARD" || questVar(p.quest(delicateMandrakeQuestID).Vars, 0) != 2 || s.countItems(p, delicateMandrakeTurnInItemID) != 0 {
 		t.Fatalf("turn-in transition = %+v item=%d", p.quest(delicateMandrakeQuestID), s.countItems(p, delicateMandrakeTurnInItemID))
 	}
-	if !bytes.Equal(packets.last(smQuestAccepted), delicateMandrakeTimerPacket(0).Data) || !bytes.Equal(packets.last(smDialogWindow), dialogWindow(end.id, 5, delicateMandrakeQuestID).Data) {
+	if !slices.ContainsFunc(packets.frames, func(f []byte) bool { return bytes.Equal(f, delicateMandrakeTimerPacket(0).Data) }) || !bytes.Equal(packets.last(smDialogWindow), dialogWindow(end.id, 5, delicateMandrakeQuestID).Data) {
 		t.Fatal("turn-in did not stop the timer and show the default reward dialog")
 	}
 	if c.delicateMandrakeDialog(end, script, 8) || p.quest(delicateMandrakeQuestID).Status != "REWARD" {

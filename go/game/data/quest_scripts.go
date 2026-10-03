@@ -137,12 +137,6 @@ func (d *Data) loadQuestScripts(dir string) error {
 			{QuestXML, file.XML},
 		} {
 			for _, script := range group.scripts {
-				// These quests have individually ported Java handlers below. The
-				// static Verteron entry for 1139 is stale and conflicts with its
-				// Java handler, so leave it out of the generic indexes.
-				if script.ID == 1139 {
-					continue
-				}
 				if previous := d.QuestScripts[script.ID]; previous != nil {
 					return fmt.Errorf("quest script %d appears as both %s and %s", script.ID, previous.Kind, group.kind)
 				}
@@ -238,7 +232,6 @@ func (d *Data) loadQuestScripts(dir string) error {
 		{ID: 1157, Kind: QuestCustom, StartNPC: 798003, EndNPC: 798003, NPCStart: true},                                                                                                                                                                            // Gaphyrk's Love
 		{ID: 1162, Kind: QuestCustom, StartNPC: 203095, EndNPC: 203095, NPCStart: true, TalkNPCs: []int32{203093, 700005}},                                                                                                                                         // Alteno's Wedding Ring
 		{ID: 1158, Kind: QuestCustom, StartNPC: 798003, EndNPC: 203128, NPCStart: true, TalkNPCs: []int32{700003}},                                                                                                                                                 // Village Seal Found
-		{ID: 1139, Kind: QuestCustom, StartNPC: 203124, EndNPC: 203124, MonsterInfos: []QuestMonster{{NPCID: 210138, VarID: 0, MaxKill: 9}, {NPCID: 210140, VarID: 0, MaxKill: 5}}},                                                                                // The Forest Outlaw
 		{ID: 1141, Kind: QuestCustom, StartNPC: 730001, EndNPC: 700122, NPCStart: true},                                                                                                                                                                            // Belbua's Treasure
 		{ID: 1146, Kind: QuestCustom, StartNPC: 203123, EndNPC: 203139, NPCStart: true},                                                                                                                                                                            // Delicate Mandrake
 		{ID: 3060, Kind: QuestCustom, StartNPC: 798190, EndNPC: 798193, MiddleNPC: 798191, MiddleNPC2: 798192, ItemID: 182208043, ItemUseDelay: 3000},                                                                                                              // The Red Journal
@@ -637,9 +630,6 @@ func (d *Data) loadQuestScripts(dir string) error {
 			for _, npcID := range []int32{798003, 700003, 203128} {
 				d.QuestCustomTalks[npcID] = append(d.QuestCustomTalks[npcID], script)
 			}
-		}
-		if script.ID == 1139 {
-			d.QuestCustomTalks[script.StartNPC] = append(d.QuestCustomTalks[script.StartNPC], script)
 		}
 		if script.ID == 1141 {
 			d.QuestCustomTalks[script.StartNPC] = append(d.QuestCustomTalks[script.StartNPC], script)

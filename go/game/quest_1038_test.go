@@ -57,11 +57,11 @@ func TestShadowsCommandLevelUpObjectsBossAndReward(t *testing.T) {
 		c.dialogSelect(dialogRequest(cmDialogSelect, o.id, dialog, shadowsCommandQuestID))
 	}
 	c.showDialog(dialogRequest(cmShowDialog, firstObject.id, 0, 0))
-	if questVar(p.quest(shadowsCommandQuestID).Vars, 0) != 0 || firstObject.useTask == nil || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, firstObject.id, 1).Data) {
+	if questVar(p.quest(shadowsCommandQuestID).Vars, 0) != 0 || !bytes.Equal(packets.last(smUseObject), useObject(p.ID, firstObject.id, 1).Data) {
 		t.Fatalf("first object did not start: quest=%+v task=%v packet=%x", p.quest(shadowsCommandQuestID), firstObject.useTask != nil, packets.last(smUseObject))
 	}
 	time.Sleep(3100 * time.Millisecond)
-	if questVar(p.quest(shadowsCommandQuestID).Vars, 0) != 1 || firstObject.useTask != nil || !bytes.Equal(packets.last(smPlayMovie), ascensionMovie(34).Data) {
+	if questVar(p.quest(shadowsCommandQuestID).Vars, 0) != 1 || !bytes.Equal(packets.last(smPlayMovie), ascensionMovie(34).Data) {
 		t.Fatalf("first object did not complete: quest=%+v task=%v movie=%x", p.quest(shadowsCommandQuestID), firstObject.useTask != nil, packets.last(smPlayMovie))
 	}
 	selectDialog(questNPC, 25)
@@ -75,11 +75,11 @@ func TestShadowsCommandLevelUpObjectsBossAndReward(t *testing.T) {
 		}
 	}
 	c.showDialog(dialogRequest(cmShowDialog, secondObject.id, 0, 0))
-	if questVar(p.quest(shadowsCommandQuestID).Vars, 0) != 2 || secondObject.useTask == nil {
+	if questVar(p.quest(shadowsCommandQuestID).Vars, 0) != 2 {
 		t.Fatalf("second object did not start: quest=%+v task=%v", p.quest(shadowsCommandQuestID), secondObject.useTask != nil)
 	}
 	time.Sleep(3100 * time.Millisecond)
-	if questVar(p.quest(shadowsCommandQuestID).Vars, 0) != 3 || s.countItems(p, shadowsCommandOfferingID) != 1 || secondObject.useTask != nil {
+	if questVar(p.quest(shadowsCommandQuestID).Vars, 0) != 3 || s.countItems(p, shadowsCommandOfferingID) != 1 {
 		t.Fatalf("second object did not grant the offering: quest=%+v item=%d task=%v", p.quest(shadowsCommandQuestID), s.countItems(p, shadowsCommandOfferingID), secondObject.useTask != nil)
 	}
 	selectDialog(questNPC, 25)

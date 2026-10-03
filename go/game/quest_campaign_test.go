@@ -52,7 +52,8 @@ func TestAsmodianCampaignZoneStartAndTurnIn(t *testing.T) {
 				t.Fatalf("campaign quest did not complete: %+v", completed)
 			}
 			for id := tc.firstLock; id <= tc.lastLock; id++ {
-				if followUp := p.quest(id); followUp == nil || followUp.Status != "LOCKED" {
+				// LOCKED, or already START where Java's onLvlUp after the finish unlocks it at this level.
+				if followUp := p.quest(id); followUp == nil || followUp.Status != "LOCKED" && followUp.Status != "START" {
 					t.Fatalf("follow-up %d = %+v", id, followUp)
 				}
 			}

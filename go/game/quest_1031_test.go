@@ -48,7 +48,11 @@ func TestMandurisSecretLevelUpKillsAndStoryReward(t *testing.T) {
 	selectDialog := func(o *object, dialog uint16) {
 		c.dialogSelect(dialogRequest(cmDialogSelect, o.id, dialog, mandurisSecretQuestID))
 	}
-	c.showDialog(dialogRequest(cmShowDialog, aurelius.id, 0, 0))
+	c.showDialog(dialogRequest(cmShowDialog, aurelius.id, 0, 0)) // Java has no case -1: the main menu
+	if got := packets.last(smDialogWindow); !bytes.Equal(got, dialogWindow(aurelius.id, 10, 0).Data) {
+		t.Fatalf("Aurelius click = %x", got)
+	}
+	selectDialog(aurelius, 25)
 	if got := packets.last(smDialogWindow); !bytes.Equal(got, dialogWindow(aurelius.id, 1011, mandurisSecretQuestID).Data) {
 		t.Fatalf("Aurelius opening page = %x", got)
 	}
@@ -87,12 +91,10 @@ func TestMandurisSecretLevelUpKillsAndStoryReward(t *testing.T) {
 	glider := npc(mandurisGliderNPC, 0x31033)
 	p.targetID = glider.id
 	c.showDialog(dialogRequest(cmShowDialog, glider.id, 0, 0))
-	if questVar(p.quest(mandurisSecretQuestID).Vars, 0) != 10 || glider.useTask == nil ||
+	if questVar(p.quest(mandurisSecretQuestID).Vars, 0) != 10 ||
 		!bytes.Equal(packets.last(smUseObject), useObject(p.ID, glider.id, 1).Data) {
 		t.Fatalf("glider interaction did not start: quest=%+v task=%v packet=%x", p.quest(mandurisSecretQuestID), glider.useTask != nil, packets.last(smUseObject))
 	}
-	glider.useTask.cancel()
-	glider.useTask = nil
 
 	melginie := npc(mandurisMelginieNPC, 0x31034)
 	selectDialog(melginie, 25)

@@ -114,11 +114,11 @@ func TestRootOfTheRotLevelUpCollectionAndReward(t *testing.T) {
 	if p.quest(rootOfRotQuestID).Status != "REWARD" || !bytes.Equal(packets.last(smDialogWindow), dialogWindow(middleNPC.id, 10, 0).Data) {
 		t.Fatalf("middle NPC did not open reward state: quest=%+v page=%x", p.quest(rootOfRotQuestID), packets.last(smDialogWindow))
 	}
-	c.customQuestDialogID(endNPC, script, -1)
+	c.showDialog(dialogRequest(cmShowDialog, endNPC.id, 0, 0))
 	if !bytes.Equal(packets.last(smDialogWindow), dialogWindow(endNPC.id, 5, rootOfRotQuestID).Data) || s.countItems(p, rootOfRotFirstItem) != 2 || s.countItems(p, rootOfRotSecondItem) != 2 {
 		t.Fatalf("end click did not show reward and remove one of each item: page=%x items=%d/%d", packets.last(smDialogWindow), s.countItems(p, rootOfRotFirstItem), s.countItems(p, rootOfRotSecondItem))
 	}
-	selectDialog(endNPC, 8) // Java's default end handler accepts every selection from 8 through 17.
+	selectDialog(endNPC, 17) // Java: 8-16 index a selectable reward this quest does not have (and throw)
 	if p.quest(rootOfRotQuestID).Status != "COMPLETE" || p.quest(rootOfRotQuestID).CompleteCount != 1 || s.countItems(p, rootOfRotFirstItem) != 1 || s.countItems(p, rootOfRotSecondItem) != 1 || s.countItems(p, 125001838) != 1 || p.Exp < d.ExpStart(30)+633400 {
 		t.Fatalf("quest completion/rewards mismatch: quest=%+v exp=%d items=%d/%d reward=%d", p.quest(rootOfRotQuestID), p.Exp, s.countItems(p, rootOfRotFirstItem), s.countItems(p, rootOfRotSecondItem), s.countItems(p, 125001838))
 	}
