@@ -32,6 +32,11 @@ Run `go/scripts/run-go.sh go test -json ./...`, `go/scripts/run-go.sh go vet ./.
 and gofmt for Go changes. Run Maven tests for Java changes. Report exact test
 counts and failures. Image tooling tests: `python3 -m unittest discover -s scripts`.
 
+Deployment requests are execution requests: when the user says to deploy or
+publish a build, carry out the release and deployment steps. Tests belong in the
+development phase; do not run tests as part of deployment unless the user
+explicitly asks for deployment-time testing.
+
 For quest ports, use bounded integration batches: run each handler's focused
 tests as it is implemented, then format the batch and run the repository-wide
 test suite and vet once after all handlers and shared registrations are
