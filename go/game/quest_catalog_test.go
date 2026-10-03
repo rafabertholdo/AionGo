@@ -96,7 +96,7 @@ func TestAllGenericQuestScriptsComplete(t *testing.T) {
 
 func questCatalogNPC(s *Server, p *player, npcID, objectID int32) *object {
 	o := &object{id: objectID, worldID: p.WorldID, x: p.X + 2, y: p.Y, z: p.Z,
-		npc: &data.NpcTemplate{ID: npcID}, watchers: map[int32]*player{p.ID: p}}
+		npc: &data.NpcTemplate{ID: npcID}, stats: &gameStats{}, watchers: map[int32]*player{p.ID: p}}
 	p.seen[objectID] = o
 	s.byID[objectID] = o
 	return o

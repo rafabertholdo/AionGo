@@ -63,6 +63,18 @@ func init() {
 			apply: func(e *effect, t *effectTemplate) { e.applyHeal(stat) }}
 	}
 	effectHandlers = map[string]effectHandler{
+		"return": {
+			calculate: func(e *effect, t *effectTemplate) {
+				if p, ok := e.effected.(*player); ok && p.spawned {
+					e.addSuccess(t)
+				}
+			},
+			apply: func(e *effect, t *effectTemplate) {
+				if p, ok := e.effector.(*player); ok {
+					e.s.moveToBind(p, true, 500*time.Millisecond)
+				}
+			},
+		},
 		"spellatk": damage(true),
 		"skillatk": damage(false),
 		"heal":     heal("hp", ""), "itemheal": heal("hp", ""),

@@ -170,13 +170,13 @@ func (c *conn) ascensionItemUse(item *store.Item) bool {
 	}
 	p := c.player
 	quest := p.quest(ascensionQuestID)
-	if p.zone == nil || p.zone.Name != "ITEMUSE_Q1006" || quest == nil || quest.Status != "START" {
+	if !c.s.insideZone(p, "ITEMUSE_Q1006") || quest == nil || quest.Status != "START" {
 		return false
 	}
 	p.broadcast(itemUsageAnimation(p.ID, item.UniqueID, item.ItemID, 3000, 0, 0), true)
 	c.s.later(3*time.Second, func() {
 		current := p.quest(ascensionQuestID)
-		if p.conn != c || p.cubeItem(item.UniqueID) != item || p.zone == nil || p.zone.Name != "ITEMUSE_Q1006" || current == nil || current.Status != "START" {
+		if p.conn != c || p.cubeItem(item.UniqueID) != item || !c.s.insideZone(p, "ITEMUSE_Q1006") || current == nil || current.Status != "START" {
 			return
 		}
 		p.broadcast(itemUsageAnimation(p.ID, item.UniqueID, item.ItemID, 0, 1, 0), true)

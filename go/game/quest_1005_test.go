@@ -59,6 +59,9 @@ func TestBarringTheGateDialogAndGateSequence(t *testing.T) {
 		npc := questCatalogNPC(s, p, npcID, int32(0x52001+index))
 		p.targetID = npc.id
 		c.barringTheGateDialog(npc, script, -1)
+		if got := packets.last(smEmotion); !bytes.Equal(got, s.playerEmotionTo(p, emoteNeutralMode2, 0, npc.id, 0, 0, 0, 0).Data) {
+			t.Fatalf("gate started a persistent quest casting animation: %x", got)
+		}
 		if got := packets.last(smUseObject); !bytes.Equal(got, useObject(p.ID, npc.id, 1).Data) {
 			t.Fatalf("gate %d start packet = %x", npcID, got)
 		}
@@ -66,6 +69,9 @@ func TestBarringTheGateDialogAndGateSequence(t *testing.T) {
 		time.Sleep(3200 * time.Millisecond)
 		if got := packets.last(smUseObject); !bytes.Equal(got, useObject(p.ID, npc.id, 0).Data) {
 			t.Fatalf("gate %d finish packet = %x", npcID, got)
+		}
+		if got := packets.last(smEmotion); !bytes.Equal(got, emotionPacket(npc.id, emoteEmote, npc.state, 0, 128, 0, 0, 0, 0, 0, 0, 0).Data) {
+			t.Fatalf("gate destruction emote missing: %x", got)
 		}
 		if index < 3 && questVar(p.quest(1005).Vars, 0) != int32(index+6) {
 			t.Fatalf("gate %d variable = %d", npcID, p.quest(1005).Vars)

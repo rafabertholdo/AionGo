@@ -122,7 +122,7 @@ Wrathchild, which `game/world_test.go` compares the Go packets with.
    Signets (carve and burst), auras, traps and servants, and the summons of spirit masters (the
    panel, the modes, attacking on command, skills, the client-driven movement, letting go).
    Stigma stones (shards, the skills they teach while worn, shown as stigma skills).
-   Left: search, return, skill launchers, the toy pets. Skills are learned on level up (and at 10, the crafting
+   Left: search, skill launchers, the toy pets. Skills are learned on level up (and at 10, the crafting
    skill switches), matching the 1.9 server's SM_SKILL_LIST.
 9. [~] Quests: the two prologues, four shared Java XML templates
    (`report_to`, `monster_hunt`, `item_collecting`, `work_order`), and the five

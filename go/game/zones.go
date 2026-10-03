@@ -142,3 +142,14 @@ func (s *Server) startDrowning(p *player) {
 
 // flightAllowed is what CM_EMOTION asks of the player's zone: none, or one that says so, allows flying.
 func (p *player) flightAllowed() bool { return p.zone == nil || p.zone.Fly }
+
+// insideZone checks a named area independently of the player's selected zone.
+// Quest item areas can overlap a larger zone without appearing in its neighbor list.
+func (s *Server) insideZone(p *player, name string) bool {
+	for _, z := range s.data.Zones[p.WorldID] {
+		if z.Name == name && z.Contains(p.X, p.Y, p.Z) {
+			return true
+		}
+	}
+	return false
+}

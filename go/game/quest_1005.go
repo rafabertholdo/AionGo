@@ -88,7 +88,7 @@ func (c *conn) barringTheGateDialog(o *object, script *data.QuestScript, dialogI
 		}
 		c.send(useObject(p.ID, o.id, 1))
 		c.dialogNotHandled() // Java's destroy() case returns false, so the main menu is sent as well
-		p.broadcast(c.s.playerEmotionTo(p, emoteStartQuestLoot, 0, o.id, 0, 0, 0, 0), true)
+		p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, o.id, 0, 0, 0, 0), true)
 		o.useTask = c.s.later(3*time.Second, func() {
 			o.useTask = nil
 			current := p.quest(1005)
@@ -101,14 +101,14 @@ func (c *conn) barringTheGateDialog(o *object, script *data.QuestScript, dialogI
 				status = "REWARD"
 				next = int32(index + 5)
 			}
-			if !c.customQuestProgress(1005, setQuestVar(current.Vars, 0, next), status) {
-				return
-			}
 			c.send(useObject(p.ID, o.id, 0))
 			p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, o.id, 0, 0, 0, 0), true)
+			o.broadcast(emotionPacket(o.id, emoteEmote, o.state, float32(o.stats.current(data.Speed))/speedScale, 128, 0, 0, 0, 0, 0,
+				uint16(o.stats.base(data.AttackSpeed)), uint16(o.stats.current(data.AttackSpeed))), false)
 			if index == 3 {
 				c.send(barringTheGateMovie())
 			}
+			c.customQuestProgress(1005, setQuestVar(current.Vars, 0, next), status)
 		})
 		return
 	}

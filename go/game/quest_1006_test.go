@@ -3,6 +3,8 @@ package game
 import (
 	"bytes"
 	"testing"
+	"testing/synctest"
+	"time"
 
 	"aionlightning/game/data"
 	"aionlightning/game/store"
@@ -225,4 +227,58 @@ func TestAscensionFourMinionsDealOneDamage(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestAscensionBottleInOverlappingLakeZone(t *testing.T) {
+	d := staticDataOrSkip(t)
+	synctest.Test(t, func(t *testing.T) {
+		s := testServer(d)
+		s.quests = &recordedQuests{}
+		p, _ := fighter(t, s, 640)
+		p.Y, p.Z = 1060, 99
+		p.quests = []store.Quest{{ID: ascensionQuestID, Status: "START", Vars: 1}}
+		for _, z := range d.Zones[p.WorldID] {
+			if z.Name == "CLIONA_LAKE" {
+				p.zone = z
+			}
+		}
+		if p.zone == nil {
+			t.Fatal("missing lake zone")
+		}
+		item := &store.Item{UniqueID: 0x40000, ItemID: ascensionJournalItem, Owner: p.ID, Count: 1}
+		p.cube = []*store.Item{item}
+		if !p.conn.ascensionItemUse(item) {
+			t.Fatal("bottle use rejected inside overlapping item area")
+		}
+		time.Sleep(3 * time.Second)
+		synctest.Wait()
+		if p.quest(ascensionQuestID).Vars != 2 || s.countItems(p, ascensionJournalItem) != 0 || s.countItems(p, ascensionProofItem) != 1 {
+			t.Fatal("bottle did not fill and advance Ascension")
+		}
+	})
+}
+
+func TestAscensionBottleRejectsOutsideAndLeavingArea(t *testing.T) {
+	d := staticDataOrSkip(t)
+	synctest.Test(t, func(t *testing.T) {
+		s := testServer(d)
+		p, _ := fighter(t, s, 600)
+		p.Y, p.Z = 1060, 99
+		p.quests = []store.Quest{{ID: ascensionQuestID, Status: "START", Vars: 1}}
+		item := &store.Item{UniqueID: 0x40000, ItemID: ascensionJournalItem, Owner: p.ID, Count: 1}
+		p.cube = []*store.Item{item}
+		if p.conn.ascensionItemUse(item) {
+			t.Fatal("bottle accepted outside the filling area")
+		}
+		p.X = 640
+		if !p.conn.ascensionItemUse(item) {
+			t.Fatal("bottle rejected inside the filling area")
+		}
+		p.X = 600
+		time.Sleep(3 * time.Second)
+		synctest.Wait()
+		if p.cubeItem(item.UniqueID) != item || p.quest(ascensionQuestID).Vars != 1 || s.countItems(p, ascensionProofItem) != 0 {
+			t.Fatal("leaving the area still filled the bottle")
+		}
+	})
 }

@@ -527,9 +527,12 @@ func (s *Server) broadcastEffects(c creature) {
 // flushEffects sends the icons of the creatures whose effects changed.
 func (s *Server) flushEffects() {
 	for c := range s.fxDirty {
-		c.broadcast(s.abnormalEffect(c), true)
 		if p, ok := c.(*player); ok {
+			p.conn.send(s.abnormalStatePacket(p))
+			p.broadcast(s.abnormalEffect(p), false)
 			s.updateGroupOf(p, groupUpdate)
+		} else {
+			c.broadcast(s.abnormalEffect(c), true)
 		}
 		delete(s.fxDirty, c)
 	}
