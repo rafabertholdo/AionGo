@@ -32,6 +32,14 @@ type ItemTemplate struct {
 	Restrict      [12]int32 // the level each class may use it from, or 0 if it can't
 	Actions       []*Node   // what using the item does: skilluse, skilllearn, dye, …
 	Stigma        *Stigma   // what a stigma stone teaches, or nil
+	Godstone      *Godstone // socketable godstone metadata, or nil
+}
+
+type Godstone struct {
+	SkillID         int32 `xml:"skillid,attr"`
+	SkillLevel      int32 `xml:"skilllvl,attr"`
+	Probability     int32 `xml:"probability,attr"`
+	ProbabilityLeft int32 `xml:"probabilityleft,attr"`
 }
 
 // IsEquipment reports whether the item is a weapon or armor.
@@ -117,6 +125,15 @@ func loadItems(path string) (map[int32]*ItemTemplate, error) {
 				}
 			}
 			items[current.ID] = current
+		case "godstone":
+			if current == nil {
+				continue
+			}
+			var stone Godstone
+			if err := decoder.DecodeElement(&stone, &start); err != nil {
+				return nil, fmt.Errorf("%s: item %d: %w", filepath.Base(path), current.ID, err)
+			}
+			current.Godstone = &stone
 		case "stigma":
 			if current == nil {
 				continue

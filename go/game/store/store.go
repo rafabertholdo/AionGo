@@ -83,6 +83,7 @@ type Item struct {
 	Enchant   int8
 	Skin      int32
 	Fusioned  int32
+	Godstone  int32 // item_stones category 1, slot 0; not an inventory column
 }
 
 // SkinID is the item the character appears to wear.
@@ -158,7 +159,8 @@ func (s Store) Appearance(playerID int32) (*Appearance, error) {
 
 // Items is a character's items in a location (0 is the cube), equipped or not.
 func (s Store) Items(owner int32, location int8, equipped bool) ([]*Item, error) {
-	rows, err := s.DB.Query(`SELECT itemUniqueId, itemId, itemCount, itemColor, isEquiped, isSoulBound, slot, enchant, itemSkin, fusionedItem
+	rows, err := s.DB.Query(`SELECT itemUniqueId, itemId, itemCount, itemColor, isEquiped, isSoulBound, slot, enchant, itemSkin, fusionedItem,
+		COALESCE((SELECT itemId FROM item_stones WHERE itemUniqueId = inventory.itemUniqueId AND category = 1 AND slot = 0), 0)
 		FROM inventory WHERE itemOwner = ? AND itemLocation = ? AND isEquiped = ? ORDER BY itemUniqueId`, owner, location, equipped)
 	if err != nil {
 		return nil, err
@@ -167,7 +169,7 @@ func (s Store) Items(owner int32, location int8, equipped bool) ([]*Item, error)
 	var items []*Item
 	for rows.Next() {
 		i := &Item{Owner: owner, Location: location}
-		if err := rows.Scan(&i.UniqueID, &i.ItemID, &i.Count, &i.Color, &i.Equipped, &i.SoulBound, &i.Slot, &i.Enchant, &i.Skin, &i.Fusioned); err != nil {
+		if err := rows.Scan(&i.UniqueID, &i.ItemID, &i.Count, &i.Color, &i.Equipped, &i.SoulBound, &i.Slot, &i.Enchant, &i.Skin, &i.Fusioned, &i.Godstone); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

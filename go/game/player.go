@@ -73,6 +73,7 @@ type player struct {
 	cooldowns        map[int32]time.Time // when each skill can be used again
 	moves            int32               // how many times it has set out to move
 	dp               int32               // divine power
+	lookingForGroup  bool                // session-only LFG toggle (CM_PLAYER_STATUS_INFO 9)
 	fx               effectController    // the effects it is under
 	fxMods           []keyedMods         // the stat changes of those
 	dirtyHP, dirtyMP bool                // to tell the client of
@@ -201,7 +202,7 @@ func (s *Server) loadPlayer(ch *character) (*player, error) {
 
 // playerStats is a player's stats from its class template, worn items, passive
 // skills and title, added in the order PlayerService.getPlayer adds them.
-// ponytail: godstones and enchantment aren't applied yet; they come with items (PORTING.md 7).
+// Godstones are socketed item effects; their combat procs are not applied here.
 func (s *Server) playerStats(p *player) *gameStats {
 	g := newPlayerStats(s.data.PlayerStatsFor(p.Class, p.level), p.level)
 	passives := s.newPassives(p, g)

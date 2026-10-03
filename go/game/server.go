@@ -98,6 +98,7 @@ type Server struct {
 	fxTemplates map[*data.SkillTemplate][]*effectTemplate // each skill's effects, made when first used
 	fxDirty     map[creature]bool                         // whose effect icons are to be sent
 	drops       map[int32][]store.Drop                    // what each monster may drop, by npc id
+	lootRolls   map[*object]bool                          // corpses with active rolls or uncollected winners, guarded by visMu
 
 	clockBase  int32 // game time at start
 	clockStart time.Time

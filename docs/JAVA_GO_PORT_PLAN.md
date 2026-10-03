@@ -53,13 +53,13 @@ Still open for quests:
 
 ### Missing Java features (verified 2026-10-03)
 
-Each row is implemented in AL-Game 1.9 and has no working Go counterpart.
+Each row is implemented in AL-Game 1.9. Go gaps and completed fixes are tracked below.
 
 | Area | Java source | Go state | Notes |
 | --- | --- | --- | --- |
-| **LFG / find group (reported broken in client testing)** | `CM_PLAYER_STATUS_INFO` status 9 calls `Player.setLookingForGroup(playerObjId == 2)`; `CM_PLAYER_SEARCH` filters `lfgOnly` on `isLookingForGroup()`; `SM_PLAYER_SEARCH` writes status 2 for LFG players | `game/group.go:playerStatusInfo` ignores status 9 and `player` has no LFG flag; `game/misc.go:playerSearch` has `case lfg == 1:` with no condition, so an LFG-only search excludes every player; results always send status 0 | Add the flag (not persisted in Java), handle status 9, filter on it and write status 2 in results. Add a packet test from the Java layouts, then confirm in the client |
-| Godstones | `CM_GODSTONE_SOCKET`, `ItemStoneListDAO` godstone rows, godstone procs | No handler; `game/player.go` notes godstones and enchantment are not applied to stats | Socketing, persistence and combat procs together |
-| Group loot roll/bid | `CM_GROUP_LOOT` -> `DropService.handleRoll/handleBid` | `game/group.go` registers an empty handler | Distribution modes 2 (roll) and 3 (bid) |
+| **LFG / find group (reported broken in client testing)** | `CM_PLAYER_STATUS_INFO` status 9 calls `Player.setLookingForGroup(playerObjId == 2)`; `CM_PLAYER_SEARCH` filters `lfgOnly` on `isLookingForGroup()`; `SM_PLAYER_SEARCH` writes status 2 for LFG players | `game/group.go:playerStatusInfo` handles status 9 with a session-only flag; `game/misc.go:playerSearch` filters on that flag and writes result status 2 | Implemented 2026-10-03. Packet tests cover toggle on/off, normal and LFG-only searches, offline exclusion and truncated toggles. Real-client confirmation remains pending |
+| Godstones | `CM_GODSTONE_SOCKET`, `ItemStoneListDAO` godstone rows, godstone procs | Socketing implemented in `game/godstone.go`: NPC range, unequipped weapon, godstone metadata, service fee and atomic persistence; inventory and appearance packets carry the socket | Combat procs remain missing. Client/capture confirmation remains pending |
+| Group loot roll/bid | `CM_GROUP_LOOT` -> `DropService.handleRoll/handleBid` | Mode 2 rolls implemented in `game/group_loot.go`: quality settings, eligible-member prompts, roll/pass messages, tie handling and atomic winner grants | Mode 3 bids remain unported. Roll capture/client confirmation remains pending |
 | Map channels | `CM_CHANGE_CHANNEL` -> `TeleportService.changeChannel` | No handler | Needs channel isolation of npcs/players |
 | Custom settings | `CM_CUSTOM_SETTINGS` (display/deny flags, `SM_CUSTOM_SETTINGS` broadcast) | No handler; deny/display flags are loaded and used but not saved | Save kinds 2/3 with the logout save |
 | Saved effects | `PlayerEffectsDAO` | Active effects are not persisted | Lost on relog; check expiry and cooldowns |
@@ -90,9 +90,11 @@ the table above.
 | `CM_CLIENT_COMMAND_LOC` | Implemented in `go/game/client_command.go`: private current-location system message with Java-style float strings. Literal packet and coordinate formatting tests added; capture/client verification remains open. |
 | `CM_DISCONNECT` | Implemented in `go/game/client_requests.go`: zero closes the socket without a final packet; the existing read-loop cleanup owns logout. Nonzero and truncated requests do nothing. Java flags opcode `0xED` as uncertain; capture/client and end-to-end persistence verification remain open. |
 
-`go/game/group.go` registers `CM_GROUP_LOOT` as an empty handler. Java dispatches
-roll and bid handling through DropService. Existing group loot rules and shared
-experience do not cover this behavior.
+`go/game/group_loot.go` handles mode-2 `CM_GROUP_LOOT` replies and protects
+active rolls and uncollected winner reservations. Group settings now retain
+autodistribution and the seven quality rules. Java uses the per-quality rule
+to choose a roll; the global autodistribution field is retained for the UI.
+Mode-3 bid handling remains unported.
 
 `go/game/legion.go` registers upload emblem/info requests as empty handlers and
 explicitly documents that uploaded emblem images are unported. Other legion
@@ -232,8 +234,8 @@ that dependency before registration. Keep review and porting batches small
 enough to integrate without broad simultaneous edits to shared files. Parallel
 development still uses sequential Go commands on this host.
 
-0. **Fix the LFG tool** (reported broken): status 9, the LFG-only filter and the
-   result status, as in the table above.
+0. **LFG tool implemented**: status 9, the LFG-only filter and result status
+   now match the Java reference. Confirm the completed fix in the 1.9 client.
 1. **Finish the inventory.** Map Java packets, services, controllers, AI,
    quest events, skill effects, item actions, data loaders, DAOs, configuration,
    and admin command branches to Go. Inspect no-op registrations and reconcile

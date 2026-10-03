@@ -253,7 +253,7 @@ func (s *Server) brokerItems(p *player, items []*brokerItem, total, page int) *w
 			w.D(b.item.SkinID())
 			w.C(0)
 			s.writeStones(w, nil)
-			w.D(0) // god stone
+			w.D(b.item.Godstone)
 			w.C(0)
 			w.D(0)
 			w.D(0)

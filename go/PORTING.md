@@ -103,6 +103,8 @@ Wrathchild, which `game/world_test.go` compares the Go packets with.
    respawn time), crafting (recipes learned by items or with the skill, components, critical
    products, skill and player experience), dye scrolls, and the masters who teach the next level of a crafting skill.
    Enchanting (stones with AL-Game's rates, the stats each level adds) and socketing manastones.
+   Godstone socketing charges the Java service fee, replaces the existing socket and consumes one stone atomically;
+   sockets persist across item reloads and appear in inventory/equipment packets. Combat procs remain unimplemented.
    Account warehouse (`accountwh.go`: item and kinah rows in location 2 owned by the account id, 17 places, no expansion,
    shared by the characters of an account, sent with the warehouse dialog; AL-Game has no restrictions on what goes in).
    Left: the other item actions (supplements for enchants), crafting stations (static objects),
@@ -223,8 +225,13 @@ against the real database: `AION_TEST_DB=<db host> go test ./game/store`), but n
 `docker/capture-1.9.sh` doing each of these on the Java stack, save it under
 `game/testdata/`, and compare the way `TestCastPacketsMatchClient19` does:
 
+- godstone socketing/replacement, the service fee and weapon glow after equipping/relogging;
 - groups (invite, accept, leave, kick, leader, loot rules), group chat;
+  group loot rolls and quality settings are implemented with protected winner
+  reservations and atomic grants; bid distribution remains unported;
 - friends, blocks, whispers, `/who` (CM_PLAYER_SEARCH), looking at a player;
+  LFG status 9, LFG-only search and result status 2 are implemented with packet
+  regression tests; real-client confirmation remains pending;
 - trading, private stores, mail (send, read, take), the broker (register, list, buy, settle);
 - warehouse (open, put in, take out, expand), cube expansion, soul healing;
 - npc teleporters, portals into a dungeon (SM_CHANNEL_INFO with the instance);

@@ -248,7 +248,7 @@ func (s Store) Stones(itemUniqueID int32) ([]Stone, error) {
 		})
 }
 
-// AddStone sockets a stone in an item, and DeleteStones takes them all out.
+// AddStone sockets a stone in an item.
 func (s Store) AddStone(itemUniqueID int32, st Stone) error {
 	_, err := s.DB.Exec(`INSERT INTO item_stones (itemUniqueId, itemId, slot, category) VALUES (?, ?, ?, ?)`,
 		itemUniqueID, st.ItemID, st.Slot, st.Category)
@@ -261,8 +261,9 @@ func (s Store) DeleteStone(itemUniqueID, slot int32) error {
 	return err
 }
 
+// DeleteStones removes manastones after a failed socket attempt, preserving godstones.
 func (s Store) DeleteStones(itemUniqueID int32) error {
-	_, err := s.DB.Exec(`DELETE FROM item_stones WHERE itemUniqueId = ?`, itemUniqueID)
+	_, err := s.DB.Exec(`DELETE FROM item_stones WHERE itemUniqueId = ? AND category = 0`, itemUniqueID)
 	return err
 }
 

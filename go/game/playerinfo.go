@@ -67,7 +67,7 @@ func (s *Server) writeCharacterInfo(w *wire.Writer, ch *character) {
 		}
 		w.C(1)
 		w.D(item.SkinID())
-		w.D(0) // god stone
+		w.D(item.Godstone)
 		w.D(item.Color)
 		used += 13
 	}

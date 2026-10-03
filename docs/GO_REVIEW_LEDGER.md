@@ -325,3 +325,95 @@ the skipped-test names and machine-readable summary are under
 repository gofmt check and `git diff --check` passed. The container system service
 was started because it was initially unavailable; no game stack was restarted,
 no quest source changed, and no image was built, deployed or published.
+
+## Godstone socketing (2026-10-03)
+
+Ported `CM_GODSTONE_SOCKET` and `ItemService.socketGodstone` in
+`game/godstone.go`. Requests parse all three object IDs before any side effect,
+check Java's strict 15-unit XY range in the same map/instance, require an
+unequipped owned weapon and a stone with XML godstone metadata, and charge
+Java's 100,000-kinah base service price through the existing price modifiers.
+Malformed, absent, invalid, dead-player and insufficient-resource requests do
+not spend resources. Invalid armor targets and missing stones are rejected
+instead of reproducing Java's unchecked target or null dereference.
+
+`store.SocketGodstone` commits the fee, one stone consumption and replacement
+of category-1/slot-0 together. It locks the weapon and guards resource writes
+against ownership, location, equipment and expected-count changes. Memory and
+success packets change after commit. The new SQL accepts a context with a
+five-second deadline; connection lifetime cancellation remains part of the
+broader lifecycle review. No schema change or new dependency is required.
+
+Inventory/warehouse/mail and broker item loads retain the godstone ID. Item,
+character selection, world entry, appearance and broker weapon packets write
+it in the existing Java field without changing packet lengths. Manastone
+failure deletes only category-0 sockets, preserving godstones. Combat procs
+remain outside this socketing change; old-server capture and real-client
+confirmation of socketing, replacement and weapon appearance remain open.
+
+Focused validation passed 45 test nodes with zero failures or skips, including
+13 database test nodes against a disposable MariaDB fixture. Persistence checks
+cover stacked and final-stone consumption, replacement, item reloads, stale
+resource/ownership/equipment guards, and rollback after an injected socket
+insert failure. That failure also verifies godstone preservation when removing
+manastones. The fixture was removed after testing. Logs are under
+`.build/godstone/`; they are development artifacts, not a published release.
+
+Final repository-wide `go test -json ./...` passed **4,490 test nodes with zero
+failures and 12 database skips**. Nine pre-existing database tests lacked their
+optional fixtures; the three godstone persistence tests lacked a fixture in the
+standard runner, but all their 13 nodes passed in the dedicated disposable-DB
+run above. All 35 godstone game test nodes passed in the full suite, including
+three additional checks for Java's horizontal range, a literal appearance
+packet and refusal to mutate without atomic persistence. `go vet ./...`, the
+repository-wide gofmt check and `git diff --check` passed.
+The existing LFG worktree changes were retained and included in the full suite.
+No game stack was restarted and no image was deployed or published.
+
+## Group loot rolls (2026-10-03)
+
+Ported mode-2 `CM_GROUP_LOOT`, `SM_GROUP_LOOT`, and Java's quality-based roll
+flow from `DropService`. Group settings retain the global autodistribution
+field and all seven per-quality rules, and group info broadcasts those values.
+Java selects the loot operation using the item's quality rule; the global
+field does not override it. Default quality rules remain byte-identical.
+Group leaders retain authority to change settings.
+
+Nearby members at the kill are recorded separately from round-robin/leader
+corpse-opening rights. A roll snapshots online members of that original group,
+accepts one fully parsed response per participant, generates inclusive 1–100
+scores on the server, and preserves Java's first-response winner on a tie.
+Pending rolls block other item takes from that corpse. All passes return the
+item to ordinary looting; a full inventory or failed persistence keeps a
+winner reservation for retry. The looter alone may close the corpse. Responses
+for a wrong group, corpse, item, distribution, choice, participant or duplicate
+response have no effect.
+
+`Store.ReceiveLoot` commits every stack increase and new row together, with
+expected-count/ownership/location/equipment guards for existing stacks. The
+game plans capacity before any mutation, uses a bounded context, releases newly
+allocated IDs after failure, and updates inventory and removes the drop only
+after commit. This closes the persistence error boundary for automatic roll
+awards; the older ordinary-loot `addItem` path remains separate review scope.
+No schema change or dependency is required.
+
+The roll uses existing world locking and owns no new timers or goroutines.
+Leaving/disconnecting members are removed from pending responses; a departed
+winner cannot receive an item, and an uncollected reservation is released when
+its winner leaves. Corpse removal discards roll state. These bounded cleanup
+rules intentionally avoid Java's stale-member wait and duplicate-response
+weaknesses. Bid mode remains unported. Capture and real-client confirmation of
+roll windows, messages, settings and winner collection remain open.
+
+Focused validation under the race detector passed **85 test nodes with zero
+failures or skips**: 66 group-roll nodes, 17 loot-receipt nodes (including the
+disposable MariaDB transaction cases), and two existing group/reward nodes.
+The disposable database used the repository schema and was removed afterward.
+
+Repository-wide `go test -json ./...` passed **4,565 test nodes with zero
+failures and 13 optional database skips**. The rolled-loot transaction test
+requires its disposable fixture in the standard runner; all eight of its
+nodes passed in the focused run above. `go vet ./...`, repository-wide gofmt
+and `git diff --check` passed. Existing LFG and godstone worktree changes were
+preserved and included in these checks. No server stack was restarted and no
+image was deployed or published.

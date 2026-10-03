@@ -203,7 +203,7 @@ func (c *conn) playerSearch(r *wire.Reader) {
 			o := s.spawned[id]
 			switch {
 			case o.friendStatus == friendStatusOffline:
-			case lfg == 1:
+			case lfg == 1 && !o.lookingForGroup:
 			case name != "" && !strings.Contains(strings.ToLower(o.Name), strings.ToLower(name)):
 			case minLevel != 0xFF && o.level < int(minLevel):
 			case maxLevel != 0xFF && o.level > int(maxLevel):
@@ -228,7 +228,7 @@ func (c *conn) playerSearch(r *wire.Reader) {
 			w.C(byte(classIDs[o.Class]))
 			w.C(byte(gender))
 			w.C(byte(o.level))
-			w.C(0)
+			w.C(jIf[byte](o.lookingForGroup, 2, 0)) // status: 2 = looking for group
 			w.S(o.Name)
 			w.B(make([]byte, max(44-(len(o.Name)*2+2), 0)))
 		}
@@ -242,8 +242,10 @@ func classMaskOf(class string) int32 { return 1 << classIDs[class] }
 // distributionSettings is CM_DISTRIBUTION_SETTINGS: the group's leader sets how loot goes.
 func (c *conn) distributionSettings(r *wire.Reader) {
 	rule := r.D()
-	for range 8 {
-		r.D()
+	distribution := r.D()
+	var qualities [7]int32
+	for i := range qualities {
+		qualities[i] = r.D()
 	}
 	if r.Err != nil {
 		return
@@ -257,6 +259,11 @@ func (c *conn) distributionSettings(r *wire.Reader) {
 		if rule == lootRoundRobin || rule == lootLeader {
 			g.rule = rule
 		}
+		g.distribution = 0
+		if distribution == 2 || distribution == 3 {
+			g.distribution = distribution
+		}
+		g.qualityRules = &qualities
 		for _, m := range g.members {
 			m.conn.send(groupInfo(g))
 		}

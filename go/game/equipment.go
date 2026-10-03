@@ -76,7 +76,7 @@ func (s *Server) appearancePacket(p *player) *wire.Writer {
 	w.H(mask)
 	for _, item := range worn {
 		w.D(item.SkinID())
-		w.D(0) // god stone
+		w.D(item.Godstone)
 		w.D(item.Color)
 		w.H(0)
 	}

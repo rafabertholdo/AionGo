@@ -161,7 +161,7 @@ func (s *Server) writeItemDetails(w *wire.Writer, p *player, item *store.Item, t
 		w.D(item.SkinID())
 		w.C(0)
 		s.writeStones(w, p.stones[item.UniqueID])
-		w.D(0) // god stone
+		w.D(item.Godstone)
 		w.C(0)
 		w.D(0)
 		w.D(0)
@@ -643,7 +643,7 @@ func (s *Server) playerInfo(p *player, enemy bool) *wire.Writer {
 	for _, item := range worn {
 		if item.Slot < 0x7fff*2 {
 			w.D(item.SkinID())
-			w.D(0) // god stone
+			w.D(item.Godstone)
 			w.D(item.Color)
 			w.H(0)
 		}

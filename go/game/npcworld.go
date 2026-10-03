@@ -11,6 +11,7 @@ func (s *Server) addObject(o *object) {
 
 // removeObject is World.despawn for an npc: those who see it are told it is gone.
 func (s *Server) removeObject(o *object) {
+	s.cancelLootRolls(o)
 	for _, p := range o.watchers {
 		s.forgetObject(p, o, deleteLeaving)
 	}

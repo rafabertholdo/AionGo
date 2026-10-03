@@ -36,10 +36,11 @@ func (s Store) Broker() ([]BrokerRow, []*Item, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	items, err := queryAll(s.DB, `SELECT itemUniqueId, itemOwner, itemId, itemCount, itemColor, slot, enchant, itemSkin, fusionedItem
+	items, err := queryAll(s.DB, `SELECT itemUniqueId, itemOwner, itemId, itemCount, itemColor, slot, enchant, itemSkin, fusionedItem,
+		COALESCE((SELECT itemId FROM item_stones WHERE itemUniqueId = inventory.itemUniqueId AND category = 1 AND slot = 0), 0)
 		FROM inventory WHERE itemLocation = ?`, []any{BrokerLocation}, func(r *sql.Rows) (*Item, error) {
 		i := &Item{Location: BrokerLocation}
-		err := r.Scan(&i.UniqueID, &i.Owner, &i.ItemID, &i.Count, &i.Color, &i.Slot, &i.Enchant, &i.Skin, &i.Fusioned)
+		err := r.Scan(&i.UniqueID, &i.Owner, &i.ItemID, &i.Count, &i.Color, &i.Slot, &i.Enchant, &i.Skin, &i.Fusioned, &i.Godstone)
 		return i, err
 	})
 	return rows, items, err

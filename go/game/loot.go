@@ -16,13 +16,18 @@ type dropItem struct {
 	index int32
 	item  int32
 	count int64
+	roll  *lootRoll
+	free  bool // every eligible player passed
 }
 
 // lootState is what a monster left when it died (DropService's maps and DropNpc).
 type lootState struct {
-	items   []*dropItem
-	allowed map[int32]bool // who may loot; nil once anyone may
-	looting int32          // the player who has the list open
+	items    []*dropItem
+	allowed  map[int32]bool // who may loot; nil once anyone may
+	looting  int32          // the player who has the list open
+	group    *group
+	eligible []*player // nearby group members at death, separate from corpse-looting rights
+	active   *lootRoll
 }
 
 // The rate at which regular players find drops (rate.regular.drop).
@@ -154,6 +159,9 @@ func (s *Server) closeLoot(p *player, id int32) {
 	if o == nil || o.loot == nil {
 		return
 	}
+	if o.loot.looting != p.ID {
+		return
+	}
 	o.loot.looting = 0
 	p.state &^= stateLooting
 	p.state |= stateActive
@@ -194,7 +202,21 @@ func (s *Server) takeLoot(p *player, id, index int32) {
 			break
 		}
 	}
-	if taken == nil || !s.addItem(p, taken.item, taken.count) {
+	if taken == nil || loot.active != nil {
+		return
+	}
+	if taken.roll != nil {
+		if taken.roll.winner != p {
+			p.conn.send(systemMessage(msgLootOtherOwner))
+			return
+		}
+		s.awardLootRoll(o, taken.roll)
+		return
+	}
+	if !taken.free && loot.group != nil && loot.group == p.group && s.beginLootRoll(o, taken) {
+		return
+	}
+	if !s.addItem(p, taken.item, taken.count) {
 		return
 	}
 	loot.items = append(loot.items[:at], loot.items[at+1:]...)

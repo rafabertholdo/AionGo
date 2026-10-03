@@ -10,14 +10,13 @@ import (
 
 // Groups of up to six players: AL-Game's PlayerGroup and GroupService.
 // ponytail: a player who leaves the world leaves its group at once (AL-Game keeps its place for
-// playergroup.removetime), and loot is taken freely: rolls and bids (SM_GROUP_LOOT) wait.
+// playergroup.removetime). Bid distribution remains unported.
 
 func init() {
 	handlers[cmInviteToGroup] = (*conn).inviteToGroup
 	handlers[cmPlayerStatusInfo] = (*conn).playerStatusInfo
 	handlers[cmGroupDistribution] = (*conn).groupDistribution
 	handlers[cmGroupResponse] = func(*conn, *wire.Reader) {}
-	handlers[cmGroupLoot] = func(*conn, *wire.Reader) {}
 }
 
 const (
@@ -80,11 +79,13 @@ const (
 
 // group is a PlayerGroup.
 type group struct {
-	id      int32
-	leader  *player
-	members []*player // in the order they joined
-	rule    int32     // LootRuleType
-	robin   int
+	id           int32
+	leader       *player
+	members      []*player // in the order they joined
+	rule         int32     // LootRuleType
+	robin        int
+	distribution int32
+	qualityRules *[7]int32 // nil uses Java's default quality rules
 }
 
 func (g *group) full() bool { return len(g.members) >= maxGroupSize }
@@ -169,8 +170,8 @@ func groupInfo(g *group) *wire.Writer {
 	w.D(g.id)
 	w.D(g.leader.ID)
 	w.D(g.rule)
-	w.D(0) // autodistribution: normal
-	for _, above := range []int32{0, 2, 2, 2, 2, 2, 0} {
+	w.D(g.distribution)
+	for _, above := range g.lootQualityRules() {
 		w.D(above)
 	}
 	w.D(0)
@@ -291,6 +292,7 @@ func (s *Server) leaveGroup(p *player) {
 	}
 	g.members = slices.DeleteFunc(g.members, func(m *player) bool { return m == p })
 	p.group = nil
+	s.leaveLootRolls(p)
 	s.updateGroup(g, p, groupLeave)
 	p.conn.send(wire.Packet(smLeaveGroupMember))
 	if len(g.members) < 2 {
@@ -303,6 +305,7 @@ func (s *Server) disbandGroup(g *group) {
 	s.ids.release(g.id)
 	for _, m := range g.members {
 		m.group = nil
+		s.leaveLootRolls(m)
 		m.conn.send(systemMessage(msgGroupDisbanded))
 		w := wire.Packet(smLeaveGroupMember)
 		w.D(0)
@@ -314,7 +317,7 @@ func (s *Server) disbandGroup(g *group) {
 	g.members = nil
 }
 
-// playerStatusInfo is CM_PLAYER_STATUS_INFO: leaving a group, or handing over its lead.
+// playerStatusInfo is CM_PLAYER_STATUS_INFO: LFG status, group and alliance actions.
 func (c *conn) playerStatusInfo(r *wire.Reader) {
 	status, id := r.C(), r.D()
 	if r.Err != nil {
@@ -322,6 +325,9 @@ func (c *conn) playerStatusInfo(r *wire.Reader) {
 	}
 	c.withPlayer(func(s *Server, p *player) {
 		switch status {
+		case 9: // the client's "looking for group" toggle: 2 turns it on
+			p.lookingForGroup = id == 2
+			return
 		case 12, 14, 15, 19, 23, 24:
 			s.allianceStatus(p, status, id)
 			return
@@ -412,6 +418,8 @@ func (s *Server) groupReward(g *group, o *object) {
 		s.recordQuestKill(o, m)
 	}
 	s.registerDropFor(o, g.leader, highest, s.lootRecipients(g, o, near))
+	o.loot.group = g
+	o.loot.eligible = slices.Clone(near)
 }
 
 // lootRecipients is GroupService.getMembersToRegistrateByRules: who may take the loot.
