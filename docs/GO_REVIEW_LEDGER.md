@@ -268,3 +268,60 @@ No disposable database fixture was configured. Logs and skipped-test names
 are under `.build/alliance-groups/`. `go vet ./...`, all seven command builds,
 repository gofmt check and `git diff --check` passed. No quest code, running
 stack, deployment or published image was changed.
+
+## Java-to-Go small client requests (2026-10-03)
+
+Skills applied: Aion server reference, Go routing, safety, testing and code style.
+Java sources under `java/AL-Game/src/main/java/com/aionemu/gameserver/`:
+`CM_CLIENT_COMMAND_LOC.readImpl/runImpl`, `SM_SYSTEM_MESSAGE.CURRENT_LOCATION`,
+`CM_REPORT_PLAYER.readImpl/runImpl`, `CM_DISCONNECT.readImpl/runImpl`,
+`CM_SHOW_MAP.readImpl/runImpl`, `CM_QUESTIONNAIRE.readImpl/runImpl`,
+`network/factories/AionPacketHandlerFactory`, and
+`network/aion/AionConnection.onDisconnect`. Socket close semantics also reference
+`java/AL-Commons/.../network/AConnection.close(boolean)`.
+
+`game/client_command.go` registers `/loc` and privately sends message 230038
+with the authoritative world and coordinates. Float parameters keep Java's
+fractional digit for integral values and scientific exponent style, including
+negative zero and the smallest float. `game/client_requests.go` reads the unknown
+report byte and terminated UTF-16 name before emitting structured reporter/target
+fields. Java does not resolve the target, restrict report names, or reply.
+Structured fields preserve that scope and escape embedded newlines.
+
+The disconnect handler rejects truncated requests, ignores nonzero bytes, and
+closes on zero without a final packet. It reuses `conn.close` and leaves logout
+and saves to the read loop's deferred `disconnected`; it does not introduce a
+second save or new goroutine. Go's immediate logout versus Java's conditional
+15-second delayed logout remains a broader lifecycle gap. Pending inventory
+transactions and lifecycle audits remain open; these handlers do not mutate
+items, balances, quests or shared rosters. End-to-end disconnect persistence is
+not certified by the socket-close unit test.
+
+Map-open and questionnaire handlers match Java's inert actions; questionnaire
+reads D/H/H/H/H without acting on them. `CM_CUSTOM_SETTINGS` is a confirmed
+follow-up: Go loads display/deny kinds 2/3, but `saveSettings` currently saves
+only kinds 0/1. Port its H/H request and broadcast together with logout saves and
+disposable-database reconnect checks. Source inspection covered these existing
+loads and deny/display consumers, without changing their persistence behavior.
+
+Coverage includes request state/registration, literal location packet bytes,
+private delivery, coordinate strings, absent players, report Unicode/empty names
+and log escaping, every truncated report length, disconnect values and socket
+closure, and inert requests with truncated payloads. Java comments mark report
+opcode 0x32 and disconnect opcode 0xED as uncertain; capture/client verification
+remains open for the new requests.
+
+An initial focused run reported 46 passing nodes and one failing location
+packet test because its literal expected message ID was mistyped. The golden
+was corrected; the next focused run passed all 47 nodes with zero failures or
+skips. A further smallest-float case was then added before final full checks.
+Validation logs are under `.build/client-requests/`.
+
+Final validation: full `go test -json -count=1 ./...` reported **2,349 passing
+test nodes, zero failures and seven optional database skips** (ten passing
+packages and seven without tests). No disposable database fixture was configured;
+the skipped-test names and machine-readable summary are under
+`.build/client-requests/summary.json`. `go vet ./...`, all seven command builds,
+repository gofmt check and `git diff --check` passed. The container system service
+was started because it was initially unavailable; no game stack was restarted,
+no quest source changed, and no image was built, deployed or published.

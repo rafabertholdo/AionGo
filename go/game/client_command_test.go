@@ -1,6 +1,8 @@
 package game
 
 import (
+	"bytes"
+	"encoding/hex"
 	"math"
 	"strconv"
 	"testing"
@@ -8,6 +10,61 @@ import (
 	"aionlightning/game/store"
 	"aionlightning/wire"
 )
+
+func TestClientCommandLoc(t *testing.T) {
+	s := testServer(nil)
+	p := &player{character: &character{Character: &store.Character{
+		WorldID: 1, X: 2, Y: -3.5, Z: 0,
+	}}}
+	c := &conn{s: s, player: p}
+	p.conn = c
+	var packets []*wire.Writer
+	c.tap = func(w *wire.Writer) { packets = append(packets, w) }
+	observer := &player{conn: &conn{}}
+	observer.conn.tap = func(*wire.Writer) { t.Fatal("location must be private") }
+	p.known = map[int32]*player{2: observer}
+	handlers[cmClientCommandLoc](c, wire.NewReader(nil))
+	// SM_SYSTEM_MESSAGE, CURRENT_LOCATION, four Java string parameters and final zero.
+	want, err := hex.DecodeString("13000000000096820300043100000032002e00300000002d0033002e003500000030002e003000000000")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(packets) != 1 || packets[0].Data[0] != smSystemMessage || !bytes.Equal(packets[0].Data[1:], want) {
+		t.Fatalf("unexpected location packets: %v", packets)
+	}
+	c.player = nil
+	c.clientCommandLoc(wire.NewReader(nil))
+	if len(packets) != 1 {
+		t.Fatal("absent player received location")
+	}
+}
+
+func TestLocationCoordinate(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		value float32
+		want  string
+	}{
+		{name: "zero", want: "0.0"},
+		{name: "negative_zero", value: float32(math.Copysign(0, -1)), want: "-0.0"},
+		{name: "integer", value: 1234, want: "1234.0"},
+		{name: "fraction", value: -1234.125, want: "-1234.125"},
+		{name: "small_decimal", value: 0.001, want: "0.001"},
+		{name: "small_exponent", value: 0.0001, want: "1.0E-4"},
+		{name: "smallest_float", value: math.SmallestNonzeroFloat32, want: "1.4E-45"},
+		{name: "large_decimal", value: 9999999, want: "9999999.0"},
+		{name: "large_exponent", value: 10000000, want: "1.0E7"},
+		{name: "nan", value: float32(math.NaN()), want: "NaN"},
+		{name: "infinity", value: float32(math.Inf(1)), want: "Infinity"},
+		{name: "negative_infinity", value: float32(math.Inf(-1)), want: "-Infinity"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := locationCoordinate(tc.value); got != tc.want {
+				t.Fatalf("got %q, want %q", got, tc.want)
+			}
+		})
+	}
+}
 
 func TestClientCommandRollRepliesAndBroadcasts(t *testing.T) {
 	s := testServer(nil)

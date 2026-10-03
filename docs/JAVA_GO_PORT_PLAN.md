@@ -86,7 +86,9 @@ constants still have no production use outside `go/game/opcodes.go`:
 | `CM_OPEN_STATICDOOR` | Implemented in `go/game/staticdoor.go` as Java's door-emotion broadcast. Automated packet and malformed-input tests pass; client verification remains open. Broader door mechanics need separate scope. |
 | `CM_CLIENT_COMMAND_ROLL` | Implemented in `go/game/client_command.go`; Java-compatible player and nearby-player messages. Automated tests cover bounds and truncated input; capture/client verification remains open. |
 | `CM_OBJECT_SEARCH` | Implemented in `go/game/object_search.go`: first spawn in file order, Java map-marker packet, no reply for missing NPCs. Packet, lookup order, deletion/reload and truncated-input tests added; capture/client verification remains open. |
-| `CM_REPORT_PLAYER` | Java's player-report audit log |
+| `CM_REPORT_PLAYER` | Implemented in `go/game/client_requests.go`: structured player-report audit, no reply or target lookup, complete parsing before logging. Java flags opcode `0x32` as uncertain; capture/client verification remains open. |
+| `CM_CLIENT_COMMAND_LOC` | Implemented in `go/game/client_command.go`: private current-location system message with Java-style float strings. Literal packet and coordinate formatting tests added; capture/client verification remains open. |
+| `CM_DISCONNECT` | Implemented in `go/game/client_requests.go`: zero closes the socket without a final packet; the existing read-loop cleanup owns logout. Nonzero and truncated requests do nothing. Java flags opcode `0xED` as uncertain; capture/client and end-to-end persistence verification remain open. |
 
 `go/game/group.go` registers `CM_GROUP_LOOT` as an empty handler. Java dispatches
 roll and bid handling through DropService. Existing group loot rules and shared
@@ -96,9 +98,19 @@ experience do not cover this behavior.
 explicitly documents that uploaded emblem images are unported. Other legion
 features already exist.
 
-Other constants without production references are `CM_CLIENT_COMMAND_LOC`,
-`CM_SHOW_MAP`, `CM_DISCONNECT`, `CM_CUSTOM_SETTINGS`, `CM_QUESTIONNAIRE`.
-Audit Java behavior and 1.9 relevance before treating these as gameplay tasks.
+`CM_SHOW_MAP` and `CM_QUESTIONNAIRE` are now registered in
+`go/game/client_requests.go` with Java's inert behavior. The questionnaire reads
+one D and four H fields but performs no action; the map-open request is empty.
+They do not represent missing gameplay systems.
+
+`CM_CUSTOM_SETTINGS` remains unported: Java reads display/deny H fields and
+broadcasts `SM_CUSTOM_SETTINGS`. Go already loads setting kinds 2/3 and uses
+deny flags in social requests and display flags in player info, but
+`game/world.go:saveSettings` saves only UI/shortcuts (kinds 0/1). Implement the
+request together with logout saves and disposable-database reconnect checks.
+Disconnect retains Go's existing immediate logout cleanup. Java's
+`AionConnection.onDisconnect` delays logout by 15 seconds outside an orderly
+shutdown; that combat/logout lifecycle difference remains a separate audit item.
 Some empty Go handlers match trivial Java behavior: for example Java's
 `CM_GROUP_RESPONSE` only logs values. Empty handlers need classification,
 not automatic implementation.
