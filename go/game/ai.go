@@ -177,6 +177,9 @@ func (a *npcAI) handleEvent(ev aiEvent) {
 	switch ev {
 	case evNothingToDo, evDied:
 		a.setState(aiNone)
+		if aerialBattleActor(a.o) {
+			a.analyzeState()
+		}
 	case evRespawned:
 		a.setState(aiActive)
 		a.analyzeState()
@@ -238,6 +241,8 @@ func (a *npcAI) analyzeState() {
 			}
 		}
 		switch {
+		case aerialBattleActor(o):
+			a.addDesire(&aerialBattleDesire{})
 		case aggressive:
 			a.addDesire(&aggressionDesire{})
 		case s.hasWalkRoutes(o):
@@ -254,7 +259,7 @@ func (a *npcAI) analyzeState() {
 		a.talkTask.cancel()
 		a.talkTask = s.later(time.Minute, func() { a.setState(aiThinking) })
 	case aiNone:
-		if a.kind == aiPlain {
+		if a.kind == aiPlain && !aerialBattleActor(o) {
 			return
 		}
 		a.clearDesires()
