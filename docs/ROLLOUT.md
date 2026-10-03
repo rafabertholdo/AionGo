@@ -74,3 +74,27 @@ ReRun's source pins are updated to `0.1.1`. The São Paulo VPS updates its game
 and panel roles to `0.1.1` and keeps the unchanged login, chat and MariaDB roles
 at `0.1.0`. Its databases are backed up before replacement, and its existing
 volume is preserved. No credentials are embedded in these images or records.
+
+## Release 0.1.2
+
+Release `0.1.2` builds from commit `a4018cb9be1c6c1a7c2e48f38a608e9ae45ee69e`.
+It includes the current Go port and the newly committed `/loc`, player report,
+disconnect, map-open and questionnaire handlers. All nine Linux ARM64 image
+pairs were published to Docker Hub; every version/source tag was checked against
+the built OCI digest. See [image digests](../releases/v0.1.2.json),
+[publication](../releases/publication-v0.1.2.json), and
+[validation](../releases/validation-v0.1.2.json).
+
+The São Paulo VPS (`15.228.191.246`) now runs database, Go login, Go chat,
+Go game and panel images at `0.1.2`. All five deployed digests and source labels
+match the publication record. The existing `aiongo_db-data` volume was retained.
+A compressed, validated database backup is stored privately on the VPS at
+`/opt/aiongo/backups/pre-v0.1.2.sql.gz`; the previous Compose file is
+`/opt/aiongo/backups/compose-pre-v0.1.2.yaml`.
+
+Validation: 2,349 Go tests passed, zero failed, seven database-dependent tests
+skipped; Go vet and formatting passed; all 15 image-tooling tests passed.
+The deployed game registered with login and chat; panel and help returned HTTP
+200; public TCP ports 2106, 7777 and 10241 were reachable. All five services had
+zero restarts during verification. No real-client gameplay test was performed
+for this release. Local ReRun pins and the local server stack were not changed.

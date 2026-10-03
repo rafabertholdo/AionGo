@@ -1,0 +1,39 @@
+{
+  "release": "0.1.2",
+  "sourceRevision": "a4018cb9be1c6c1a7c2e48f38a608e9ae45ee69e",
+  "goTests": {
+    "passed": 2349,
+    "failed": 0,
+    "skipped": 7
+  },
+  "pythonTests": {
+    "passed": 15,
+    "failed": 0
+  },
+  "goVet": "passed",
+  "format": "gofmt clean",
+  "vps": {
+    "address": "15.228.191.246",
+    "verifiedAt": "2026-10-03T09:48:58.093272+00:00",
+    "databaseBackup": "/opt/aiongo/backups/pre-v0.1.2.sql.gz",
+    "databaseVolume": "aiongo_db-data",
+    "checks": {
+      "publicTCP2106": true,
+      "publicTCP7777": true,
+      "publicTCP10241": true,
+      "dbDigest": true,
+      "login-goDigest": true,
+      "chat-goDigest": true,
+      "game-goDigest": true,
+      "panelDigest": true,
+      "gameLoginRegistration": true,
+      "gameChatRegistration": true,
+      "panelHTTP": true,
+      "helpHTTP": true,
+      "databaseVolumePreserved": true,
+      "databaseBackupValidated": true
+    },
+    "runningServices": 5,
+    "restartCounts": 0
+  }
+}
