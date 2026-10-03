@@ -90,3 +90,25 @@ func skillCooldowns(cooldowns map[int32]time.Time, now time.Time) *wire.Writer {
 	}
 	return w
 }
+
+// savedItemCooldownMin is how much an item cooldown must have left for ItemCooldownsDAO to keep it.
+const savedItemCooldownMin = 30 * time.Second
+
+// savedItemCooldowns is ItemCooldownsDAO.storeItemCooldowns' rows: the use delay groups with 30 seconds or more left.
+func savedItemCooldowns(m map[int32]store.ItemCooldown, now time.Time) map[int32]store.ItemCooldown {
+	saved := maps.Clone(m)
+	maps.DeleteFunc(saved, func(_ int32, c store.ItemCooldown) bool { return c.Reuse.Sub(now) < savedItemCooldownMin })
+	return saved
+}
+
+// itemCooldowns is SM_ITEM_COOLDOWN for every use delay group cooling down: its seconds left and its delay.
+func itemCooldowns(m map[int32]store.ItemCooldown, now time.Time) *wire.Writer {
+	w := wire.Packet(smItemCooldown)
+	w.H(uint16(len(m)))
+	for _, id := range slices.Sorted(maps.Keys(m)) {
+		w.H(uint16(id))
+		w.D(max(int32(m[id].Reuse.Sub(now)/time.Second), 0))
+		w.D(m[id].UseDelay)
+	}
+	return w
+}

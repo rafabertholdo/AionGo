@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"aionlightning/game/data"
@@ -78,8 +79,12 @@ type Server struct {
 	mu       sync.Mutex
 	accounts map[int32]*conn // logged in, by account id
 	players  map[int32]*conn // in the world, by player id
-	weathers map[int32]weatherState
-	acctWH   map[int32]*accountWarehouse // the account warehouses of the accounts that have played, by account id
+	// lingering are the players still in the world after their client dropped, by player id.
+	lingering map[int32]*lingering
+	// shuttingDown is ShutdownHook's inShutdownProgress: a dropped client's player logs out at once.
+	shuttingDown atomic.Bool
+	weathers     map[int32]weatherState
+	acctWH       map[int32]*accountWarehouse // the account warehouses of the accounts that have played, by account id
 
 	// visMu guards what players see of each other: their positions, known lists and the spawned set.
 	visMu   sync.Mutex
@@ -236,6 +241,7 @@ func (s *Server) currentConfig() Config {
 // same final packet as an administrative kick, including the character screen.
 // It waits for reader cleanup and character saves before process exit.
 func (s *Server) CloseClients() {
+	s.shuttingDown.Store(true)
 	s.mu.Lock()
 	clients := make([]*conn, 0, len(s.clients))
 	for _, c := range s.clients {
@@ -248,6 +254,7 @@ func (s *Server) CloseClients() {
 		kicks.Go(func() { c.close(quitResponse()) })
 	}
 	kicks.Wait()
+	s.finishLogouts()
 	s.clientWG.Wait()
 	s.log.Info("game clients disconnected and character saves completed", "clients", len(clients))
 }

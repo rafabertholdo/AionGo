@@ -304,6 +304,7 @@ func (s *Server) shutdownPlayers(restart bool) {
 		t.cancel()
 	}
 	s.adminShutdownTasks = nil
+	s.shuttingDown.Store(true)
 	for _, p := range s.spawned {
 		p.conn.close(quitResponse())
 	}

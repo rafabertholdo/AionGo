@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/rand/v2"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -19,6 +20,7 @@ func init() {
 	handlers[cmMove] = (*conn).move
 	handlers[cmChatMessagePublic] = (*conn).chat
 	handlers[cmUiSettings] = (*conn).saveUISettings
+	handlers[cmCustomSettings] = (*conn).customSettings
 	handlers[cmMacAddress2] = func(*conn, *wire.Reader) {}
 }
 
@@ -66,6 +68,9 @@ func (c *conn) enterWorld(r *wire.Reader) {
 	c.send(skillList(p))
 	if p.cooldowns != nil {
 		c.send(skillCooldowns(p.cooldowns, time.Now()))
+	}
+	if len(p.itemCooldowns) > 0 {
+		c.send(itemCooldowns(p.itemCooldowns, time.Now()))
 	}
 	c.send(questList(p))
 	c.send(recipeList(p))
@@ -440,6 +445,7 @@ func (c *conn) leaveWorld() {
 	s.visMu.Lock()
 	p.LastOnline = time.Now()
 	effects := savedEffects(p, p.LastOnline)
+	cooldowns := savedItemCooldowns(p.itemCooldowns, p.LastOnline)
 	p.fx.stopEffects()
 	if p.summon != nil {
 		s.releaseSummon(p.summon, unsummonLogout)
@@ -480,6 +486,7 @@ func (c *conn) leaveWorld() {
 		s.saveSentence(p),
 		s.saveSettings(p),
 		s.store.SaveEffects(context.Background(), p.ID, effects),
+		s.store.SaveItemCooldowns(context.Background(), p.ID, cooldowns),
 		s.saveGameTime(),
 	} {
 		if err != nil {
@@ -489,6 +496,8 @@ func (c *conn) leaveWorld() {
 	s.log.Info("player left the world", "character", p.Name)
 }
 
+// saveSettings is PlayerSettingsDAO.saveSettings: the layout and shortcuts the client sent,
+// then the display and deny flags, which are kept as their text.
 func (s *Server) saveSettings(p *player) error {
 	if p.settings.UI != nil {
 		if err := s.store.SaveSetting(p.ID, 0, p.settings.UI); err != nil {
@@ -496,9 +505,37 @@ func (s *Server) saveSettings(p *player) error {
 		}
 	}
 	if p.settings.Shortcuts != nil {
-		return s.store.SaveSetting(p.ID, 1, p.settings.Shortcuts)
+		if err := s.store.SaveSetting(p.ID, 1, p.settings.Shortcuts); err != nil {
+			return err
+		}
 	}
-	return nil
+	if err := s.store.SaveSetting(p.ID, 2, strconv.AppendInt(nil, int64(p.settings.Display), 10)); err != nil {
+		return err
+	}
+	return s.store.SaveSetting(p.ID, 3, strconv.AppendInt(nil, int64(p.settings.Deny), 10))
+}
+
+// customSettings is CM_CUSTOM_SETTINGS: the player's display flags (mantle, helmet …) and the requests it denies,
+// shown to it and to those who see it.
+func (c *conn) customSettings(r *wire.Reader) {
+	display, deny := r.H(), r.H()
+	if r.Err != nil {
+		return
+	}
+	c.withPlayer(func(s *Server, p *player) {
+		p.settings.Display, p.settings.Deny = int32(display), int32(deny)
+		p.broadcast(customSettingsPacket(p), true)
+	})
+}
+
+// customSettingsPacket is SM_CUSTOM_SETTINGS.
+func customSettingsPacket(p *player) *wire.Writer {
+	w := wire.Packet(smCustomSettings)
+	w.D(p.ID)
+	w.C(1)
+	w.H(uint16(p.settings.Display))
+	w.H(uint16(p.settings.Deny))
+	return w
 }
 
 // after runs fn in d, if the connection still has p in the world then.

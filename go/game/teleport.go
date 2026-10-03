@@ -164,7 +164,7 @@ func (s *Server) selfReviveStone(p *player) *store.Item {
 			if item.ItemID != id {
 				continue
 			}
-			if t := s.template(item); t != nil && time.Now().Before(p.itemCooldowns[t.UseDelayID]) {
+			if t := s.template(item); t != nil && time.Now().Before(p.itemCooldowns[t.UseDelayID].Reuse) {
 				continue
 			}
 			return item

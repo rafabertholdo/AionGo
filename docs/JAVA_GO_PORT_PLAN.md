@@ -60,12 +60,12 @@ Each row is implemented in AL-Game 1.9. Go gaps and completed fixes are tracked 
 | **LFG / find group (reported broken in client testing)** | `CM_PLAYER_STATUS_INFO` status 9 calls `Player.setLookingForGroup(playerObjId == 2)`; `CM_PLAYER_SEARCH` filters `lfgOnly` on `isLookingForGroup()`; `SM_PLAYER_SEARCH` writes status 2 for LFG players | `game/group.go:playerStatusInfo` handles status 9 with a session-only flag; `game/misc.go:playerSearch` filters on that flag and writes result status 2 | Implemented 2026-10-03. Packet tests cover toggle on/off, normal and LFG-only searches, offline exclusion and truncated toggles. Real-client confirmation remains pending |
 | Godstones | `CM_GODSTONE_SOCKET`, `ItemStoneListDAO` godstone rows, godstone procs | Socketing and procs implemented in `game/godstone.go`: NPC range, unequipped weapon, godstone metadata, service fee and atomic persistence; each player attack may use a worn weapon's godstone skill on the target | Implemented 2026-10-03. Client/capture confirmation remains pending |
 | Group loot roll/bid | `CM_GROUP_LOOT` -> `DropService.handleRoll/handleBid` | Modes 2 and 3 implemented in `game/group_loot.go`: quality settings, eligible-member prompts, roll/pass messages, tie handling, bids capped at the bidder's kinah, and atomic item grants with the winner's payment shared among the other members | Implemented 2026-10-03. Capture/client confirmation remains pending |
-| Map channels | `CM_CHANGE_CHANNEL` -> `TeleportService.changeChannel` | No handler | Needs channel isolation of npcs/players |
-| Custom settings | `CM_CUSTOM_SETTINGS` (display/deny flags, `SM_CUSTOM_SETTINGS` broadcast) | No handler; deny/display flags are loaded and used but not saved | Save kinds 2/3 with the logout save |
-| Saved effects | `PlayerEffectsDAO` | `game/savedeffects.go` and `store/effects.go`: icon effects and skill cooldowns with a minute or more left are saved at logout and restored at login, with SM_SKILL_COOLDOWN | Implemented 2026-10-03. Restores the time left exactly, where Java lengthens a restored effect on each relog. Item cooldowns (`ItemCooldownsDAO`) remain unsaved |
+| Map channels | `CM_CHANGE_CHANNEL` -> `TeleportService.changeChannel` | `game/client_requests.go:changeChannel` moves the player in place to instance n of a twin map; `spawnAll` spawns every channel; `inRange3D` now also compares instances | Implemented 2026-10-03. Out-of-range, same-channel, instance-map and truncated requests do nothing (Java throws or respawns). Client confirmation remains pending |
+| Custom settings | `CM_CUSTOM_SETTINGS` (display/deny flags, `SM_CUSTOM_SETTINGS` broadcast) | `game/world.go:customSettings` stores the flags and broadcasts SM_CUSTOM_SETTINGS; `saveSettings` saves kinds 2/3 as text at logout | Implemented 2026-10-03. Disposable-database reconnect check and client confirmation remain pending |
+| Saved effects | `PlayerEffectsDAO` | `game/savedeffects.go` and `store/effects.go`: icon effects and skill cooldowns with a minute or more left are saved at logout and restored at login, with SM_SKILL_COOLDOWN | Implemented 2026-10-03. Restores the time left exactly, where Java lengthens a restored effect on each relog. Item cooldowns (`ItemCooldownsDAO`) are saved the same way (30 s or more left) and sent in SM_ITEM_COOLDOWN at login. `item_cooldowns.use_delay` is widened to INT UNSIGNED (delays reach 43,200,000 ms); existing databases need `ALTER TABLE item_cooldowns MODIFY use_delay INT UNSIGNED NOT NULL` |
 | Skill effects | `search` (10 XML uses), `returnpoint` (1), `mpuseovertime` (1), `onetimeboostskillattack` (6), `magiccounteratk` (6), `petorderuseultraskill` (25) | Handlers in `game/skilleffects_more.go`, with SKILLUSE observers, the player see state and pet order skills | Implemented 2026-10-03. `skilllauncher` (27) is a stub in Java too: new functionality, not a port |
-| Legion emblems | `CM_LEGION_UPLOAD_EMBLEM`, `CM_LEGION_SEND_EMBLEM` | Upload requests ignored (`game/legion.go`) | |
-| Logout delay | `AionConnection.onDisconnect` delays logout 15 s outside an orderly shutdown | Immediate logout | Lifecycle/combat difference |
+| Legion emblems | `CM_LEGION_UPLOAD_EMBLEM`, `CM_LEGION_SEND_EMBLEM` | Send/modify emblem ported; upload requests ignored (`game/legion.go`) | Not missing: Java's `uploadEmblemInfo` only sets a flag nothing reads and `uploadEmblemData` is commented out |
+| Logout delay | `AionConnection.onDisconnect` delays logout 15 s outside an orderly shutdown | `game/conn.go:lingerLogout`: a dropped client's player stops and stays 15 s; shutdown logs out at once, and the account's next authentication finishes its pending logouts before reading characters | Implemented 2026-10-03. CM_QUIT still logs out at once, as in Java |
 
 Not missing (Java has no implementation either): siege battles and timers
 (Java keeps ownership and influence only, as Go does), the legion warehouse
@@ -96,23 +96,14 @@ autodistribution and the seven quality rules. Java uses the per-quality rule
 to choose a roll; the global autodistribution field is retained for the UI.
 Mode-3 bids are handled the same way, paid in the award's transaction.
 
-`go/game/legion.go` registers upload emblem/info requests as empty handlers and
-explicitly documents that uploaded emblem images are unported. Other legion
-features already exist.
+`go/game/legion.go` registers upload emblem/info requests as empty handlers,
+matching Java, whose upload path has no observable effect.
 
 `CM_SHOW_MAP` and `CM_QUESTIONNAIRE` are now registered in
 `go/game/client_requests.go` with Java's inert behavior. The questionnaire reads
 one D and four H fields but performs no action; the map-open request is empty.
 They do not represent missing gameplay systems.
 
-`CM_CUSTOM_SETTINGS` remains unported: Java reads display/deny H fields and
-broadcasts `SM_CUSTOM_SETTINGS`. Go already loads setting kinds 2/3 and uses
-deny flags in social requests and display flags in player info, but
-`game/world.go:saveSettings` saves only UI/shortcuts (kinds 0/1). Implement the
-request together with logout saves and disposable-database reconnect checks.
-Disconnect retains Go's existing immediate logout cleanup. Java's
-`AionConnection.onDisconnect` delays logout by 15 seconds outside an orderly
-shutdown; that combat/logout lifecycle difference remains a separate audit item.
 Some empty Go handlers match trivial Java behavior: for example Java's
 `CM_GROUP_RESPONSE` only logs values. Empty handlers need classification,
 not automatic implementation.
@@ -140,11 +131,11 @@ not a port of implemented Java behavior. `buf` and `backdash` also lack Go
 literals but had no occurrences in the scanned skills XML.
 
 Saved active effects and skill cooldowns are now persisted as PlayerEffectsDAO
-does (2026-10-03). Item cooldowns remain unpersisted.
+does (2026-10-03), and item cooldowns as ItemCooldownsDAO does.
 
 ### World, items and social systems requiring deeper audit
 
-- Map channels and their NPC/player isolation, rifts and instance interactions.
+- Channel interactions with rifts and other world-scoped scans.
 - Handler-managed spawn groups: `spawnMap` skips groups with a nonempty Handler.
   Map each Java handler path to the intended Go spawning behavior.
 - Static objects, action-item controllers, crafting station checks, and
@@ -246,8 +237,8 @@ development still uses sequential Go commands on this host.
    socketing/procs, relevant supplements and saved effects; check class coverage
    and restart/reconnect behavior.
 4. **Complete cooperative play.** Implement loot roll/bid, brands, alliance
-   subgroup changes and other source-backed alliance gaps; finish emblem uploads.
-5. **Complete world dependencies.** Add channels, handler-managed spawns and
+   subgroup changes and other source-backed alliance gaps.
+5. **Complete world dependencies.** Add handler-managed spawns and
    implemented Java static/action-object behavior; integrate dependent quests.
 6. **Smaller requests and configuration.** Complete source-backed smaller
    requests and DAO/configuration gaps alongside the systems they affect.

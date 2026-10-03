@@ -105,11 +105,11 @@ func dist(a, b creature) float64 {
 	return distance3D(ax, ay, az, bx, by, bz)
 }
 
-// inRange3D is MathUtil.isIn3dRange.
+// inRange3D is MathUtil.isIn3dRange, for creatures in the same instance (or channel) of a map.
 func inRange3D(a, b creature, r float32) bool {
 	aw, ax, ay, az := a.loc()
 	bw, bx, by, bz := b.loc()
-	if aw != bw {
+	if aw != bw || instanceOf(a) != instanceOf(b) {
 		return false
 	}
 	dx, dy, dz := bx-ax, by-ay, bz-az

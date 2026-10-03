@@ -107,6 +107,7 @@ func (s *Server) accountAuthenticated(c *conn, accountID int32, ok bool, name st
 		return
 	}
 	a := &account{id: accountID, name: name, accessLevel: accessLevel, membership: membership}
+	s.finishAccountLogouts(accountID) // the characters are read after their last save
 	characters, err := s.loadCharacters(accountID)
 	if err != nil {
 		s.log.Error("loading characters", "account", name, "err", err)

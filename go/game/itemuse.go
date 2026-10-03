@@ -129,7 +129,7 @@ func (s *Server) useItem(p *player, item *store.Item, target *store.Item) {
 	if len(actions) == 0 {
 		return
 	}
-	if t.UseDelay > 0 && time.Now().Before(p.itemCooldowns[t.UseDelayID]) {
+	if t.UseDelay > 0 && time.Now().Before(p.itemCooldowns[t.UseDelayID].Reuse) {
 		p.conn.send(systemMessage(msgItemUseDelay))
 		return
 	}
@@ -145,9 +145,9 @@ func (p *player) setItemCooldown(t *data.ItemTemplate) {
 		return
 	}
 	if p.itemCooldowns == nil {
-		p.itemCooldowns = map[int32]time.Time{}
+		p.itemCooldowns = map[int32]store.ItemCooldown{}
 	}
-	p.itemCooldowns[t.UseDelayID] = time.Now().Add(time.Duration(t.UseDelay) * time.Millisecond)
+	p.itemCooldowns[t.UseDelayID] = store.ItemCooldown{UseDelay: t.UseDelay, Reuse: time.Now().Add(time.Duration(t.UseDelay) * time.Millisecond)}
 	p.conn.send(itemCooldown(t.UseDelayID, t.UseDelay))
 }
 

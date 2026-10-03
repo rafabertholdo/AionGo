@@ -77,18 +77,21 @@ func cellAt(world, inst int32, x, y float32) cell {
 // Ids of gatherable templates are in this range (SpawnEngine.spawnObject).
 func isGatherable(id int32) bool { return id > 400000 && id < 499999 }
 
-// spawnAll is SpawnEngine.spawnAll: every spawn group of every map that isn't an instance
+// spawnAll is SpawnEngine.spawnAll: in each channel of every map that isn't an instance, every spawn group
 // puts as many of its npcs at its first spots as its pool says.
-// ponytail: only the first channel of a map; rifts and static objects (handler groups) wait for
-// their milestones; walking, respawning and time-of-day spawns too.
+// ponytail: rifts and static objects (handler groups) wait for their milestones; walking, respawning and
+// time-of-day spawns too.
 func (s *Server) spawnAll() {
 	var npcs, gatherables int
 	for _, id := range sortedKeys(s.data.WorldMaps) {
-		if s.data.WorldMaps[id].Instance {
+		m := s.data.WorldMaps[id]
+		if m.Instance {
 			continue
 		}
-		n, g := s.spawnMap(id, 0)
-		npcs, gatherables = npcs+n, gatherables+g
+		for channel := range max(m.TwinCount, 1) {
+			n, g := s.spawnMap(id, channel)
+			npcs, gatherables = npcs+n, gatherables+g
+		}
 	}
 	s.log.Info("spawned", "npcs", npcs, "gatherables", gatherables)
 }

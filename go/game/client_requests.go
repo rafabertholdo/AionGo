@@ -5,6 +5,7 @@ import "aionlightning/wire"
 func init() {
 	handlers[cmReportPlayer] = (*conn).reportPlayer
 	handlers[cmDisconnect] = (*conn).clientDisconnect
+	handlers[cmChangeChannel] = (*conn).changeChannel
 	// Java's map-open and questionnaire requests have no gameplay action.
 	handlers[cmShowMap] = func(*conn, *wire.Reader) {}
 	handlers[cmQuestionnaire] = func(_ *conn, r *wire.Reader) {
@@ -34,4 +35,20 @@ func (c *conn) clientDisconnect(r *wire.Reader) {
 	if r.Err == nil && request == 0 {
 		c.close(nil)
 	}
+}
+
+// changeChannel is CM_CHANGE_CHANNEL and TeleportService.changeChannel: the player moves, where it stands,
+// to another channel of a map with twins; channel n is instance n of the map.
+func (c *conn) changeChannel(r *wire.Reader) {
+	channel := r.D()
+	if r.Err != nil {
+		return
+	}
+	c.withPlayer(func(s *Server, p *player) {
+		m := s.data.WorldMaps[p.WorldID]
+		if m == nil || m.Instance || channel < 0 || channel >= max(m.TwinCount, 1) || channel == p.instance || p.dead || !p.spawned {
+			return
+		}
+		s.changePosition(p, p.WorldID, channel, p.X, p.Y, p.Z, byte(p.Heading))
+	})
 }

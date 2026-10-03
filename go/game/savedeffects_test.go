@@ -92,3 +92,21 @@ func TestSkillCooldownPacket(t *testing.T) {
 		t.Fatalf("SM_SKILL_COOLDOWN %x, want %x", got.Data, want)
 	}
 }
+
+func TestItemCooldownsSaveAndPacket(t *testing.T) {
+	now := time.Unix(1000, 0)
+	m := map[int32]store.ItemCooldown{
+		7: {UseDelay: 60000, Reuse: now.Add(30 * time.Second)},
+		3: {UseDelay: 600000, Reuse: now.Add(90*time.Second + 900*time.Millisecond)},
+		9: {UseDelay: 10000, Reuse: now.Add(29 * time.Second)},
+	}
+	saved := savedItemCooldowns(m, now)
+	if len(saved) != 2 || saved[9] != (store.ItemCooldown{}) || len(m) != 3 {
+		t.Fatalf("saved %+v from %+v, want groups 3 and 7", saved, m)
+	}
+	got := itemCooldowns(saved, now)
+	want := []byte{smItemCooldown, 2, 0, 3, 0, 90, 0, 0, 0, 0xc0, 0x27, 0x09, 0, 7, 0, 30, 0, 0, 0, 0x60, 0xea, 0, 0}
+	if !bytes.Equal(got.Data, want) {
+		t.Fatalf("SM_ITEM_COOLDOWN %x, want %x", got.Data, want)
+	}
+}

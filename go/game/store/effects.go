@@ -59,3 +59,52 @@ func (s Store) SaveEffects(ctx context.Context, playerID int32, list []SavedEffe
 	}
 	return tx.Commit()
 }
+
+// ItemCooldown is an item_cooldowns row: when a use delay group of items is ready again.
+type ItemCooldown struct {
+	UseDelay int32 // the group's delay in milliseconds
+	Reuse    time.Time
+}
+
+// ItemCooldowns is ItemCooldownsDAO.loadItemCooldowns' read, keyed by delay id.
+func (s Store) ItemCooldowns(playerID int32) (map[int32]ItemCooldown, error) {
+	rows, err := s.DB.Query("SELECT delay_id, use_delay, reuse_time FROM item_cooldowns WHERE player_id = ?", playerID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var m map[int32]ItemCooldown
+	for rows.Next() {
+		var id int32
+		var c ItemCooldown
+		var reuse int64
+		if err := rows.Scan(&id, &c.UseDelay, &reuse); err != nil {
+			return nil, err
+		}
+		c.Reuse = time.UnixMilli(reuse)
+		if m == nil {
+			m = map[int32]ItemCooldown{}
+		}
+		m[id] = c
+	}
+	return m, rows.Err()
+}
+
+// SaveItemCooldowns is ItemCooldownsDAO.storeItemCooldowns: the player's rows are replaced by m, in one transaction.
+func (s Store) SaveItemCooldowns(ctx context.Context, playerID int32, m map[int32]ItemCooldown) error {
+	tx, err := s.DB.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("begin item cooldowns save: %w", err)
+	}
+	defer tx.Rollback()
+	if _, err := tx.ExecContext(ctx, `DELETE FROM item_cooldowns WHERE player_id = ?`, playerID); err != nil {
+		return fmt.Errorf("clear item cooldowns: %w", err)
+	}
+	for id, c := range m {
+		if _, err := tx.ExecContext(ctx, `INSERT INTO item_cooldowns (player_id, delay_id, use_delay, reuse_time) VALUES (?, ?, ?, ?)`,
+			playerID, id, c.UseDelay, c.Reuse.UnixMilli()); err != nil {
+			return fmt.Errorf("save item cooldown %d: %w", id, err)
+		}
+	}
+	return tx.Commit()
+}

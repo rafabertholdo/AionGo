@@ -13,7 +13,8 @@ import (
 
 // Legions: AL-Game's LegionService, Legion and LegionMember. A legion has members ranked as brigade general,
 // centurions and legionaries, an announcement board, and a level.
-// ponytail: uploaded emblem images and the warehouse (AL-Game turns it off, legion.warehouse) aren't ported; the client's requests for them are ignored.
+// The warehouse isn't ported: AL-Game turns it off (legion.warehouse). Uploaded emblem images are ignored as in
+// AL-Game, whose LegionService.uploadEmblemInfo only sets a flag nothing reads and whose uploadEmblemData is commented out.
 
 func init() {
 	handlers[cmLegion] = (*conn).legionRequest

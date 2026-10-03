@@ -2,6 +2,7 @@ package game
 
 import (
 	"cmp"
+	"maps"
 	"slices"
 	"time"
 
@@ -65,20 +66,20 @@ type player struct {
 	targetID         int32
 	dead             bool
 	lastAttack       time.Time
-	attackCounter    int32               // the next attack's number
-	restore          *task               // regenerates HP and MP
-	protection       *task               // ends the protection after entering a map
-	requests         map[int32]request   // questions it was asked and hasn't answered
-	itemCooldowns    map[int32]time.Time // when each use delay group of items is ready again
-	cast             *skill              // what it is casting
-	cooldowns        map[int32]time.Time // when each skill can be used again
-	savedEffects     []store.SavedEffect // player_effects rows, restored once it enters the world
-	moves            int32               // how many times it has set out to move
-	dp               int32               // divine power
-	lookingForGroup  bool                // session-only LFG toggle (CM_PLAYER_STATUS_INFO 9)
-	fx               effectController    // the effects it is under
-	fxMods           []keyedMods         // the stat changes of those
-	dirtyHP, dirtyMP bool                // to tell the client of
+	attackCounter    int32                        // the next attack's number
+	restore          *task                        // regenerates HP and MP
+	protection       *task                        // ends the protection after entering a map
+	requests         map[int32]request            // questions it was asked and hasn't answered
+	itemCooldowns    map[int32]store.ItemCooldown // when each use delay group of items is ready again
+	cast             *skill                       // what it is casting
+	cooldowns        map[int32]time.Time          // when each skill can be used again
+	savedEffects     []store.SavedEffect          // player_effects rows, restored once it enters the world
+	moves            int32                        // how many times it has set out to move
+	dp               int32                        // divine power
+	lookingForGroup  bool                         // session-only LFG toggle (CM_PLAYER_STATUS_INFO 9)
+	fx               effectController             // the effects it is under
+	fxMods           []keyedMods                  // the stat changes of those
+	dirtyHP, dirtyMP bool                         // to tell the client of
 	cell             cell
 
 	// In the world, guarded by Server.visMu.
@@ -202,6 +203,10 @@ func (s *Server) loadPlayer(ch *character) (*player, error) {
 	if p.savedEffects, err = s.store.Effects(id); err != nil {
 		return nil, err
 	}
+	if p.itemCooldowns, err = s.store.ItemCooldowns(id); err != nil {
+		return nil, err
+	}
+	maps.DeleteFunc(p.itemCooldowns, func(_ int32, c store.ItemCooldown) bool { return !c.Reuse.After(time.Now()) })
 	return p, nil
 }
 

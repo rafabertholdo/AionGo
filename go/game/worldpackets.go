@@ -464,7 +464,6 @@ func titleList(p *player) *wire.Writer {
 }
 
 // channelInfo is SM_CHANNEL_INFO: the player's channel and how many the map has.
-// ponytail: the twin maps' other channels aren't ported: a player is on the first.
 func (s *Server) channelInfo(p *player) *wire.Writer {
 	w := wire.Packet(smChannelInfo)
 	w.D(p.instance)
