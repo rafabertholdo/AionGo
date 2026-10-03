@@ -1,8 +1,8 @@
 # Remaining Java-to-Go port: draft inventory and plan
 
-Audit date: 2026-10-02. This is a planning baseline, not an exhaustive
-method-by-method parity certification. It describes the current worktree,
-including staged and unstaged implementation changes, not the deployed image.
+Audit date: 2026-10-03 (quests and the missing-feature list below rechecked
+against the source; the rest from 2026-10-02). This is a planning baseline, not
+an exhaustive method-by-method parity certification.
 
 Implementation started with the critical Go packet-boundary batch. Track its
 fixes, verification and remaining review scope in
@@ -31,56 +31,56 @@ implementations. Quests and incomplete edges of those systems remain.
 
 ### Quests
 
-Read-only `python3 go/scripts/quest-claim.py status` reports:
+Every Java quest handler is ported. `TestQuestJavaParity` runs the Java
+handlers in process (`QuestTraceDump`) over each quest's reachable states, npcs
+and a dialog sweep and replays the same probes on Go (`go/scripts/quest-parity.sh`):
+1,922 of the 1,923 handlers match on every probe, and the prologues 1000/2000 run
+on `startPrologue`. Deliberate differences are listed in `parityDeviation`
+(monster hunts need their kills; 1146 and same-npc report_to quests stay
+completable). 109 handlers were translated with `go/scripts/quest-java-port.py
+--events` (`game/quest_java_dialogs.go`, dispatched by `game/quest_java_events.go`).
 
-- 329 numbered Java handler IDs; 218 registered in Go.
-- 109 free unported IDs; zero active claims.
-- The other two IDs, 1000 and 3913, are marked done outside the custom
-  registration set; validate their shared implementations when closing inventory.
-- The documentation separately counts 330 Java quest classes. Reconcile the
-  filename/class-count difference during the exhaustive audit.
+Still open for quests:
 
-The free handlers are distributed as follows:
+- Non-dialog events (kills, attacks, item use, zones, world entry, deaths, movie
+  ends, timers, spawns, teleports) are not covered by the parity probes. Extend
+  `QuestTraceDump` to those events, and confirm the translated handlers in the
+  client.
+- `go/QUEST_AUDIT.md` rows still marked open need reclassifying against the
+  parity result.
+- Cross-system items from `go/QUEST_PORTING.md` (party kill credit, generic
+  work-item cleanup on abandonment) still need checking against current code.
 
-| Region/family | Free handlers |
-| --- | ---: |
-| Eltnen | 25 |
-| Altgard | 16 |
-| Morheim | 13 |
-| Beluslan | 12 |
-| Heiron | 11 |
-| Reshanta | 8 |
-| Sanctum | 7 |
-| Pandaemonium | 6 |
-| Brusthonin | 3 |
-| Ishalgen | 3 |
-| Theobomos | 3 |
-| Ascension | 2 |
+### Missing Java features (verified 2026-10-03)
 
-`go/QUEST_PORTING.md` also identifies ten registered drafts pending focused tests:
-1092, 1098, 1139, 1141, 1146, 1162, 1163, 1170, 1183, 1192. Registration excludes
-them from the 109 free handlers; it does not certify completion.
+Each row is implemented in AL-Game 1.9 and has no working Go counterpart.
 
-`go/QUEST_AUDIT.md` currently contains 36 open findings across 34 handlers.
-These are recorded conformance findings; each needs comparison with Java before
-being classified as a Go defect or a source-backed exception.
+| Area | Java source | Go state | Notes |
+| --- | --- | --- | --- |
+| **LFG / find group (reported broken in client testing)** | `CM_PLAYER_STATUS_INFO` status 9 calls `Player.setLookingForGroup(playerObjId == 2)`; `CM_PLAYER_SEARCH` filters `lfgOnly` on `isLookingForGroup()`; `SM_PLAYER_SEARCH` writes status 2 for LFG players | `game/group.go:playerStatusInfo` ignores status 9 and `player` has no LFG flag; `game/misc.go:playerSearch` has `case lfg == 1:` with no condition, so an LFG-only search excludes every player; results always send status 0 | Add the flag (not persisted in Java), handle status 9, filter on it and write status 2 in results. Add a packet test from the Java layouts, then confirm in the client |
+| Godstones | `CM_GODSTONE_SOCKET`, `ItemStoneListDAO` godstone rows, godstone procs | No handler; `game/player.go` notes godstones and enchantment are not applied to stats | Socketing, persistence and combat procs together |
+| Group loot roll/bid | `CM_GROUP_LOOT` -> `DropService.handleRoll/handleBid` | `game/group.go` registers an empty handler | Distribution modes 2 (roll) and 3 (bid) |
+| Map channels | `CM_CHANGE_CHANNEL` -> `TeleportService.changeChannel` | No handler | Needs channel isolation of npcs/players |
+| Custom settings | `CM_CUSTOM_SETTINGS` (display/deny flags, `SM_CUSTOM_SETTINGS` broadcast) | No handler; deny/display flags are loaded and used but not saved | Save kinds 2/3 with the logout save |
+| Saved effects | `PlayerEffectsDAO` | Active effects are not persisted | Lost on relog; check expiry and cooldowns |
+| Skill effects | `search` (10 XML uses), `returnpoint` (1), `mpuseovertime` (1), `onetimeboostskillattack` (6), `magiccounteratk` (6), `petorderuseultraskill` (25) | No Go handler | `skilllauncher` (27) is a stub in Java too: new functionality, not a port |
+| Legion emblems | `CM_LEGION_UPLOAD_EMBLEM`, `CM_LEGION_SEND_EMBLEM` | Upload requests ignored (`game/legion.go`) | |
+| Logout delay | `AionConnection.onDisconnect` delays logout 15 s outside an orderly shutdown | Immediate logout | Lifecycle/combat difference |
 
-Cross-system work documented in `go/QUEST_PORTING.md` includes party kill
-credit, generic work-item cleanup, special reward edges, and reward persistence
-that avoids duplicate or partial grants. Validate each against current code.
-Zone quest handlers already exist; the older note that zone dispatch is wholly
-missing must not be treated as current status.
+Not missing (Java has no implementation either): siege battles and timers
+(Java keeps ownership and influence only, as Go does), the legion warehouse
+(disabled in Java's config), pets (AL-Game 1.9 has none; the toy pet is the
+kisk). Handler-managed spawn groups are RIFT (ported in `services_rift.go`) and
+STATIC (static objects send the client nothing).
 
 ### Confirmed request/dispatch gaps
 
-The initial inventory found the following request gaps. Implemented rows now
-identify their Go handlers and remaining verification; the other opcode
-constants still have no production use outside `go/game/opcodes.go`:
+The initial inventory found the following request gaps; all rows below are now
+implemented and await client verification. The requests still missing are in
+the table above.
 
 | Java request | Missing behavior |
 | --- | --- |
-| `CM_GODSTONE_SOCKET` | Godstone socket request; audit item persistence and combat procs together |
-| `CM_CHANGE_CHANNEL` | Map channel switching and supporting world isolation |
 | `CM_SHOW_BRAND` | Implemented in `go/game/brand.go`: Java-compatible broadcasts to group/alliance members, including clearing. Packet, recipient and malformed-input tests added; capture/client verification remains open. |
 | `CM_ALLIANCE_GROUP_CHANGE` | Implemented in `go/game/alliance_group.go`: captain/vice-captain moves and swaps, stable subgroup assignments, member-info/ID broadcasts. Automated authority, capacity, ordering and malformed-input checks added; capture/client verification remains open. |
 | `CM_OPEN_STATICDOOR` | Implemented in `go/game/staticdoor.go` as Java's door-emotion broadcast. Automated packet and malformed-input tests pass; client verification remains open. Broader door mechanics need separate scope. |
@@ -123,7 +123,6 @@ Go source identifies the following missing-name candidates used in skill data:
 | XML effect | Occurrences in skills XML |
 | --- | ---: |
 | `search` | 10 |
-| `return` | 3 |
 | `returnpoint` | 1 |
 | `mpuseovertime` | 1 |
 | `onetimeboostskillattack` | 6 |
@@ -233,13 +232,16 @@ that dependency before registration. Keep review and porting batches small
 enough to integrate without broad simultaneous edits to shared files. Parallel
 development still uses sequential Go commands on this host.
 
+0. **Fix the LFG tool** (reported broken): status 9, the LFG-only filter and the
+   result status, as in the table above.
 1. **Finish the inventory.** Map Java packets, services, controllers, AI,
    quest events, skill effects, item actions, data loaders, DAOs, configuration,
    and admin command branches to Go. Inspect no-op registrations and reconcile
    stale port notes. Produce a source-linked checklist with explicit status.
-2. **Secure progression, in parallel.** Finish registered quest drafts and classify/fix
-   conformance findings; prioritize Asmodian ascension and connected campaign
-   chains. Resolve party credit, item cleanup and reward persistence dependencies.
+2. **Secure progression, in parallel.** Every quest handler is ported and matches
+   Java's dialogs; extend the parity harness to non-dialog events, confirm the
+   translated handlers in the client, and resolve party credit, item cleanup and
+   reward persistence dependencies.
 3. **Complete skill/item behavior.** Port the live missing effects, godstone
    socketing/procs, relevant supplements and saved effects; check class coverage
    and restart/reconnect behavior.
@@ -247,10 +249,8 @@ development still uses sequential Go commands on this host.
    subgroup changes and other source-backed alliance gaps; finish emblem uploads.
 5. **Complete world dependencies.** Add channels, handler-managed spawns and
    implemented Java static/action-object behavior; integrate dependent quests.
-6. **Continue quest content in bounded families, in parallel.** Work through all remaining
-   region lists in progression order, with dependencies ready before registration.
-   Complete source-backed smaller requests and DAO/configuration gaps alongside
-   the systems they affect.
+6. **Smaller requests and configuration.** Complete source-backed smaller
+   requests and DAO/configuration gaps alongside the systems they affect.
 7. **Close verification.** Compare representative flows against old 1.9
    captures, verify client behavior and MariaDB persistence, and re-audit the
    checklist. Decide optional expansion work separately.
