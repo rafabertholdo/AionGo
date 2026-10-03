@@ -79,8 +79,23 @@ var javaDialogs = map[int32]func(c *conn, o *object, script *data.QuestScript, d
 	1205:  (*conn).javaDialog1205,
 	1220:  (*conn).javaDialog1220,
 	1309:  (*conn).javaDialog1309,
+	1311:  (*conn).javaDialog1311,
+	1319:  (*conn).javaDialog1319,
+	1322:  (*conn).javaDialog1322,
 	1323:  (*conn).javaDialog1323,
+	1346:  (*conn).javaDialog1346,
+	1347:  (*conn).javaDialog1347,
+	1351:  (*conn).javaDialog1351,
 	1355:  (*conn).javaDialog1355,
+	1361:  (*conn).javaDialog1361,
+	1363:  (*conn).javaDialog1363,
+	1367:  (*conn).javaDialog1367,
+	1371:  (*conn).javaDialog1371,
+	1376:  (*conn).javaDialog1376,
+	1385:  (*conn).javaDialog1385,
+	1414:  (*conn).javaDialog1414,
+	1422:  (*conn).javaDialog1422,
+	1430:  (*conn).javaDialog1430,
 	1466:  (*conn).javaDialog1466,
 	1467:  (*conn).javaDialog1467,
 	1468:  (*conn).javaDialog1468,
@@ -88,18 +103,39 @@ var javaDialogs = map[int32]func(c *conn, o *object, script *data.QuestScript, d
 	1470:  (*conn).javaDialog1470,
 	1471:  (*conn).javaDialog1471,
 	1472:  (*conn).javaDialog1472,
+	1482:  (*conn).javaDialog1482,
+	1484:  (*conn).javaDialog1484,
+	1487:  (*conn).javaDialog1487,
 	1500:  (*conn).javaDialog1500,
+	1514:  (*conn).javaDialog1514,
+	1535:  (*conn).javaDialog1535,
+	1537:  (*conn).javaDialog1537,
+	1548:  (*conn).javaDialog1548,
+	1560:  (*conn).javaDialog1560,
+	1574:  (*conn).javaDialog1574,
+	1636:  (*conn).javaDialog1636,
+	1647:  (*conn).javaDialog1647,
+	1648:  (*conn).javaDialog1648,
+	1687:  (*conn).javaDialog1687,
 	1701:  (*conn).javaDialog1701,
+	1721:  (*conn).javaDialog1721,
+	1722:  (*conn).javaDialog1722,
+	1900:  (*conn).javaDialog1900,
+	1901:  (*conn).javaDialog1901,
 	1913:  (*conn).javaDialog1913,
 	1914:  (*conn).javaDialog1914,
 	1915:  (*conn).javaDialog1915,
 	1916:  (*conn).javaDialog1916,
+	1926:  (*conn).javaDialog1926,
+	1928:  (*conn).javaDialog1928,
 	1929:  (*conn).javaDialog1929,
 	1966:  (*conn).javaDialog1966,
 	1967:  (*conn).javaDialog1967,
 	1968:  (*conn).javaDialog1968,
 	1969:  (*conn).javaDialog1969,
 	1970:  (*conn).javaDialog1970,
+	1988:  (*conn).javaDialog1988,
+	1989:  (*conn).javaDialog1989,
 	2001:  (*conn).javaDialog2001,
 	2002:  (*conn).javaDialog2002,
 	2003:  (*conn).javaDialog2003,
@@ -138,7 +174,14 @@ var javaDialogs = map[int32]func(c *conn, o *object, script *data.QuestScript, d
 	2055:  (*conn).javaDialog2055,
 	2056:  (*conn).javaDialog2056,
 	2060:  (*conn).javaDialog2060,
+	2071:  (*conn).javaDialog2071,
+	2072:  (*conn).javaDialog2072,
+	2075:  (*conn).javaDialog2075,
 	2091:  (*conn).javaDialog2091,
+	2092:  (*conn).javaDialog2092,
+	2094:  (*conn).javaDialog2094,
+	2096:  (*conn).javaDialog2096,
+	2097:  (*conn).javaDialog2097,
 	2098:  (*conn).javaDialog2098,
 	2100:  (*conn).javaDialog2100,
 	2107:  (*conn).javaDialog2107,
@@ -149,14 +192,34 @@ var javaDialogs = map[int32]func(c *conn, o *object, script *data.QuestScript, d
 	2135:  (*conn).javaDialog2135,
 	2136:  (*conn).javaDialog2136,
 	2200:  (*conn).javaDialog2200,
+	2207:  (*conn).javaDialog2207,
+	2208:  (*conn).javaDialog2208,
+	2209:  (*conn).javaDialog2209,
+	2213:  (*conn).javaDialog2213,
 	2216:  (*conn).javaDialog2216,
+	2221:  (*conn).javaDialog2221,
+	2223:  (*conn).javaDialog2223,
 	2228:  (*conn).javaDialog2228,
+	2231:  (*conn).javaDialog2231,
+	2232:  (*conn).javaDialog2232,
+	2237:  (*conn).javaDialog2237,
+	2271:  (*conn).javaDialog2271,
 	2274:  (*conn).javaDialog2274,
+	2288:  (*conn).javaDialog2288,
+	2290:  (*conn).javaDialog2290,
 	2300:  (*conn).javaDialog2300,
 	2316:  (*conn).javaDialog2316,
+	2332:  (*conn).javaDialog2332,
+	2393:  (*conn).javaDialog2393,
+	2495:  (*conn).javaDialog2495,
 	2500:  (*conn).javaDialog2500,
 	2578:  (*conn).javaDialog2578,
+	2641:  (*conn).javaDialog2641,
+	2653:  (*conn).javaDialog2653,
+	2654:  (*conn).javaDialog2654,
+	2670:  (*conn).javaDialog2670,
 	2701:  (*conn).javaDialog2701,
+	2722:  (*conn).javaDialog2722,
 	2846:  (*conn).javaDialog2846,
 	2847:  (*conn).javaDialog2847,
 	2848:  (*conn).javaDialog2848,
@@ -165,12 +228,19 @@ var javaDialogs = map[int32]func(c *conn, o *object, script *data.QuestScript, d
 	2902:  (*conn).javaDialog2902,
 	2903:  (*conn).javaDialog2903,
 	2904:  (*conn).javaDialog2904,
+	2911:  (*conn).javaDialog2911,
 	2966:  (*conn).javaDialog2966,
 	2967:  (*conn).javaDialog2967,
 	2968:  (*conn).javaDialog2968,
 	2969:  (*conn).javaDialog2969,
 	2970:  (*conn).javaDialog2970,
 	2971:  (*conn).javaDialog2971,
+	2988:  (*conn).javaDialog2988,
+	2989:  (*conn).javaDialog2989,
+	2990:  (*conn).javaDialog2990,
+	3001:  (*conn).javaDialog3001,
+	3008:  (*conn).javaDialog3008,
+	3048:  (*conn).javaDialog3048,
 	3049:  (*conn).javaDialog3049,
 	3060:  (*conn).javaDialog3060,
 	3091:  (*conn).javaDialog3091,
@@ -298,12 +368,23 @@ var javaLevelUps = map[int32]func(c *conn, script *data.QuestScript) bool{
 	2055: (*conn).javaLevelUp2055,
 	2056: (*conn).javaLevelUp2056,
 	2060: (*conn).javaLevelUp2060,
+	2071: (*conn).javaLevelUp2071,
+	2072: (*conn).javaLevelUp2072,
+	2075: (*conn).javaLevelUp2075,
+	2092: (*conn).javaLevelUp2092,
+	2094: (*conn).javaLevelUp2094,
+	2096: (*conn).javaLevelUp2096,
+	2097: (*conn).javaLevelUp2097,
 }
 
 // javaKillHandlers are the translated Kill handlers.
 var javaKillHandlers = map[int32]func(c *conn, o *object, script *data.QuestScript, d int32) bool{
+	1346: (*conn).javaKill1346,
+	1347: (*conn).javaKill1347,
+	1376: (*conn).javaKill1376,
 	1467: (*conn).javaKill1467,
 	1470: (*conn).javaKill1470,
+	1548: (*conn).javaKill1548,
 	1929: (*conn).javaKill1929,
 	2008: (*conn).javaKill2008,
 	2019: (*conn).javaKill2019,
@@ -316,16 +397,23 @@ var javaKillHandlers = map[int32]func(c *conn, o *object, script *data.QuestScri
 	2038: (*conn).javaKill2038,
 	2052: (*conn).javaKill2052,
 	2060: (*conn).javaKill2060,
+	2092: (*conn).javaKill2092,
+	2094: (*conn).javaKill2094,
+	2223: (*conn).javaKill2223,
+	2288: (*conn).javaKill2288,
 	2900: (*conn).javaKill2900,
+	2990: (*conn).javaKill2990,
 }
 
 // javaAttackHandlers are the translated Attack handlers.
 var javaAttackHandlers = map[int32]func(c *conn, o *object, script *data.QuestScript, d int32) bool{
 	2008: (*conn).javaAttack2008,
+	2071: (*conn).javaAttack2071,
 }
 
 // javaItemUseHandlers are the translated ItemUse handlers.
 var javaItemUseHandlers = map[int32]func(c *conn, o *object, script *data.QuestScript, d int32, item *store.Item) bool{
+	1514: (*conn).javaItemUse1514,
 	2031: (*conn).javaItemUse2031,
 	2032: (*conn).javaItemUse2032,
 	2033: (*conn).javaItemUse2033,
@@ -336,6 +424,8 @@ var javaItemUseHandlers = map[int32]func(c *conn, o *object, script *data.QuestS
 	2054: (*conn).javaItemUse2054,
 	2056: (*conn).javaItemUse2056,
 	2060: (*conn).javaItemUse2060,
+	2670: (*conn).javaItemUse2670,
+	3048: (*conn).javaItemUse3048,
 }
 
 // javaEnterZoneHandlers are the translated EnterZone handlers.
@@ -346,6 +436,7 @@ var javaEnterZoneHandlers = map[int32]func(c *conn, o *object, script *data.Ques
 	2037: (*conn).javaEnterZone2037,
 	2053: (*conn).javaEnterZone2053,
 	2091: (*conn).javaEnterZone2091,
+	2092: (*conn).javaEnterZone2092,
 	2500: (*conn).javaEnterZone2500,
 	2701: (*conn).javaEnterZone2701,
 }
@@ -380,17 +471,36 @@ var javaQuestFinishHandlers = map[int32]func(c *conn, o *object, script *data.Qu
 
 // javaKills are the kill registrations of the translated handlers (register()), in order.
 var javaKills = map[int32][]int32{
+	201047: {2288},
 	204263: {2900},
 	204417: {2034},
 	205040: {2008},
+	210436: {2288},
+	210437: {2288},
+	210440: {2288},
 	210492: {2019},
 	210493: {2019},
 	210562: {2020},
+	210564: {2288},
+	210581: {2288},
+	210584: {2288},
 	210753: {2022},
+	210844: {1346},
+	210872: {1346},
+	210874: {1347},
+	210878: {1346},
+	210898: {1346},
+	210908: {1347},
+	210917: {1347},
+	210976: {1376},
+	210986: {1376},
+	211621: {2223},
 	211696: {1467},
 	211697: {1467},
 	211698: {1467},
 	211699: {1467},
+	212056: {1347},
+	212137: {1347},
 	212846: {1470},
 	212861: {2037},
 	212877: {2034},
@@ -398,17 +508,25 @@ var javaKills = map[int32][]int32{
 	212879: {2038},
 	212992: {1929},
 	213044: {2052},
+	214402: {2092},
+	214700: {2094},
+	253720: {2990},
+	254513: {2990},
+	256617: {2990},
 	700099: {2021},
+	700169: {1548},
 	700290: {2060},
 }
 
 // javaAttacks are the attack registrations of the translated handlers (register()), in order.
 var javaAttacks = map[int32][]int32{
 	205041: {2008},
+	253610: {2071},
 }
 
 // javaItemUses are the item registrations of the translated handlers (register()), in order.
 var javaItemUses = map[int32][]int32{
+	182201710: {1514},
 	182204001: {2031},
 	182204005: {2032},
 	182204007: {2033},
@@ -421,6 +539,8 @@ var javaItemUses = map[int32][]int32{
 	182204314: {2056},
 	182204315: {2056},
 	182204318: {2060},
+	182204501: {2670},
+	182208033: {3048},
 }
 
 // javaZones are the zone registrations of the translated handlers (register()), in order.
@@ -431,6 +551,7 @@ var javaZones = map[string][]int32{
 	"LATIS_PLAZA_400010000":               {1701},
 	"MALEK_MINE_220040000":                {2053},
 	"NEW_HEIRON_GATE":                     {1500},
+	"Q2092":                               {2092},
 	"RUSSET_PLAZA_400010000":              {2701},
 	"SETTLERS_CAMPSITE_220050000":         {2091},
 }
@@ -451,10 +572,20 @@ var javaDie = []int32{1929, 2008, 2038, 2900}
 // javaQuestFinish are the translated handlers registered for that event.
 var javaQuestFinish = []int32{2008}
 
+// javaResetFields puts the translated handlers' object fields back to their initial values (tests).
+func javaResetFields() {
+	java1687Choix = 0
+	java2990A = 0
+	java2990C = 0
+	java2990ALL = 0
+	java2990B = 0
+}
+
 // javaTalkNPCs are the npcs each translated handler registers its talk event on (register()).
 var javaTalkNPCs = map[int32][]int32{
 	203060: {1122},
 	203061: {1111},
+	203063: {1928},
 	203067: {1001, 1004},
 	203071: {1001},
 	203075: {1107, 1111},
@@ -465,19 +596,22 @@ var javaTalkNPCs = map[int32][]int32{
 	203089: {1205},
 	203090: {1205},
 	203097: {1913, 1914, 1915, 1916},
-	203098: {1018, 1023, 1130, 1192},
+	203098: {1018, 1023, 1130, 1192, 1926},
 	203099: {1182},
 	203111: {1012},
 	203126: {1013},
 	203128: {1156, 1158},
 	203129: {1015, 1021, 1197},
+	203131: {1901},
 	203164: {1098, 1929},
+	203170: {1928},
 	203172: {1220},
 	203178: {1017, 1022},
 	203183: {1023, 1098},
 	203184: {1468},
 	203316: {3935},
 	203329: {3935},
+	203337: {1430, 1482},
 	203384: {3914},
 	203512: {2107},
 	203514: {2125},
@@ -493,21 +627,39 @@ var javaTalkNPCs = map[int32][]int32{
 	203539: {2003, 2004},
 	203540: {2005, 2006, 2125},
 	203543: {2125},
-	203546: {2008, 2098, 2900},
-	203550: {2004, 2008, 2009, 2098, 2900},
+	203546: {2008, 2097, 2098, 2900},
+	203550: {2004, 2008, 2009, 2096, 2097, 2098, 2900},
 	203551: {2122},
-	203557: {2021, 2022, 2200},
+	203555: {2209},
+	203557: {2021, 2022, 2200, 2207, 2271},
 	203558: {2017},
 	203559: {2012, 2901, 2902, 2903, 2904},
 	203560: {2274},
+	203562: {2209},
+	203589: {2208},
+	203590: {2207},
+	203591: {2207, 2208},
+	203592: {2209},
+	203604: {2213, 2213},
 	203605: {2013},
 	203606: {2014, 2216},
+	203607: {2221, 2290},
+	203608: {2221, 2290},
+	203609: {2231},
+	203610: {2231},
+	203612: {2231},
+	203613: {2232},
+	203616: {2223},
 	203619: {2228},
-	203621: {2016},
+	203620: {2231},
+	203621: {2016, 2288},
+	203622: {2232},
+	203629: {2237},
 	203631: {2014, 2015, 2016},
 	203633: {2014},
 	203649: {2018},
-	203654: {2017},
+	203654: {2017, 2271},
+	203655: {2271},
 	203665: {2020},
 	203668: {2020, 2274},
 	203669: {2021},
@@ -521,55 +673,87 @@ var javaTalkNPCs = map[int32][]int32{
 	203707: {3933},
 	203710: {3936},
 	203711: {1929, 3930},
+	203725: {1988},
 	203726: {1913, 1914, 1915, 1916},
+	203731: {1422},
+	203739: {1900},
 	203752: {1098, 1929, 3914, 3933, 3934, 3935, 3938, 3939, 19004},
-	203757: {19004},
+	203757: {1900, 19004},
+	203766: {1900},
+	203771: {1988, 1989},
 	203780: {3939},
 	203781: {3939},
 	203784: {3093, 3938},
 	203786: {3938},
 	203788: {3938},
 	203790: {3938},
-	203792: {3938},
+	203792: {1636, 3938},
 	203793: {3938},
-	203830: {1309},
+	203795: {1900},
+	203797: {1900},
+	203830: {1309, 1900, 1901},
+	203831: {1514},
 	203833: {1041, 1192, 3930},
+	203845: {1928},
 	203852: {1929},
+	203864: {1901},
+	203894: {1926},
 	203900: {1033},
 	203901: {1040, 1041, 1043},
 	203902: {1031},
 	203903: {1034, 1466, 1472},
+	203906: {1319},
+	203907: {1319},
+	203908: {1319},
+	203910: {1319},
+	203912: {1422},
+	203915: {1319},
 	203917: {1098},
+	203919: {1430, 1482},
+	203923: {1319},
 	203927: {3968},
 	203932: {1032, 1309},
 	203933: {1355},
 	203936: {1031},
 	203939: {1323},
+	203943: {1361, 1363},
 	203946: {1039},
+	203947: {1376},
+	203949: {1371},
+	203964: {1376},
+	203965: {1346, 1347, 1351},
+	203966: {1346, 1347},
 	203969: {1468},
-	203989: {1040, 1098},
+	203983: {1351},
+	203989: {1040, 1098, 1414},
 	203991: {1471},
 	203994: {3966},
 	203996: {1033, 1098},
+	203997: {1311, 1311},
 	204007: {1468},
+	204011: {1484},
 	204015: {1041},
-	204020: {1040, 1043, 1058},
+	204020: {1040, 1043, 1058, 1363},
+	204023: {1367},
 	204024: {1040},
+	204029: {1385},
 	204030: {1031, 3966},
 	204042: {1041},
 	204043: {1031},
 	204044: {1043},
-	204045: {1467},
+	204045: {1467, 1484},
+	204048: {1484},
 	204051: {4934},
 	204053: {2038, 2098, 4937, 4938, 4939, 4942, 4943},
 	204054: {4939},
 	204055: {4939},
 	204056: {4937},
-	204057: {4937},
+	204057: {2094, 4937},
 	204058: {4937},
 	204059: {4937},
 	204061: {2900},
 	204075: {2009, 4937, 4938, 4939, 4942, 4943},
+	204079: {2911},
 	204080: {2009},
 	204081: {2009},
 	204082: {2009},
@@ -583,10 +767,14 @@ var javaTalkNPCs = map[int32][]int32{
 	204108: {4942},
 	204110: {4942},
 	204143: {4060},
-	204182: {2009, 2900},
+	204146: {2988, 2989, 2990},
+	204182: {2009, 2900, 2988},
 	204191: {2901, 2902, 2903, 2904},
-	204206: {2051},
-	204207: {2098},
+	204193: {2911},
+	204206: {2051, 2096},
+	204207: {2096, 2098},
+	204208: {2670},
+	204210: {2071},
 	204211: {4934},
 	204264: {2900},
 	204273: {4939},
@@ -599,6 +787,7 @@ var javaTalkNPCs = map[int32][]int32{
 	204329: {2032},
 	204332: {2034},
 	204342: {2038},
+	204343: {2393},
 	204345: {2039, 2040},
 	204361: {2037, 2098},
 	204369: {2037},
@@ -618,14 +807,29 @@ var javaTalkNPCs = map[int32][]int32{
 	204412: {2039},
 	204413: {2039},
 	204414: {2040},
-	204500: {1500},
+	204500: {1500, 1648},
 	204501: {1034, 1058},
+	204505: {1514},
 	204528: {3968},
-	204535: {1098},
+	204535: {1098, 1636},
+	204545: {1648},
 	204549: {1098},
+	204560: {1574},
+	204561: {1574},
+	204562: {1574},
 	204568: {3966},
+	204580: {1535},
+	204582: {1514},
+	204583: {1548},
+	204588: {1537},
+	204590: {1648},
+	204601: {1687},
+	204612: {1648},
+	204650: {2653},
+	204655: {2653, 2654},
+	204700: {2641},
 	204701: {2060},
-	204702: {2051, 2500},
+	204702: {2051, 2500, 2670},
 	204707: {2053},
 	204715: {2052},
 	204731: {4060},
@@ -637,13 +841,18 @@ var javaTalkNPCs = map[int32][]int32{
 	204749: {2053},
 	204753: {2056},
 	204768: {2054, 2055},
+	204775: {2653, 2654},
 	204784: {2098},
 	204785: {2060},
+	204795: {2641},
+	204796: {2641},
+	204798: {2641},
 	204799: {2848},
 	204800: {2053},
 	204801: {2052},
 	204805: {2052, 2098},
 	204808: {2055, 2098},
+	204871: {2641},
 	205020: {2008},
 	205110: {1929},
 	205111: {1929},
@@ -655,8 +864,8 @@ var javaTalkNPCs = map[int32][]int32{
 	205133: {4001},
 	205141: {4020},
 	205144: {4036},
-	205150: {2091},
-	205155: {2098},
+	205150: {2091, 2092, 2094},
+	205155: {2094, 2098},
 	205156: {4060},
 	205165: {4053},
 	205166: {4052},
@@ -664,38 +873,80 @@ var javaTalkNPCs = map[int32][]int32{
 	205178: {4053},
 	205179: {4052},
 	205187: {4036},
-	205190: {2098, 4036},
+	205188: {2092},
+	205190: {2092, 2098, 4036},
+	205191: {2094},
+	205192: {2094},
 	205197: {4052},
 	205198: {2098},
 	205204: {4060},
+	205208: {2092},
+	205209: {2092},
+	205210: {2092},
+	205211: {2092},
+	205212: {2092},
+	205213: {2092},
+	205214: {2092},
+	212057: {1385},
 	212649: {1466},
 	212878: {1469},
 	278001: {2098, 2701},
-	278003: {2060},
+	278003: {2060, 2071},
 	278004: {2037},
 	278020: {2847},
-	278039: {2846},
-	278040: {2051},
+	278032: {2722},
+	278034: {2075},
+	278037: {2722},
+	278039: {2071, 2846},
+	278040: {2051, 2722},
+	278043: {2722},
+	278047: {2722},
+	278054: {2072},
 	278055: {2966, 2967, 2968},
-	278056: {2969, 2970, 2971},
+	278056: {2722, 2969, 2970, 2971},
+	278066: {2722},
+	278068: {2722},
+	278086: {2071},
 	278088: {2060},
 	278089: {2848},
+	278126: {2072, 2722},
+	278127: {2072},
+	278128: {2072},
+	278129: {2072},
+	278130: {2072},
+	278131: {2072},
+	278136: {2072},
 	278137: {2848},
 	278500: {1041},
-	278501: {1701},
-	278532: {1071},
-	278555: {1966, 1967},
+	278501: {1701, 1721},
+	278502: {1721},
+	278503: {1721},
+	278517: {1722},
+	278518: {1721},
+	278524: {1722},
+	278532: {1071, 1722},
+	278539: {1722},
+	278544: {1722},
+	278547: {1722},
+	278555: {1722, 1966, 1967},
 	278556: {1968, 1969, 1970},
+	278560: {1722},
+	278567: {1722},
 	279000: {2056},
+	279004: {2075},
 	279005: {2847},
+	279006: {2075},
 	279019: {1071},
-	279027: {2846},
-	279034: {1097},
+	279024: {2075},
+	279027: {2071, 2846},
+	279034: {1097, 2097},
 	700003: {1156, 1158},
 	700004: {1197},
 	700009: {2014},
 	700030: {1004},
 	700047: {2004},
+	700057: {2213},
+	700061: {2232},
 	700093: {2001},
 	700095: {2006},
 	700096: {2013},
@@ -705,11 +956,17 @@ var javaTalkNPCs = map[int32][]int32{
 	700140: {2022},
 	700141: {2022},
 	700142: {2022},
+	700145: {2237},
 	700148: {2122},
 	700149: {1034},
 	700157: {1032},
+	700164: {1311},
+	700173: {1361},
+	700175: {1414},
+	700178: {2290},
 	700179: {1031},
 	700181: {1041},
+	700214: {2221},
 	700233: {2038},
 	700236: {2036},
 	700246: {2034},
@@ -717,42 +974,75 @@ var javaTalkNPCs = map[int32][]int32{
 	700285: {2051},
 	700287: {2054},
 	700293: {2060},
+	700313: {1487},
+	700314: {1487},
+	700315: {1487},
+	700317: {2495},
+	700318: {2495},
+	700319: {2495},
 	700359: {2053},
+	700394: {2092},
 	700419: {1929},
 	700562: {3930, 4934},
 	730001: {1141},
-	730008: {1098},
-	730019: {1032, 1098, 1323},
+	730008: {1098, 1322},
+	730019: {1032, 1098, 1322, 1323},
 	730020: {1032},
+	730025: {1574},
 	730029: {2122},
 	730036: {2056},
 	730038: {2031},
+	730039: {1371},
 	730107: {4015},
 	730108: {2053},
 	730109: {2054},
 	730133: {1098},
 	730140: {2054},
 	730152: {4052},
+	730156: {2092},
+	730158: {2092},
+	730159: {2092},
+	730160: {2092},
+	730161: {2092},
+	730162: {2092},
+	730163: {2092},
+	730164: {2094},
+	730189: {1537},
+	730190: {1537},
+	730191: {1537},
 	790001: {1004, 1097, 1098, 1122, 1123},
 	790002: {2008, 2900},
 	790003: {2008, 2900},
 	790004: {1468, 1469, 1470},
 	790016: {2056},
 	790017: {2578},
+	790019: {1647},
 	790020: {2033},
-	798003: {1156, 1158},
+	798003: {1156, 1158, 1901},
 	798004: {1220},
 	798024: {1471},
-	798025: {1071},
-	798026: {1071},
+	798025: {1071, 1901},
+	798026: {1071, 1560, 1901},
 	798033: {2019},
-	798046: {1220},
+	798046: {1220, 1319},
 	798048: {1471},
-	798050: {3319},
+	798049: {1319},
+	798050: {1319, 3319},
 	798053: {3326},
 	798063: {2847},
+	798084: {2332},
+	798103: {1560},
 	798114: {1472},
-	798138: {3319},
+	798125: {2495},
+	798126: {1484, 1487},
+	798127: {1484},
+	798132: {3001},
+	798133: {3001},
+	798136: {3001},
+	798138: {3008, 3319},
+	798139: {3001},
+	798146: {3008},
+	798150: {1928, 3008},
 	798155: {1091, 1098},
 	798176: {1098, 3091, 3968},
 	798177: {3093},
@@ -762,12 +1052,15 @@ var javaTalkNPCs = map[int32][]int32{
 	798191: {3060, 3091},
 	798192: {3060},
 	798193: {3060},
+	798206: {3048},
+	798208: {3048},
 	798211: {3049},
 	798212: {1098},
 	798309: {3967},
 	798316: {1097, 3938},
 	798317: {2846, 4942},
 	798321: {3930},
+	798357: {1560},
 	798359: {3934},
 	798360: {3934},
 	798361: {3934},
@@ -7141,6 +7434,263 @@ func (c *conn) javaDialog1309(o *object, script *data.QuestScript, d int32) bool
 	return false
 }
 
+// javaDialog1311 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1311AGermOfHope.java onDialogEvent.
+// talk npcs: 203997 700164 203997
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203997"], "talk": ["203997", "700164", "203997"], "zone": []}
+func (c *conn) javaDialog1311(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203997 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 1013 {
+				if c.addQuestItems([]data.QuestItem{{ID: 182201305, Count: 1}}) {
+					return c.jPage(o.id, script.ID, uint16(4))
+				} else {
+					return true
+				}
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "START" {
+		switch targetId {
+		case 700164:
+			if questVar(qs.Vars, 0) == 0 && d == -1 {
+				var targetObjectId int32 = o.id
+				_ = targetObjectId
+				c.send(useObject(p.ID, targetObjectId, byte(1)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+				c.jLater(3000, func() {
+					if !(p.targetID == targetObjectId) {
+						return
+					}
+					c.send(useObject(p.ID, targetObjectId, byte(0)))
+					p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+					c.jRemoveAll(182201305)
+					c.jSetStatus(qs, "REWARD")
+					c.jSetVarByID(qs, 0, 1)
+					c.jUpdate(qs)
+				})
+			}
+			fallthrough
+		case 203997:
+			if questVar(qs.Vars, 0) == 1 {
+				if d == 25 {
+					return c.jPage(o.id, script.ID, uint16(2375))
+				} else if d == 33 {
+					c.jRemoveAll(182201305)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else {
+					return c.defaultQuestEndDialog(o, script, d)
+				}
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203997 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog1319 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1319PrioritesMoney.java onDialogEvent.
+// talk npcs: 203908 203923 203910 203906 203915 203907 798050 798049 798046
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203908"], "talk": ["203908", "203923", "203910", "203906", "203915", "203907", "798050", "798049", "798046"], "zone": []}
+func (c *conn) javaDialog1319(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203908 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs != nil && qs.Status == "REWARD" {
+		if d == 25 {
+			return c.jPage(o.id, script.ID, uint16(4080))
+		} else if d == 1009 {
+			c.jSetVar(qs, 8)
+			c.jSetStatus(qs, "REWARD")
+			c.jUpdate(qs)
+			return c.defaultQuestEndDialog(o, script, d)
+		} else {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 203923 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203910 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 10001 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203906 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 2 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2034))
+			} else if d == 10002 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203915 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 3 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 10003 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203907 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 4 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2716))
+			} else if d == 10004 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 798050 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 5 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(3057))
+			} else if d == 10005 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 798049 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 6 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(3398))
+			} else if d == 10006 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 798046 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 7 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(3739))
+			} else if d == 10007 {
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1322 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1322ALeafFromLodas.java onDialogEvent.
+// talk npcs: 730019 730008
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["730019"], "talk": ["730019", "730008"], "zone": []}
+func (c *conn) javaDialog1322(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 730019 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 2)
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "REWARD" {
+			if d == -1 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			}
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 730008 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 || d == 10001 {
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
 // javaDialog1323 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1323LostJewelBox.java onDialogEvent.
 // talk npcs: 730019 203939
 func (c *conn) javaDialog1323(o *object, script *data.QuestScript, d int32) bool {
@@ -7188,6 +7738,201 @@ func (c *conn) javaDialog1323(o *object, script *data.QuestScript, d int32) bool
 	return false
 }
 
+// javaDialog1346 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1346KillingforCastor.java onDialogEvent.
+// talk npcs: 203966 203965
+// register: {"attack": [], "item": [], "kill": ["210898", "210878", "210872", "210844"], "movie": [], "start": ["203966"], "talk": ["203966", "203965"], "zone": []}
+func (c *conn) javaDialog1346(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if int32(p.level) < 27 {
+		return false
+	}
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203966 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "START" {
+		if targetId == 203965 {
+			if d == 25 && questVar(qs.Vars, 1) == 20 && questVar(qs.Vars, 0) == 15 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203965 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else if d == 1009 {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaKill1346 is its onKillEvent.
+func (c *conn) javaKill1346(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "START" {
+		return false
+	}
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	switch targetId {
+	case 210872, 210844:
+		if questVar(qs.Vars, 0) < 15 {
+			c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+			c.jUpdate(qs)
+			return true
+		}
+	case 210898, 210878:
+		if questVar(qs.Vars, 1) < 20 {
+			c.jSetVarByID(qs, 1, questVar(qs.Vars, 1)+1)
+			c.jUpdate(qs)
+			return true
+		}
+	}
+	return false
+}
+
+// javaDialog1347 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1347RaidingKlaw.java onDialogEvent.
+// talk npcs: 203965 203966
+// register: {"attack": [], "item": [], "kill": ["210908", "210874", "212137", "212056", "210917"], "movie": [], "start": ["203965"], "talk": ["203965", "203966"], "zone": []}
+func (c *conn) javaDialog1347(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203965 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	if qs.Status == "START" {
+		if targetId == 203966 {
+			if d == 25 {
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(1352))
+			}
+		}
+		return false
+	} else if qs.Status == "REWARD" {
+		if targetId == 203966 {
+			if d == 1009 {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+		return false
+	}
+	return false
+}
+
+// javaKill1347 is its onKillEvent.
+func (c *conn) javaKill1347(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "START" {
+		return false
+	}
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	switch targetId {
+	case 210908, 210874:
+		if questVar(qs.Vars, 0) < 15 {
+			c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+			c.jUpdate(qs)
+			return true
+		}
+	case 212137, 212056, 210917:
+		if questVar(qs.Vars, 1) < 7 {
+			c.jSetVarByID(qs, 1, questVar(qs.Vars, 1)+1)
+			c.jUpdate(qs)
+			return true
+		}
+	}
+	return false
+}
+
+// javaDialog1351 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1351EarningMaranasRespect.java onDialogEvent.
+// talk npcs: 203965 203983
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203965"], "talk": ["203965", "203983"], "zone": []}
+func (c *conn) javaDialog1351(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	var itemCount int64
+	_ = itemCount
+	if targetId == 203965 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203983 {
+		if qs != nil && qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 33 {
+				itemCount = c.s.countItems(p, 182201321)
+				if itemCount > 9 {
+					c.jRemoveAll(182201321)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2716))
+				}
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
 // javaDialog1355 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1355TheFireTempleKey.java onDialogEvent.
 // talk npcs: 203933
 func (c *conn) javaDialog1355(o *object, script *data.QuestScript, d int32) bool {
@@ -7212,6 +7957,531 @@ func (c *conn) javaDialog1355(o *object, script *data.QuestScript, d int32) bool
 				c.jRemoveAll(182201400)
 				c.jSetVar(qs, 1)
 				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1361 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1361FindingDrinkingWater.java onDialogEvent.
+// talk npcs: 203943 700173
+// register: {"attack": [], "item": ["182201326"], "kill": [], "movie": [], "start": ["203943"], "talk": ["203943", "700173"], "zone": []}
+func (c *conn) javaDialog1361(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203943 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 1002 {
+				if c.addQuestItems([]data.QuestItem{{ID: 182201326, Count: 1}}) {
+					return c.defaultQuestStartDialog(o, script, d)
+				} else {
+					return true
+				}
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs != nil && qs.Status == "REWARD" {
+		if d == 25 {
+			return c.jPage(o.id, script.ID, uint16(2375))
+		} else if d == 1009 {
+			c.jSetVar(qs, 2)
+			c.jSetStatus(qs, "REWARD")
+			c.jUpdate(qs)
+			return c.defaultQuestEndDialog(o, script, d)
+		} else {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+		switch targetId {
+		case 700173:
+			if questVar(qs.Vars, 0) == 1 && d == -1 {
+				var targetObjectId int32 = o.id
+				_ = targetObjectId
+				c.send(useObject(p.ID, targetObjectId, byte(1)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+				c.jLater(3000, func() {
+					if c.jTarget() == nil || c.jTarget().id != targetObjectId {
+						return
+					}
+					qs := p.quest(script.ID)
+					_ = qs
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					c.jRemoveAll(182201327)
+					c.send(useObject(p.ID, targetObjectId, byte(0)))
+					p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+				})
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1363 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1363ThankingMabangtah.java onDialogEvent.
+// talk npcs: 203943 204020
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203943"], "talk": ["203943", "204020"], "zone": []}
+func (c *conn) javaDialog1363(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203943 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 2)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 204020 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1367 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1367MabangtahsFeast.java onDialogEvent.
+// talk npcs: 204023
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204023"], "talk": ["204023"], "zone": []}
+func (c *conn) javaDialog1367(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 204023 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			var itemCount int64
+			_ = itemCount
+			var itemCount1 int64
+			_ = itemCount1
+			var itemCount2 int64
+			_ = itemCount2
+			if d == 25 && questVar(qs.Vars, 0) == 0 {
+				itemCount = c.s.countItems(p, 182201333)
+				itemCount1 = c.s.countItems(p, 182201332)
+				itemCount2 = c.s.countItems(p, 182201331)
+				if itemCount > 1 || itemCount1 > 5 || itemCount2 > 0 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1693))
+				}
+			} else if d == 10000 {
+				itemCount2 = c.s.countItems(p, 182201331)
+				if itemCount2 > 0 {
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					c.jSetVarByID(qs, 0, 1)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				}
+			} else if d == 10001 {
+				itemCount1 = c.s.countItems(p, 182201332)
+				if itemCount1 > 4 {
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					c.jSetVarByID(qs, 0, 2)
+					return c.jPage(o.id, script.ID, uint16(6))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				}
+			} else if d == 10002 {
+				itemCount = c.s.countItems(p, 182201333)
+				if itemCount > 1 {
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					c.jSetVarByID(qs, 0, 3)
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(7))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				}
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog1371 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1371FlowersForIsson.java onDialogEvent.
+// talk npcs: 203949 730039
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203949"], "talk": ["203949", "730039"], "zone": []}
+func (c *conn) javaDialog1371(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	var itemCount int64 = 0
+	_ = itemCount
+	if targetId == 203949 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			var var_ int32 = questVar(qs.Vars, 0)
+			_ = var_
+			switch d {
+			case 25:
+				if var_ == 0 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				}
+				fallthrough
+			case 33:
+				if var_ == 0 {
+					itemCount = c.s.countItems(p, 152000601)
+				}
+				if itemCount > 4 {
+					return c.jPage(o.id, script.ID, uint16(1353))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1438))
+				}
+			case 10000:
+				c.jRemoveAll(152000601)
+				c.jSetVar(qs, 2)
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(0))
+			}
+			return false
+		} else if qs != nil && qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 730039 {
+		var var_ int32 = questVar(qs.Vars, 0)
+		_ = var_
+		if qs.Status == "START" && var_ == 2 {
+			var targetObjectId int32 = o.id
+			_ = targetObjectId
+			c.jSetStatus(qs, "REWARD")
+			c.jUpdate(qs)
+			c.send(useObject(p.ID, targetObjectId, byte(1)))
+			p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+			c.jLater(3000, func() {
+				if c.jTarget() == nil || c.jTarget().id != targetObjectId {
+					return
+				}
+				c.send(useObject(p.ID, targetObjectId, byte(0)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+			})
+		}
+	}
+	return false
+}
+
+// javaDialog1376 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1376AMountaineOfTrouble.java onDialogEvent.
+// talk npcs: 203947 203964
+// register: {"attack": [], "item": [], "kill": ["210976", "210986"], "movie": [], "start": ["203947"], "talk": ["203947", "203964"], "zone": []}
+func (c *conn) javaDialog1376(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203947 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203964 {
+			if d == -1 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			}
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaKill1376 is its onKillEvent.
+func (c *conn) javaKill1376(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "START" {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	switch targetId {
+	case 210976:
+		if var_ >= 0 && var_ < 6 {
+			c.jSetVarByID(qs, 0, var_+1)
+			c.jUpdate(qs)
+			return true
+		} else if var_ == 6 {
+			c.jSetStatus(qs, "REWARD")
+			c.jUpdate(qs)
+			return true
+		}
+		fallthrough
+	case 210986:
+		if var_ >= 0 && var_ < 6 {
+			c.jSetVarByID(qs, 0, var_+1)
+			c.jUpdate(qs)
+			return true
+		} else if var_ == 6 {
+			c.jSetStatus(qs, "REWARD")
+			c.jUpdate(qs)
+			return true
+		}
+	}
+	return false
+}
+
+// javaDialog1385 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1385RescuingGriffo.java onDialogEvent.
+// talk npcs: 212057 204029
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["212057"], "talk": ["212057", "204029"], "zone": []}
+func (c *conn) javaDialog1385(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 212057 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 2)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 204029 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1414 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1414OperationWindmill.java onDialogEvent.
+// talk npcs: 203989 700175
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203989"], "talk": ["203989", "700175"], "zone": []}
+func (c *conn) javaDialog1414(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203989 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 1002 {
+				if c.addQuestItems([]data.QuestItem{{ID: 182201349, Count: 1}}) {
+					return c.defaultQuestStartDialog(o, script, d)
+				} else {
+					return true
+				}
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs != nil && qs.Status == "REWARD" {
+		return c.defaultQuestEndDialog(o, script, d)
+	} else if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+		switch targetId {
+		case 700175:
+			if questVar(qs.Vars, 0) == 0 && d == -1 {
+				var targetObjectId int32 = o.id
+				_ = targetObjectId
+				c.send(useObject(p.ID, targetObjectId, byte(1)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+				c.jLater(3000, func() {
+					if c.jTarget() == nil || c.jTarget().id != targetObjectId {
+						return
+					}
+					qs := p.quest(script.ID)
+					_ = qs
+					c.jSetVar(qs, 1)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					c.jRemoveAll(182201349)
+					c.send(useObject(p.ID, targetObjectId, byte(0)))
+					p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+				})
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1422 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1422ABetterSword.java onDialogEvent.
+// talk npcs: 203912 203731
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203912"], "talk": ["203912", "203731"], "zone": []}
+func (c *conn) javaDialog1422(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203912 {
+		if qs == nil {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 2)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 203731 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1430 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1430ATeleportationExperiment.java onDialogEvent.
+// talk npcs: 203919 203337
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203919"], "talk": ["203919", "203337"], "zone": []}
+func (c *conn) javaDialog1430(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203919 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(4762))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203337 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.jSetStatus(qs, "REWARD")
+				c.jTeleport(220020000, 0, 638, 2337, 425, byte(20), int32(0))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "REWARD" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(4080))
+			} else if d == 1009 {
+				c.jSetVar(qs, 2)
 				c.jUpdate(qs)
 				return c.defaultQuestEndDialog(o, script, d)
 			} else {
@@ -7686,6 +8956,253 @@ func (c *conn) javaDialog1472(o *object, script *data.QuestScript, d int32) bool
 	return false
 }
 
+// javaDialog1482 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1482ATeleportationAdventure.java onDialogEvent.
+// talk npcs: 203919 203337
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203919"], "talk": ["203919", "203337"], "zone": []}
+func (c *conn) javaDialog1482(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203919 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(4762))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	if qs.Status == "START" {
+		switch targetId {
+		case 203337:
+			switch d {
+			case 25:
+				switch questVar(qs.Vars, 0) {
+				case 0:
+					return c.jPage(o.id, script.ID, uint16(1011))
+				case 1:
+					var itemCount1 int64 = c.s.countItems(p, 182201399)
+					_ = itemCount1
+					if itemCount1 >= 3 {
+						c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+						c.jUpdate(qs)
+						return c.jPage(o.id, script.ID, uint16(1352))
+					} else {
+						return c.jPage(o.id, script.ID, uint16(10001))
+					}
+				case 2:
+					return c.jPage(o.id, script.ID, uint16(1693))
+				case 3:
+					return c.jPage(o.id, script.ID, uint16(10002))
+				}
+				fallthrough
+			case 10000:
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			case 10002:
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.jTeleport(220020000, 0, 638, 2337, 425, byte(20), int32(0))
+				return true
+			default:
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203337 {
+			if d == 1009 {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1484 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1484ChiyorinrinerksRequest.java onDialogEvent.
+// talk npcs: 798127 204045 204048 204011 798126
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["798127"], "talk": ["798127", "204045", "204048", "204011", "798126"], "zone": []}
+func (c *conn) javaDialog1484(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 798127 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204045 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204048 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(1693), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204011 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 2 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(1693), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 798126 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1487 is java/AL-Game/data/scripts/system/handlers/quest/eltnen/_1487BalaurBones.java onDialogEvent.
+// talk npcs: 798126 700313 700314 700315
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["798126"], "talk": ["798126", "700313", "700314", "700315"], "zone": []}
+func (c *conn) javaDialog1487(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 798126 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			var itemCount int64
+			_ = itemCount
+			var itemCount1 int64
+			_ = itemCount1
+			var itemCount2 int64
+			_ = itemCount2
+			if d == 25 && questVar(qs.Vars, 0) == 0 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 33 && questVar(qs.Vars, 0) == 0 {
+				itemCount = c.s.countItems(p, 182201407)
+				itemCount1 = c.s.countItems(p, 182201408)
+				itemCount2 = c.s.countItems(p, 182201409)
+				if itemCount > 0 && itemCount1 > 2 && itemCount2 > 1 {
+					c.jRemoveAll(182201407)
+					c.jRemoveAll(182201408)
+					c.jRemoveAll(182201409)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2716))
+				}
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 700313 {
+		var itemCount int64
+		_ = itemCount
+		itemCount = c.s.countItems(p, 182201407)
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 && itemCount < 1 {
+			var targetObjectId int32 = o.id
+			_ = targetObjectId
+			p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+			c.jLater(3000, func() {
+				p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+			})
+			return true
+		} else {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 700314 {
+		var itemCount1 int64
+		_ = itemCount1
+		itemCount1 = c.s.countItems(p, 182201408)
+		if qs.Status == "START" && questVar(qs.Vars, 0) == 0 && itemCount1 < 3 {
+			var targetObjectId int32 = o.id
+			_ = targetObjectId
+			p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+			c.jLater(3000, func() {
+				p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+			})
+			return true
+		} else {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 700315 {
+		var itemCount2 int64
+		_ = itemCount2
+		itemCount2 = c.s.countItems(p, 182201409)
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 && itemCount2 < 2 {
+			var targetObjectId int32 = o.id
+			_ = targetObjectId
+			p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+			c.jLater(3000, func() {
+				p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+			})
+			return true
+		} else {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else {
+		return c.defaultQuestEndDialog(o, script, d)
+	}
+	return false
+}
+
 // javaDialog1500 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1500OrdersFromPerento.java onDialogEvent.
 // talk npcs: 204500
 // register: {"attack": [], "item": [], "kill": [], "movie": [], "start": [], "talk": ["204500"], "zone": ["NEW_HEIRON_GATE"]}
@@ -7741,6 +9258,808 @@ func (c *conn) javaEnterZone1500(o *object, script *data.QuestScript, d int32, z
 	return true
 }
 
+// javaDialog1514 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1514TheEttinsNecklace.java onDialogEvent.
+// talk npcs: 203831 204582 204505
+// register: {"attack": [], "item": ["182201710"], "kill": [], "movie": [], "start": [], "talk": ["203831", "204582", "204505"], "zone": []}
+func (c *conn) javaDialog1514(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if targetId == 0 {
+		if d == 1002 {
+			c.beginQuest(script)
+			c.send(dialogWindow(0, uint16(0), 0))
+			return true
+		}
+	} else if targetId == 204582 {
+		if qs != nil {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204505 {
+		if qs != nil {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203831 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jRemoveAll(182201710)
+				c.jSetVar(qs, 1)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaItemUse1514 is its onItemUseEvent.
+func (c *conn) javaItemUse1514(o *object, script *data.QuestScript, d int32, item *store.Item) bool {
+	p := c.player
+	_ = p
+	var id int32 = item.ItemID
+	_ = id
+	var itemObjId int32 = item.UniqueID
+	_ = itemObjId
+	if id != 182201710 {
+		return false
+	}
+	p.broadcast(itemUsageAnimation(p.ID, itemObjId, id, 3000, byte(0), 0), true)
+	c.jLater(3000, func() {
+		p.broadcast(itemUsageAnimation(p.ID, itemObjId, id, 0, byte(1), 0), true)
+		c.jPage(0, script.ID, uint16(4))
+	})
+	return true
+}
+
+// javaDialog1535 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1535TheColdColdGround.java onDialogEvent.
+// talk npcs: 204580
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204580"], "talk": ["204580"], "zone": []}
+func (c *conn) javaDialog1535(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if targetId != 204580 {
+		return false
+	}
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if d == 25 {
+			return c.jPage(o.id, script.ID, uint16(4762))
+		} else {
+			return c.defaultQuestStartDialog(o, script, d)
+		}
+	}
+	if qs.Status == "START" {
+		var abexSkins bool = c.s.countItems(p, 182201818) > 4
+		_ = abexSkins
+		var worgSkins bool = c.s.countItems(p, 182201819) > 2
+		_ = worgSkins
+		var karnifSkins bool = c.s.countItems(p, 182201820) > 0
+		_ = karnifSkins
+		switch d {
+		case -1, 25:
+			if abexSkins || worgSkins || karnifSkins {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			}
+			fallthrough
+		case 10000:
+			if abexSkins {
+				c.jSetVarByID(qs, 0, 1)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(5))
+			}
+		case 10001:
+			if worgSkins {
+				c.jSetVarByID(qs, 0, 2)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(6))
+			}
+		case 10002:
+			if karnifSkins {
+				c.jSetVarByID(qs, 0, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(7))
+			}
+		}
+		return c.jPage(o.id, script.ID, uint16(1693))
+	} else if qs.Status == "REWARD" {
+		var var_ int32 = questVar(qs.Vars, 0)
+		_ = var_
+		if var_ == 1 {
+			c.jRemoveAll(182201818)
+			return c.defaultQuestEndDialog(o, script, d)
+		} else if var_ == 2 {
+			if !(c.addQuestItems([]data.QuestItem{{ID: 162000010, Count: 5}})) {
+				c.jSetStatus(qs, "START")
+				c.jUpdate(qs)
+			} else {
+				c.jRemoveAll(182201819)
+			}
+			c.defaultQuestEndDialog(o, script, d)
+			return true
+		} else if var_ == 3 {
+			if !(c.addQuestItems([]data.QuestItem{{ID: 162000015, Count: 5}})) {
+				c.jSetStatus(qs, "START")
+				c.jUpdate(qs)
+			} else {
+				c.jRemoveAll(182201820)
+			}
+			c.defaultQuestEndDialog(o, script, d)
+			return true
+		}
+		c.send(dialogWindow(o.id, uint16(10), 0))
+	}
+	return false
+}
+
+// javaDialog1537 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1537FishOnTheLine.java onDialogEvent.
+// talk npcs: 204588 730189 730190 730191
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204588"], "talk": ["204588", "730189", "730190", "730191"], "zone": []}
+func (c *conn) javaDialog1537(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 204588 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "START" {
+		switch targetId {
+		case 730189:
+			if questVar(qs.Vars, 0) == 0 && d == -1 {
+				var targetObjectId int32 = o.id
+				_ = targetObjectId
+				c.send(useObject(p.ID, targetObjectId, byte(1)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+				c.jLater(3000, func() {
+					if !(p.targetID == targetObjectId) {
+						return
+					}
+					c.send(useObject(p.ID, targetObjectId, byte(0)))
+					p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+					c.jSetVarByID(qs, 0, 1)
+					c.jUpdate(qs)
+				})
+			}
+			fallthrough
+		case 730190:
+			if questVar(qs.Vars, 0) == 1 && d == -1 {
+				var targetObjectId int32 = o.id
+				_ = targetObjectId
+				c.send(useObject(p.ID, targetObjectId, byte(1)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+				c.jLater(3000, func() {
+					if !(p.targetID == targetObjectId) {
+						return
+					}
+					c.send(useObject(p.ID, targetObjectId, byte(0)))
+					p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+					c.jSetVarByID(qs, 0, 2)
+					c.jUpdate(qs)
+				})
+			}
+			fallthrough
+		case 730191:
+			if questVar(qs.Vars, 0) == 2 && d == -1 {
+				var targetObjectId int32 = o.id
+				_ = targetObjectId
+				c.send(useObject(p.ID, targetObjectId, byte(1)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+				c.jLater(3000, func() {
+					if !(p.targetID == targetObjectId) {
+						return
+					}
+					c.send(useObject(p.ID, targetObjectId, byte(0)))
+					p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+					c.jSetVarByID(qs, 0, 3)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+				})
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 204588 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog1548 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1548KlawControl.java onDialogEvent.
+// talk npcs: 204583
+// register: {"attack": [], "item": [], "kill": ["700169"], "movie": [], "start": ["204583"], "talk": ["204583"], "zone": []}
+func (c *conn) javaDialog1548(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 204583 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaKill1548 is its onKillEvent.
+func (c *conn) javaKill1548(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "START" {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	switch targetId {
+	case 700169:
+		if var_ >= 0 && var_ < 4 {
+			c.jSetVarByID(qs, 0, var_+1)
+			c.jUpdate(qs)
+			return true
+		} else if var_ == 4 {
+			c.jSetVarByID(qs, 0, var_+1)
+			c.jUpdate(qs)
+			c.jSetStatus(qs, "REWARD")
+			c.jUpdate(qs)
+			return true
+		}
+	}
+	return false
+}
+
+// javaDialog1560 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1560AJobForPobinerk.java onDialogEvent.
+// talk npcs: 798103 798026 798357
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["798103"], "talk": ["798103", "798026", "798357"], "zone": []}
+func (c *conn) javaDialog1560(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 798103 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 798026 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 798357 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1574 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1574AFeatForAVillage.java onDialogEvent.
+// talk npcs: 730025 204560 204561 204562
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["730025"], "talk": ["730025", "204560", "204561", "204562"], "zone": []}
+func (c *conn) javaDialog1574(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 730025 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 204560 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204561 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204562 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 2 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1636 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1636AFluteForTheFixing.java onDialogEvent.
+// talk npcs: 204535 203792
+// register: {"attack": [], "item": ["182201785"], "kill": [], "movie": [], "start": ["204535"], "talk": ["204535", "203792"], "zone": []}
+func (c *conn) javaDialog1636(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 204535 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(4762))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	if qs.Status == "START" {
+		switch targetId {
+		case 203792:
+			switch d {
+			case 25:
+				var itemCount1 int64 = c.s.countItems(p, 182201786)
+				_ = itemCount1
+				var itemCount2 int64 = c.s.countItems(p, 152020034)
+				_ = itemCount2
+				var itemCount3 int64 = c.s.countItems(p, 152020091)
+				_ = itemCount3
+				var itemCount4 int64 = c.s.countItems(p, 169400060)
+				_ = itemCount4
+				if questVar(qs.Vars, 0) == 0 {
+					return c.jPage(o.id, script.ID, uint16(1011))
+				} else if questVar(qs.Vars, 0) == 1 && itemCount1 >= 1 && itemCount2 >= 1 && itemCount3 >= 1 && itemCount4 >= 1 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(10001))
+				}
+			case 10000:
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(0), 0))
+				return true
+			case 33:
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+2)
+				c.jUpdate(qs)
+				if c.s.countItems(p, 182201785) == 0 {
+					if !(c.addQuestItems([]data.QuestItem{{ID: 182201785, Count: 1}})) {
+						return true
+					}
+				}
+				c.send(dialogWindow(o.id, uint16(0), 0))
+				return true
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 204535 {
+			if d == 1009 {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1647 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1647DressingUpForBollvig.java onDialogEvent.
+// talk npcs: 790019
+// register: {"attack": [], "item": ["182201783"], "kill": [], "movie": [], "start": ["790019"], "talk": ["790019"], "zone": []}
+func (c *conn) javaDialog1647(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 790019 {
+			switch d {
+			case 25:
+				return c.jPage(o.id, script.ID, uint16(4762))
+			case 1002:
+				if c.s.countItems(p, 182201783) == 0 {
+					if !(c.addQuestItems([]data.QuestItem{{ID: 182201783, Count: 1}})) {
+						return true
+					}
+				}
+				fallthrough
+			default:
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	if qs.Status == "REWARD" {
+		switch targetId {
+		case 790019:
+			switch d {
+			case 25:
+				return c.jPage(o.id, script.ID, uint16(10002))
+			case 1009:
+				return c.jPage(o.id, script.ID, uint16(5))
+			default:
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1648 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1648UndeadWarAlert.java onDialogEvent.
+// talk npcs: 204545 204612 204500 204590
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204545"], "talk": ["204545", "204612", "204500", "204590"], "zone": []}
+func (c *conn) javaDialog1648(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 204545 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	if qs.Status == "START" {
+		switch targetId {
+		case 204612:
+			switch d {
+			case 25:
+				if questVar(qs.Vars, 0) == 0 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				}
+				fallthrough
+			case 10000:
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(0), 0))
+				return true
+			}
+			fallthrough
+		case 204500:
+			switch d {
+			case 25:
+				if questVar(qs.Vars, 0) == 1 {
+					return c.jPage(o.id, script.ID, uint16(1693))
+				}
+				fallthrough
+			case 10001:
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(0), 0))
+				return true
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 204590 {
+			if d == 1009 {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1687 is java/AL-Game/data/scripts/system/handlers/quest/heiron/_1687TheTigrakiAgreement.java onDialogEvent.
+// talk npcs: 204601
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204601"], "talk": ["204601"], "zone": []}
+func (c *conn) javaDialog1687(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs == nil || qs.Status == "NONE" || qs.Status == "COMPLETE" {
+		if targetId == 204601 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(4762))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	if qs.Status == "START" {
+		switch targetId {
+		case 204601:
+			switch d {
+			case 25:
+				var itemCount1 int64 = c.s.countItems(p, 186000035)
+				_ = itemCount1
+				var itemCount2 int64 = c.s.countItems(p, 186000036)
+				_ = itemCount2
+				if itemCount1 >= 2 && itemCount2 >= 5 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				}
+				fallthrough
+			case 10009:
+				c.java1687SetChoix(o, script, d, 1)
+				return c.jPage(o.id, script.ID, uint16(5))
+			case 10019:
+				c.java1687SetChoix(o, script, d, 2)
+				return c.jPage(o.id, script.ID, uint16(6))
+			case 10029:
+				c.java1687SetChoix(o, script, d, 3)
+				return c.jPage(o.id, script.ID, uint16(7))
+			case 8:
+				switch c.java1687GetChoix(o, script, d) {
+				case 1:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 111100788, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				case 2:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 112100747, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				case 3:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 114100825, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				}
+				fallthrough
+			case 9:
+				switch c.java1687GetChoix(o, script, d) {
+				case 1:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 111300792, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				case 2:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 112300744, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				case 3:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 114300851, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				}
+				fallthrough
+			case 10:
+				switch c.java1687GetChoix(o, script, d) {
+				case 1:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 111500775, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				case 2:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 112500732, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				case 3:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 114500797, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				}
+				fallthrough
+			case 11:
+				switch c.java1687GetChoix(o, script, d) {
+				case 1:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 111600767, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				case 2:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 112600743, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				case 3:
+					if !(c.addQuestItems([]data.QuestItem{{ID: 114600754, Count: 1}})) {
+						return true
+					}
+					c.java1687QuestFinish(o, script, d)
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+// java1687SetChoix is the handler's private SetChoix.
+func (c *conn) java1687SetChoix(o *object, script *data.QuestScript, d int32, Choix int32) {
+	p := c.player
+	_ = p
+	java1687Choix = Choix
+}
+
+// java1687Choix is the handler object's Choix field: Java keeps one for every player.
+var java1687Choix int32 = 0
+
+// java1687GetChoix is the handler's private getChoix.
+func (c *conn) java1687GetChoix(o *object, script *data.QuestScript, d int32) int32 {
+	p := c.player
+	_ = p
+	return java1687Choix
+}
+
+// java1687QuestFinish is the handler's private QuestFinish.
+func (c *conn) java1687QuestFinish(o *object, script *data.QuestScript, d int32) {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	c.jRemoveAll(186000035)
+	c.jRemoveAll(186000036)
+	c.jSetStatus(qs, "COMPLETE")
+	c.jSetCompleteCount(qs, qs.CompleteCount+1)
+	var rewardExp int32 = 1 * 1535800
+	_ = rewardExp
+	var rewardAbyssPoint int32 = 1 * 200
+	_ = rewardAbyssPoint
+	c.s.giveExp(p, int64(rewardExp))
+	c.s.addAP(p, int32(rewardAbyssPoint))
+	c.send(questAccepted(2, store.Quest{ID: script.ID, Status: "COMPLETE", Vars: 2}))
+	c.send(dialogWindow(o.id, uint16(0), 0))
+	c.jUpdate(qs)
+}
+
 // javaDialog1701 is java/AL-Game/data/scripts/system/handlers/quest/reshanta/_1701GovernorsDirective.java onDialogEvent.
 // talk npcs: 278501
 // register: {"attack": [], "item": [], "kill": [], "movie": [], "start": [], "talk": ["278501"], "zone": ["LATIS_PLAZA_400010000"]}
@@ -7794,6 +10113,455 @@ func (c *conn) javaEnterZone1701(o *object, script *data.QuestScript, d int32, z
 	}
 	c.beginQuest(script)
 	return true
+}
+
+// javaDialog1721 is java/AL-Game/data/scripts/system/handlers/quest/reshanta/_1721MeetingwiththeBrigadeGeneral.java onDialogEvent.
+// talk npcs: 278501 278503 278502 278518
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["278501"], "talk": ["278501", "278503", "278502", "278518"], "zone": []}
+func (c *conn) javaDialog1721(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 278501 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 1002 {
+				if c.addQuestItems([]data.QuestItem{{ID: 182202151, Count: 1}}) {
+					return c.defaultQuestStartDialog(o, script, d)
+				} else {
+					return true
+				}
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			}
+		}
+	} else if targetId == 278503 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 278502 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 10001 {
+				c.jSetVar(qs, 2)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.jRemoveAll(182202151)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 278518 {
+		if qs != nil && qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog1722 is java/AL-Game/data/scripts/system/handlers/quest/reshanta/_1722RastinsHomesickness.java onDialogEvent.
+// talk npcs: 278547 278560 278517 278544 278532 278539 278524 278555 278567
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["278547"], "talk": ["278547", "278560", "278517", "278544", "278532", "278539", "278524", "278555", "278567"], "zone": []}
+func (c *conn) javaDialog1722(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 278547 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(4762))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	if qs.Status == "REWARD" {
+		if targetId == 278547 {
+			c.jRemoveAll(182202101)
+		}
+		return c.defaultQuestEndDialog(o, script, d)
+	} else if qs.Status != "START" {
+		return false
+	}
+	if targetId == 278560 {
+		switch d {
+		case 25:
+			if var_ == 0 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			}
+			fallthrough
+		case 10000:
+			if var_ == 0 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278517 {
+		switch d {
+		case 25:
+			if var_ == 1 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			}
+			fallthrough
+		case 10001:
+			if var_ == 1 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278544 {
+		switch d {
+		case 25:
+			if var_ == 2 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			}
+			fallthrough
+		case 1009:
+			if var_ == 2 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278532 {
+		switch d {
+		case 25:
+			if var_ == 3 {
+				return c.jPage(o.id, script.ID, uint16(2034))
+			}
+			fallthrough
+		case 10003:
+			if var_ == 3 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278539 {
+		switch d {
+		case 25:
+			if var_ == 4 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			}
+			fallthrough
+		case 10004:
+			if var_ == 4 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278524 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2716))
+			}
+			fallthrough
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278555 {
+		switch d {
+		case 25:
+			if var_ == 6 {
+				return c.jPage(o.id, script.ID, uint16(3057))
+			}
+			fallthrough
+		case 10006:
+			if var_ == 6 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278567 {
+		switch d {
+		case 25:
+			if var_ == 7 {
+				return c.jPage(o.id, script.ID, uint16(3398))
+			}
+			fallthrough
+		case 10255:
+			if var_ == 7 {
+				c.addQuestItems([]data.QuestItem{{ID: 182202101, Count: 1}})
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	}
+	return false
+}
+
+// javaDialog1900 is java/AL-Game/data/scripts/system/handlers/quest/sanctum/_1900RingImbuedAether.java onDialogEvent.
+// talk npcs: 203757 203739 203766 203797 203795 203830
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203757"], "talk": ["203757", "203739", "203766", "203797", "203795", "203830"], "zone": []}
+func (c *conn) javaDialog1900(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203757 {
+		if qs == nil {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203739 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203766 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 10001 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203797 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 2 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2034))
+			} else if d == 10002 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203795 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 3 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 10003 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.jSetStatus(qs, "REWARD")
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203830 {
+		if qs != nil {
+			if d == -1 && qs.Status == "REWARD" {
+				return c.jPage(o.id, script.ID, uint16(2716))
+			} else if d == 1009 {
+				c.jSetVar(qs, 4)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog1901 is java/AL-Game/data/scripts/system/handlers/quest/sanctum/_1901KrallicPotion.java onDialogEvent.
+// talk npcs: 203830 798026 798025 203131 798003 203864
+// register: {"attack": [], "item": ["182204115"], "kill": [], "movie": [], "start": ["203830"], "talk": ["203830", "798026", "798025", "203131", "798003", "203864"], "zone": []}
+func (c *conn) javaDialog1901(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203830 {
+		if d == 25 {
+			return c.jPage(o.id, script.ID, uint16(1011))
+		} else {
+			return c.defaultQuestStartDialog(o, script, d)
+		}
+	} else {
+		if targetId == 203864 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 7)
+				c.jUpdate(qs)
+				c.jSetStatus(qs, "REWARD")
+				return c.defaultQuestEndDialog(o, script, d)
+			} else if qs != nil && qs.Status == "REWARD" {
+				if d == -1 {
+					return c.jPage(o.id, script.ID, uint16(3398))
+				}
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs != nil {
+			if qs.Status == "START" {
+				var var_ int32 = questVar(qs.Vars, 0)
+				_ = var_
+				switch targetId {
+				case 798026:
+					switch d {
+					case 25:
+						if var_ == 0 {
+							return c.jPage(o.id, script.ID, uint16(1352))
+						} else if var_ == 5 {
+							return c.jPage(o.id, script.ID, uint16(3057))
+						}
+						fallthrough
+					case 1438:
+						if c.s.decreaseKinah(p, int64(10000)) {
+							c.jSetVarByID(qs, 0, var_+1)
+							c.jUpdate(qs)
+							c.send(dialogWindow(o.id, uint16(10), 0))
+							return true
+						} else {
+							return c.jPage(o.id, script.ID, uint16(1523))
+						}
+					case 10000:
+						c.jSetVarByID(qs, 0, var_+1)
+						c.jUpdate(qs)
+						c.send(dialogWindow(o.id, uint16(10), 0))
+						return true
+					case 10001:
+						c.jSetVarByID(qs, 0, var_+1)
+						c.jUpdate(qs)
+						c.send(dialogWindow(o.id, uint16(10), 0))
+						return true
+					case 10006:
+						c.jSetVarByID(qs, 0, var_+1)
+						c.jSetStatus(qs, "REWARD")
+						c.jUpdate(qs)
+						c.send(dialogWindow(o.id, uint16(10), 0))
+						return true
+					default:
+						return c.defaultQuestStartDialog(o, script, d)
+					}
+				case 798025:
+					switch d {
+					case 25:
+						if var_ == 1 {
+							return c.jPage(o.id, script.ID, uint16(1693))
+						} else if var_ == 4 {
+							return c.jPage(o.id, script.ID, uint16(2716))
+						}
+						fallthrough
+					case 10002:
+						c.jSetVarByID(qs, 0, var_+1)
+						c.jUpdate(qs)
+						c.send(dialogWindow(o.id, uint16(10), 0))
+						return true
+					case 10005:
+						c.jRemoveAll(182206000)
+						c.jSetVarByID(qs, 0, var_+1)
+						c.jUpdate(qs)
+						c.send(dialogWindow(o.id, uint16(10), 0))
+						return true
+					}
+					fallthrough
+				case 203131:
+					switch d {
+					case 25:
+						return c.jPage(o.id, script.ID, uint16(2034))
+					case 10003:
+						c.jSetVarByID(qs, 0, var_+1)
+						c.jUpdate(qs)
+						c.send(dialogWindow(o.id, uint16(10), 0))
+						return true
+					}
+					fallthrough
+				case 798003:
+					switch d {
+					case 25:
+						return c.jPage(o.id, script.ID, uint16(2375))
+					case 10004:
+						if c.s.countItems(p, 182206000) == 0 {
+							if !(c.addQuestItems([]data.QuestItem{{ID: 182206000, Count: 1}})) {
+								return true
+							}
+						}
+						c.jSetVarByID(qs, 0, var_+1)
+						c.jUpdate(qs)
+						c.send(dialogWindow(o.id, uint16(10), 0))
+						return true
+					}
+				}
+			}
+		}
+		return false
+	}
 }
 
 // javaDialog1913 is java/AL-Game/data/scripts/system/handlers/quest/ascension/_1913DispatchtoVerteron.java onDialogEvent.
@@ -7995,6 +10763,133 @@ func (c *conn) javaDialog1916(o *object, script *data.QuestScript, d int32) bool
 	} else if qs.Status == "REWARD" {
 		if targetId == 203097 {
 			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog1926 is java/AL-Game/data/scripts/system/handlers/quest/sanctum/_1926SecretLibraryAccess.java onDialogEvent.
+// talk npcs: 203894 203098
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203894"], "talk": ["203894", "203098"], "zone": []}
+func (c *conn) javaDialog1926(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203894 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(4762))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "REWARD" && questVar(qs.Vars, 0) == 0 || qs.Status == "COMPLETE" {
+			if d == -1 && qs.Status == "REWARD" {
+				return c.jPage(o.id, script.ID, uint16(10002))
+			} else if d == 17 {
+				c.jRemoveAll(182206022)
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else if d == 1009 {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+			c.jLater(3000, func() {
+				c.s.teleportTo(p, 110010000, 2032.9, 1473.1, 592.2, byte(p.Heading), time.Duration(195)*time.Millisecond)
+			})
+		}
+	} else if targetId == 203098 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				if c.java1926AreVerteronQuestsFinished(o, script, d) {
+					return c.jPage(o.id, script.ID, uint16(1011))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1097))
+				}
+			} else if d == 10255 {
+				if c.addQuestItems([]data.QuestItem{{ID: 182206022, Count: 1}}) {
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+				}
+				c.send(dialogWindow(o.id, uint16(0), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// java1926AreVerteronQuestsFinished is the handler's private AreVerteronQuestsFinished.
+func (c *conn) java1926AreVerteronQuestsFinished(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(1020)
+	_ = qs
+	return jIf(((qs == nil) || (qs.Status != "COMPLETE")), false, true)
+}
+
+// javaDialog1928 is java/AL-Game/data/scripts/system/handlers/quest/sanctum/_1928ChasingaCriminal.java onDialogEvent.
+// talk npcs: 203845 203063 203170 798150
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203845"], "talk": ["203845", "203063", "203170", "798150"], "zone": []}
+func (c *conn) javaDialog1928(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203845 {
+		if qs == nil {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203063 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 10001 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203170 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 10001 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 798150 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 2)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
 		}
 	}
 	return false
@@ -8473,6 +11368,225 @@ func (c *conn) javaDialog1970(o *object, script *data.QuestScript, d int32) bool
 			} else {
 				return c.defaultQuestEndDialog(o, script, d)
 			}
+		}
+	}
+	return false
+}
+
+// javaDialog1988 is java/AL-Game/data/scripts/system/handlers/quest/sanctum/_1988AMeetingwithaSage.java onDialogEvent.
+// talk npcs: 203725 203771
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203725", "203989", "798018", "203771"], "talk": ["203725", "203771"], "zone": []}
+func (c *conn) javaDialog1988(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203725 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	if qs.Status == "START" {
+		if targetId == 203989 && var_ == 0 {
+			switch d {
+			case 25:
+				return c.jPage(o.id, script.ID, uint16(1352))
+			case 10000:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		} else if targetId == 798018 && var_ == 1 {
+			switch d {
+			case 25:
+				return c.jPage(o.id, script.ID, uint16(1693))
+			case 10001:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		} else if targetId == 203771 && var_ == 2 {
+			switch d {
+			case 25:
+				return c.jPage(o.id, script.ID, uint16(2034))
+			case 2035:
+				if c.s.countItems(p, 186000039) == 1 {
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					c.jRemoveAll(186000039)
+					return c.jPage(o.id, script.ID, uint16(2035))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2120))
+				}
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203771 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog1989 is java/AL-Game/data/scripts/system/handlers/quest/sanctum/_1989ASagesTeachings.java onDialogEvent.
+// talk npcs: 203771
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203704", "203705", "203706", "203707", "203771"], "talk": ["203771"], "zone": []}
+func (c *conn) javaDialog1989(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203771 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	if qs.Status == "START" {
+		playerClass := p.Class
+		_ = playerClass
+		switch targetId {
+		case 203704:
+			switch d {
+			case 25:
+				if playerClass == "GLADIATOR" || playerClass == "TEMPLAR" {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1438))
+				}
+			case 10000:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 203705:
+			switch d {
+			case 25:
+				if playerClass == "ASSASSIN" || playerClass == "RANGER" {
+					return c.jPage(o.id, script.ID, uint16(1693))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1779))
+				}
+			case 10000:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 203706:
+			switch d {
+			case 25:
+				if playerClass == "SORCERER" || playerClass == "SPIRIT_MASTER" {
+					return c.jPage(o.id, script.ID, uint16(2034))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2120))
+				}
+			case 10000:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 203707:
+			switch d {
+			case 25:
+				if playerClass == "CLERIC" || playerClass == "CHANTER" {
+					return c.jPage(o.id, script.ID, uint16(2375))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2461))
+				}
+			case 10000:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 203771:
+			switch d {
+			case 25:
+				if var_ == 1 {
+					return c.jPage(o.id, script.ID, uint16(2716))
+				} else if var_ == 2 {
+					return c.jPage(o.id, script.ID, uint16(3057))
+				} else if var_ == 3 {
+					if p.dp < 4000 {
+						return c.jPage(o.id, script.ID, uint16(3484))
+					} else {
+						return c.jPage(o.id, script.ID, uint16(3398))
+					}
+				} else if var_ == 4 {
+					if p.dp < 4000 {
+						return c.jPage(o.id, script.ID, uint16(3825))
+					} else {
+						return c.jPage(o.id, script.ID, uint16(3739))
+					}
+				}
+				fallthrough
+			case 1009:
+				if var_ == 3 {
+					c.send(movie(0, uint16(105)))
+					c.jSetDP(0)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else if var_ == 4 {
+					c.send(movie(0, uint16(105)))
+					c.jSetDP(0)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else {
+					return c.defaultQuestEndDialog(o, script, d)
+				}
+			case 10001:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(3057))
+			case 10003:
+				c.jSetVarByID(qs, 0, 3)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			case 10004:
+				c.jSetVarByID(qs, 0, 4)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203771 {
+			return c.defaultQuestEndDialog(o, script, d)
 		}
 	}
 	return false
@@ -13529,6 +16643,489 @@ func (c *conn) javaItemUse2060(o *object, script *data.QuestScript, d int32, ite
 	return true
 }
 
+// javaDialog2071 is java/AL-Game/data/scripts/system/handlers/quest/reshanta/_2071SpeakingBalaur.java onDialogEvent.
+// talk npcs: 278003 278086 278039 279027 204210
+// register: {"attack": ["253610"], "item": [], "kill": [], "levelup": ["yes"], "movie": [], "start": [], "talk": ["278003", "278086", "278039", "279027", "204210"], "zone": []}
+func (c *conn) javaDialog2071(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs.Status == "REWARD" {
+		if targetId == 278003 {
+			if d == -1 {
+				return c.jPage(o.id, script.ID, uint16(10002))
+			} else if d == 1009 {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+		return false
+	} else if qs.Status != "START" {
+		return false
+	}
+	if targetId == 278003 {
+		switch d {
+		case 25:
+			if var_ == 0 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			}
+			fallthrough
+		case 10000:
+			if var_ == 0 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 278086 {
+		switch d {
+		case 25:
+			if var_ == 1 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			}
+			fallthrough
+		case 10001:
+			if var_ == 1 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 278039 {
+		switch d {
+		case 25:
+			if var_ == 3 {
+				return c.jPage(o.id, script.ID, uint16(2034))
+			}
+			fallthrough
+		case 10003:
+			if var_ == 3 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 279027 {
+		switch d {
+		case 25:
+			if var_ == 4 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if var_ == 6 {
+				return c.jPage(o.id, script.ID, uint16(3057))
+			}
+			fallthrough
+		case 3058:
+			c.jRemoveAll(182205501)
+			c.send(movie(0, uint16(293)))
+		case 10004:
+			if var_ == 4 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 10255:
+			if var_ == 6 {
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 204210 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2716))
+			}
+			fallthrough
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.addQuestItems([]data.QuestItem{{ID: 182205501, Count: 1}})
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// javaLevelUp2071 is its onLvlUpEvent.
+func (c *conn) javaLevelUp2071(script *data.QuestScript) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var lvlCheck bool = int32(p.level) >= int32(c.s.data.Quests[script.ID].MinLevel)
+	_ = lvlCheck
+	if qs == nil || qs.Status != "LOCKED" || !lvlCheck {
+		return false
+	}
+	qs2 := p.quest(2701)
+	_ = qs2
+	if qs2 == nil || qs2.Status != "COMPLETE" {
+		return false
+	}
+	c.jSetStatus(qs, "START")
+	c.jUpdate(qs)
+	return true
+}
+
+// javaAttack2071 is its onAttackEvent.
+func (c *conn) javaAttack2071(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "START" || questVar(qs.Vars, 0) != 2 {
+		return false
+	}
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if targetId != 253610 {
+		return false
+	}
+	npc := o
+	_ = npc
+	if jDistance(float32(1172), float32(1959), float32(1605), float32(npc.x), float32(npc.y), float32(npc.z)) > 15 {
+		return false
+	}
+	if npc.hp < npc.maxHP/3 {
+		c.send(movie(0, uint16(289)))
+		c.s.npcDied(npc, nil)
+		c.s.despawnNpc(npc, true)
+		c.jSetVarByID(qs, 0, 3)
+		c.jUpdate(qs)
+	} else {
+		return false
+	}
+	return true
+}
+
+// javaDialog2072 is java/AL-Game/data/scripts/system/handlers/quest/reshanta/_2072AbyssBattleTraining.java onDialogEvent.
+// talk npcs: 278126 278127 278128 278129 278130 278131 278136 278054
+// register: {"attack": [], "item": [], "kill": [], "levelup": ["yes"], "movie": [], "start": [], "talk": ["278126", "278127", "278128", "278129", "278130", "278131", "278136", "278054"], "zone": []}
+func (c *conn) javaDialog2072(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs.Status == "REWARD" {
+		if targetId == 278054 {
+			if d == -1 {
+				return c.jPage(o.id, script.ID, uint16(10002))
+			} else if d == 1009 {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+		return false
+	} else if qs.Status != "START" {
+		return false
+	}
+	if targetId == 278126 {
+		switch d {
+		case 25:
+			if var_ == 0 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			}
+			fallthrough
+		case 1013:
+			c.send(movie(0, uint16(282)))
+		case 10000:
+			if var_ == 0 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278127 {
+		switch d {
+		case 25:
+			if var_ == 1 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			}
+			fallthrough
+		case 1353:
+			c.send(movie(0, uint16(283)))
+		case 10001:
+			if var_ == 1 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278128 {
+		switch d {
+		case 25:
+			if var_ == 2 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			}
+			fallthrough
+		case 1694:
+			c.send(movie(0, uint16(284)))
+		case 10002:
+			if var_ == 2 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278129 {
+		switch d {
+		case 25:
+			if var_ == 3 {
+				return c.jPage(o.id, script.ID, uint16(2034))
+			}
+			fallthrough
+		case 2035:
+			c.send(movie(0, uint16(285)))
+		case 10003:
+			if var_ == 3 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278130 {
+		switch d {
+		case 25:
+			if var_ == 4 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			}
+			fallthrough
+		case 2376:
+			c.send(movie(0, uint16(286)))
+		case 10004:
+			if var_ == 4 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278131 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2716))
+			}
+			fallthrough
+		case 2717:
+			c.send(movie(0, uint16(287)))
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	} else if targetId == 278136 {
+		switch d {
+		case 25:
+			if var_ == 6 {
+				return c.jPage(o.id, script.ID, uint16(3057))
+			}
+			fallthrough
+		case 3058:
+			c.send(movie(0, uint16(288)))
+		case 10255:
+			if var_ == 6 {
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			return false
+		}
+	}
+	return false
+}
+
+// javaLevelUp2072 is its onLvlUpEvent.
+func (c *conn) javaLevelUp2072(script *data.QuestScript) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "LOCKED" {
+		return false
+	}
+	qs2 := p.quest(2701)
+	_ = qs2
+	if qs2 == nil || qs2.Status != "COMPLETE" {
+		return false
+	}
+	c.jSetStatus(qs, "START")
+	c.jUpdate(qs)
+	return true
+}
+
+// javaDialog2075 is java/AL-Game/data/scripts/system/handlers/quest/reshanta/_2075PuttingontheSpeed.java onDialogEvent.
+// talk npcs: 278034 279004 279024 279006
+// register: {"attack": [], "item": [], "kill": [], "levelup": ["yes"], "movie": [], "start": [], "talk": ["278034", "279004", "279024", "279006"], "zone": []}
+func (c *conn) javaDialog2075(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs.Status == "REWARD" {
+		if targetId == 278034 {
+			if d == -1 {
+				return c.jPage(o.id, script.ID, uint16(10002))
+			} else if d == 1009 {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+		return false
+	} else if qs.Status != "START" {
+		return false
+	}
+	if targetId == 278034 {
+		switch d {
+		case 25:
+			if var_ == 0 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			}
+			fallthrough
+		case 10000:
+			if var_ == 0 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 279004 {
+		switch d {
+		case 25:
+			if var_ == 1 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			}
+			fallthrough
+		case 1353:
+			c.send(movie(0, uint16(292)))
+		case 10001:
+			if var_ == 1 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 279024 {
+		switch d {
+		case 25:
+			if var_ == 2 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if var_ == 4 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			}
+			fallthrough
+		case 10002:
+			if var_ == 2 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(0), 0))
+				c.send(c.s.playerEmotionTo(p, emoteStartFlyTele, 55001, 0, 0, 0, 0, 0))
+				return true
+			}
+			fallthrough
+		case 10004:
+			if var_ == 4 {
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 279006 {
+		switch d {
+		case 25:
+			if var_ == 3 {
+				return c.jPage(o.id, script.ID, uint16(2034))
+			}
+			fallthrough
+		case 10003:
+			if var_ == 3 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// javaLevelUp2075 is its onLvlUpEvent.
+func (c *conn) javaLevelUp2075(script *data.QuestScript) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var lvlCheck bool = int32(p.level) >= int32(c.s.data.Quests[script.ID].MinLevel)
+	_ = lvlCheck
+	if qs == nil || qs.Status != "LOCKED" || !lvlCheck {
+		return false
+	}
+	qs2 := p.quest(2701)
+	_ = qs2
+	if qs2 == nil || qs2.Status != "COMPLETE" {
+		return false
+	}
+	c.jSetStatus(qs, "START")
+	c.jUpdate(qs)
+	return true
+}
+
 // javaDialog2091 is java/AL-Game/data/scripts/system/handlers/quest/brusthonin/_2091MeettheReapers.java onDialogEvent.
 // talk npcs: 205150
 // register: {"attack": [], "item": [], "kill": [], "movie": [], "start": [], "talk": ["205150"], "zone": ["SETTLERS_CAMPSITE_220050000"]}
@@ -13581,6 +17178,660 @@ func (c *conn) javaEnterZone2091(o *object, script *data.QuestScript, d int32, z
 		return false
 	}
 	c.beginQuest(script)
+	return true
+}
+
+// javaDialog2092 is java/AL-Game/data/scripts/system/handlers/quest/brusthonin/_2092GravesoftheRedSkyLegion.java onDialogEvent.
+// talk npcs: 205150 700394 205188 205190 730163 730162 730161 730160 730159 730158 730156 205208 205209 205210 205211 205212 205213 205214
+// register: {"attack": [], "item": [], "kill": ["214402"], "levelup": ["yes"], "movie": [], "start": [], "talk": ["205150", "700394", "205188", "205190", "730163", "730162", "730161", "730160", "730159", "730158", "730156", "205208", "205209", "205210", "205211", "205212", "205213", "205214"], "zone": ["Q2092"]}
+func (c *conn) javaDialog2092(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	npc := o
+	_ = npc
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs.Status == "REWARD" {
+		if targetId == 205150 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+		return false
+	} else if qs.Status != "START" {
+		return false
+	}
+	if targetId == 205150 {
+		switch d {
+		case 25:
+			if var_ == 0 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			}
+			return true
+		case 10000:
+			if var_ == 0 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 205188 {
+		switch d {
+		case 25:
+			if var_ == 2 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			}
+			fallthrough
+		case 10002:
+			if var_ == 2 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 205190 {
+		switch d {
+		case 25:
+			if var_ == 3 {
+				return c.jPage(o.id, script.ID, uint16(2034))
+			} else if var_ == 4 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			}
+			return true
+		case 10003:
+			if var_ == 3 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 33:
+			if var_ == 4 {
+				if c.collectQuestItems(script.ID) {
+					c.jSetVarByID(qs, 0, var_+1)
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(10000))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(10001))
+				}
+			}
+		}
+	} else if targetId == 730163 {
+		switch d {
+		case -1:
+			if var_ == 5 {
+				c.jAddNewSpawn(220050000, 0, 205214, float32(float32(npc.x)), float32(float32(npc.y)), float32(float32(npc.z)), byte(byte(0)))
+				c.s.despawnNpc(npc, true)
+				c.s.scheduleRespawn(npc)
+				return true
+			}
+		}
+	} else if targetId == 205214 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2717))
+			}
+			fallthrough
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 730162 {
+		switch d {
+		case -1:
+			if var_ == 5 {
+				c.jAddNewSpawn(220050000, 0, 205213, float32(float32(npc.x)), float32(float32(npc.y)), float32(float32(npc.z)), byte(byte(0)))
+				c.s.despawnNpc(npc, true)
+				c.s.scheduleRespawn(npc)
+				return true
+			}
+		}
+	} else if targetId == 205213 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2717))
+			}
+			fallthrough
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 730161 {
+		switch d {
+		case -1:
+			if var_ == 5 {
+				c.jAddNewSpawn(220050000, 0, 205212, float32(float32(npc.x)), float32(float32(npc.y)), float32(float32(npc.z)), byte(byte(0)))
+				c.s.despawnNpc(npc, true)
+				c.s.scheduleRespawn(npc)
+				return true
+			}
+		}
+	} else if targetId == 205212 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2717))
+			}
+			fallthrough
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 730160 {
+		switch d {
+		case -1:
+			if var_ == 5 {
+				c.jAddNewSpawn(220050000, 0, 205211, float32(float32(npc.x)), float32(float32(npc.y)), float32(float32(npc.z)), byte(byte(0)))
+				c.s.despawnNpc(npc, true)
+				c.s.scheduleRespawn(npc)
+				return true
+			}
+		}
+	} else if targetId == 205211 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2717))
+			}
+			fallthrough
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 730159 {
+		switch d {
+		case -1:
+			if var_ == 5 {
+				c.jAddNewSpawn(220050000, 0, 205210, float32(float32(npc.x)), float32(float32(npc.y)), float32(float32(npc.z)), byte(byte(0)))
+				c.s.despawnNpc(npc, true)
+				c.s.scheduleRespawn(npc)
+				return true
+			}
+		}
+	} else if targetId == 205210 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2717))
+			}
+			fallthrough
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 730158 {
+		switch d {
+		case -1:
+			if var_ == 5 {
+				c.jAddNewSpawn(220050000, 0, 205209, float32(float32(npc.x)), float32(float32(npc.y)), float32(float32(npc.z)), byte(byte(0)))
+				c.s.despawnNpc(npc, true)
+				c.s.scheduleRespawn(npc)
+				return true
+			}
+		}
+	} else if targetId == 205209 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2717))
+			}
+			fallthrough
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 730156 {
+		switch d {
+		case -1:
+			if var_ == 5 {
+				c.jAddNewSpawn(220050000, 0, 205208, float32(float32(npc.x)), float32(float32(npc.y)), float32(float32(npc.z)), byte(byte(0)))
+				c.s.despawnNpc(npc, true)
+				c.s.scheduleRespawn(npc)
+				return true
+			}
+		}
+	} else if targetId == 205208 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2717))
+			}
+			fallthrough
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// javaLevelUp2092 is its onLvlUpEvent.
+func (c *conn) javaLevelUp2092(script *data.QuestScript) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var lvlCheck bool = int32(p.level) >= int32(c.s.data.Quests[script.ID].MinLevel)
+	_ = lvlCheck
+	if qs == nil || qs.Status != "LOCKED" || !lvlCheck {
+		return false
+	}
+	qs2 := p.quest(2091)
+	_ = qs2
+	if qs2 == nil || qs2.Status != "COMPLETE" {
+		return false
+	}
+	c.jSetStatus(qs, "START")
+	c.jUpdate(qs)
+	return true
+}
+
+// javaKill2092 is its onKillEvent.
+func (c *conn) javaKill2092(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "START" {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if targetId == 214402 {
+		if var_ > 5 && var_ < 20 {
+			c.jSetVarByID(qs, 0, var_+1)
+			c.jUpdate(qs)
+			return true
+		} else if var_ == 20 {
+			c.jSetStatus(qs, "REWARD")
+			c.jUpdate(qs)
+			return true
+		}
+	}
+	return false
+}
+
+// javaEnterZone2092 is its onEnterZoneEvent.
+func (c *conn) javaEnterZone2092(o *object, script *data.QuestScript, d int32, zoneName string) bool {
+	p := c.player
+	_ = p
+	if zoneName != "Q2092" {
+		return false
+	}
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Vars != 1 {
+		return false
+	}
+	c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+	c.jUpdate(qs)
+	return true
+}
+
+// javaDialog2094 is java/AL-Game/data/scripts/system/handlers/quest/brusthonin/_2094TheSecretofAdmaStronghold.java onDialogEvent.
+// talk npcs: 205150 205192 205155 730164 205191 204057
+// register: {"attack": [], "item": [], "kill": ["214700"], "levelup": ["yes"], "movie": [], "start": [], "talk": ["205150", "205192", "205155", "730164", "205191", "204057"], "zone": []}
+func (c *conn) javaDialog2094(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	npc := o
+	_ = npc
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs.Status == "REWARD" {
+		if targetId == 204057 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+		return false
+	} else if qs.Status != "START" {
+		return false
+	}
+	if targetId == 205150 {
+		switch d {
+		case 25:
+			if var_ == 0 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			}
+			return true
+		case 10000:
+			if var_ == 0 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 205192 {
+		switch d {
+		case 25:
+			if var_ == 1 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if var_ == 2 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if var_ == 3 {
+				return c.jPage(o.id, script.ID, uint16(2034))
+			}
+			return true
+		case 10001:
+			if var_ == 1 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 33:
+			if var_ == 2 {
+				if c.collectQuestItems(script.ID) {
+					c.jSetVarByID(qs, 0, var_+1)
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(10001))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(10008))
+				}
+			}
+			fallthrough
+		case 10003:
+			if var_ == 3 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+			}
+		}
+	} else if targetId == 205155 {
+		switch d {
+		case 25:
+			if var_ == 5 {
+				return c.jPage(o.id, script.ID, uint16(2716))
+			}
+			fallthrough
+		case 10005:
+			if var_ == 5 {
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 730164 {
+		switch d {
+		case -1:
+			if var_ == 6 {
+				c.jAddNewSpawn(220050000, 0, 205191, float32(float32(npc.x)), float32(float32(npc.y)), float32(float32(npc.z)), byte(byte(0)))
+				c.s.despawnNpc(npc, true)
+				c.s.scheduleRespawn(npc)
+				return true
+			}
+		}
+	} else if targetId == 205191 {
+		switch d {
+		case -1:
+			if var_ == 6 {
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// javaLevelUp2094 is its onLvlUpEvent.
+func (c *conn) javaLevelUp2094(script *data.QuestScript) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var lvlCheck bool = int32(p.level) >= int32(c.s.data.Quests[script.ID].MinLevel)
+	_ = lvlCheck
+	if qs == nil || qs.Status != "LOCKED" || !lvlCheck {
+		return false
+	}
+	quests := []int32{2092, 2093, 2054}
+	for _, id := range quests {
+		qs2 := p.quest(id)
+		_ = qs2
+		if qs2 == nil || qs2.Status != "COMPLETE" {
+			return false
+		}
+	}
+	c.jSetStatus(qs, "START")
+	c.jUpdate(qs)
+	return true
+}
+
+// javaKill2094 is its onKillEvent.
+func (c *conn) javaKill2094(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "START" {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if targetId == 214700 {
+		if var_ == 4 {
+			c.jSetVarByID(qs, 0, var_+1)
+			c.jUpdate(qs)
+			return true
+		}
+	}
+	return false
+}
+
+// javaDialog2096 is java/AL-Game/data/scripts/system/handlers/quest/pandaemonium/_2096TwiceasBright.java onDialogEvent.
+// talk npcs: 204206 204207 203550
+// register: {"attack": [], "item": [], "kill": [], "levelup": ["yes"], "movie": [], "start": ["204206"], "talk": ["204206", "204207", "203550"], "zone": []}
+func (c *conn) javaDialog2096(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 204206 {
+		if qs != nil && qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204207 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10001 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203550 {
+		if qs != nil && qs.Status == "REWARD" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaLevelUp2096 is its onLvlUpEvent.
+func (c *conn) javaLevelUp2096(script *data.QuestScript) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "LOCKED" {
+		return false
+	}
+	quests := []int32{2007, 2022, 2041, 2094, 2061, 2076, 2900}
+	for _, id := range quests {
+		qs2 := p.quest(id)
+		_ = qs2
+		if qs2 == nil || qs2.Status != "COMPLETE" {
+			return false
+		}
+	}
+	c.jSetStatus(qs, "START")
+	c.jUpdate(qs)
+	return true
+}
+
+// javaDialog2097 is java/AL-Game/data/scripts/system/handlers/quest/ishalgen/_2097SpiritBlade.java onDialogEvent.
+// talk npcs: 203550 203546 279034
+// register: {"attack": [], "item": [], "kill": [], "levelup": ["yes"], "movie": [], "start": ["203550"], "talk": ["203550", "203546", "279034"], "zone": []}
+func (c *conn) javaDialog2097(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203550 {
+		if qs == nil || qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "REWARD" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(10002))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203546 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10001 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 279034 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 2 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 33 {
+				if c.addQuestItems([]data.QuestItem{{ID: 182207085, Count: 1}}) {
+				}
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaLevelUp2097 is its onLvlUpEvent.
+func (c *conn) javaLevelUp2097(script *data.QuestScript) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "LOCKED" {
+		return false
+	}
+	qs2 := p.quest(2096)
+	_ = qs2
+	if qs2 == nil || qs2.Status != "COMPLETE" {
+		return false
+	}
+	c.jSetStatus(qs, "START")
+	c.jUpdate(qs)
 	return true
 }
 
@@ -14351,6 +18602,253 @@ func (c *conn) javaDialog2200(o *object, script *data.QuestScript, d int32) bool
 	return false
 }
 
+// javaDialog2207 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2207ConversingWithaSkurv.java onDialogEvent.
+// talk npcs: 203590 203591 203557
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203590"], "talk": ["203590", "203591", "203557"], "zone": []}
+func (c *conn) javaDialog2207(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203590 {
+		if qs == nil {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203591 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+		if qs != nil && (questVar(qs.Vars, 0) == 2 || questVar(qs.Vars, 0) == 3) {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203557 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 10001 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog2208 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2208MauInTenMinutesADay.java onDialogEvent.
+// talk npcs: 203591 203589
+// register: {"attack": [], "item": ["182203205"], "kill": [], "movie": [], "start": ["203591"], "talk": ["203591", "203589"], "zone": []}
+func (c *conn) javaDialog2208(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203591 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 1002 {
+				if c.addQuestItems([]data.QuestItem{{ID: 182203205, Count: 1}}) {
+					return c.defaultQuestStartDialog(o, script, d)
+				}
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "START" {
+		if targetId == 203589 {
+			var var_ int32 = questVar(qs.Vars, 0)
+			_ = var_
+			if d == 25 {
+				if var_ == 0 {
+					return c.jPage(o.id, script.ID, uint16(1693))
+				} else if var_ == 1 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				}
+			} else if d == 10000 {
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203591 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog2209 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2209TheScribbler.java onDialogEvent.
+// talk npcs: 203555 203562 203592
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203555"], "talk": ["203555", "203562", "203592"], "zone": []}
+func (c *conn) javaDialog2209(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil {
+		if targetId == 203555 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "START" {
+		switch targetId {
+		case 203562:
+			if questVar(qs.Vars, 0) == 0 {
+				if d == 25 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				} else if d == 10000 {
+					c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+					c.jUpdate(qs)
+					c.send(dialogWindow(o.id, uint16(10), 0))
+					return true
+				}
+			}
+		case 203572:
+			if questVar(qs.Vars, 0) == 1 {
+				if d == 25 {
+					return c.jPage(o.id, script.ID, uint16(1693))
+				} else if d == 10001 {
+					c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+					c.jUpdate(qs)
+					c.send(dialogWindow(o.id, uint16(10), 0))
+					return true
+				}
+			}
+		case 203592:
+			if questVar(qs.Vars, 0) == 2 {
+				if d == 25 {
+					return c.jPage(o.id, script.ID, uint16(2034))
+				} else if d == 10002 {
+					c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+					c.jUpdate(qs)
+					c.send(dialogWindow(o.id, uint16(10), 0))
+					return true
+				}
+			}
+		case 203555:
+			if questVar(qs.Vars, 0) == 3 {
+				if d == 25 {
+					return c.jPage(o.id, script.ID, uint16(2375))
+				} else if d == 1009 {
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.defaultQuestEndDialog(o, script, d)
+				} else {
+					return c.defaultQuestEndDialog(o, script, d)
+				}
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203555 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog2213 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2213PoisonRootPotentFruit.java onDialogEvent.
+// talk npcs: 203604 700057 203604
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203604"], "talk": ["203604", "700057", "203604"], "zone": []}
+func (c *conn) javaDialog2213(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil {
+		if targetId == 203604 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "START" {
+		switch targetId {
+		case 700057:
+			if questVar(qs.Vars, 0) == 0 && d == -1 {
+				var targetObjectId int32 = o.id
+				_ = targetObjectId
+				c.send(useObject(p.ID, targetObjectId, byte(1)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+				c.jLater(3000, func() {
+					if !(p.targetID == targetObjectId) {
+						return
+					}
+					c.send(useObject(p.ID, targetObjectId, byte(0)))
+					p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+					if c.addQuestItems([]data.QuestItem{{ID: 182203208, Count: 1}}) {
+						c.jSetVarByID(qs, 0, 1)
+						c.jUpdate(qs)
+					}
+				})
+			}
+			fallthrough
+		case 203604:
+			if questVar(qs.Vars, 0) == 1 {
+				if d == 25 {
+					return c.jPage(o.id, script.ID, uint16(2375))
+				} else if d == 1009 {
+					c.jRemoveAll(182203208)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.defaultQuestEndDialog(o, script, d)
+				} else {
+					return c.defaultQuestEndDialog(o, script, d)
+				}
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203604 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
 // javaDialog2216 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2216MuMuGrassKnot.java onDialogEvent.
 // talk npcs: 203606
 func (c *conn) javaDialog2216(o *object, script *data.QuestScript, d int32) bool {
@@ -14385,6 +18883,139 @@ func (c *conn) javaDialog2216(o *object, script *data.QuestScript, d int32) bool
 	return false
 }
 
+// javaDialog2221 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2221ManirsUncle.java onDialogEvent.
+// talk npcs: 203607 203608 700214
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203607"], "talk": ["203607", "203608", "700214"], "zone": []}
+func (c *conn) javaDialog2221(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil {
+		if targetId == 203607 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "START" {
+		switch targetId {
+		case 203608:
+			if questVar(qs.Vars, 0) == 0 {
+				if d == 25 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				} else if d == 10000 {
+					c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+					c.jUpdate(qs)
+					c.send(dialogWindow(o.id, uint16(10), 0))
+					return true
+				}
+			}
+			if questVar(qs.Vars, 0) == 2 {
+				if d == 25 {
+					return c.jPage(o.id, script.ID, uint16(2375))
+				} else if d == 1009 {
+					c.jRemoveAll(182203215)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.defaultQuestEndDialog(o, script, d)
+				} else {
+					return c.defaultQuestEndDialog(o, script, d)
+				}
+			}
+		case 700214:
+			if (questVar(qs.Vars, 0) == 1 || questVar(qs.Vars, 0) == 2) && d == -1 {
+				c.jSetVarByID(qs, 0, 2)
+				c.jUpdate(qs)
+			}
+			return true
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203608 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog2223 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2223AMythicalMonster.java onDialogEvent.
+// talk npcs: 203616
+// register: {"attack": [], "item": [], "kill": ["211621"], "movie": [], "start": ["203616"], "talk": ["203616"], "zone": []}
+func (c *conn) javaDialog2223(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203616 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "START" {
+		var var_ int32 = questVar(qs.Vars, 0)
+		_ = var_
+		switch targetId {
+		case 203620:
+			switch d {
+			case 25:
+				if var_ == 0 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				}
+			case 10000:
+				if var_ == 0 {
+					if !(c.addQuestItems([]data.QuestItem{{ID: 182203217, Count: 1}})) {
+						return true
+					}
+					c.jSetVarByID(qs, 0, var_+1)
+					c.jUpdate(qs)
+					c.send(dialogWindow(o.id, uint16(10), 0))
+					return true
+				}
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203616 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaKill2223 is its onKillEvent.
+func (c *conn) javaKill2223(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "START" {
+		return false
+	}
+	var targetId int32 = 0
+	_ = targetId
+	var var_ int32 = 0
+	_ = var_
+	targetId = o.npc.ID
+	switch targetId {
+	case 211621:
+		var_ = questVar(qs.Vars, 0)
+		if var_ == 1 {
+			c.jSetStatus(qs, "REWARD")
+			c.jUpdate(qs)
+		}
+	}
+	return false
+}
+
 // javaDialog2228 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2228AThornInItsSide.java onDialogEvent.
 // talk npcs: 203619
 func (c *conn) javaDialog2228(o *object, script *data.QuestScript, d int32) bool {
@@ -14408,6 +19039,260 @@ func (c *conn) javaDialog2228(o *object, script *data.QuestScript, d int32) bool
 			} else if d == 1009 {
 				c.jRemoveAll(182203221)
 				c.jSetVar(qs, 1)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog2231 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2231SiblingRivalry.java onDialogEvent.
+// talk npcs: 203620 203609 203612 203610
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203620"], "talk": ["203620", "203609", "203612", "203610"], "zone": []}
+func (c *conn) javaDialog2231(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203620 {
+		if qs == nil {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203609 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203612 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203610 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 2)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog2232 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2232TheBrokenHoneyJar.java onDialogEvent.
+// talk npcs: 203613 203622 700061
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203613"], "talk": ["203613", "203622", "700061"], "zone": []}
+func (c *conn) javaDialog2232(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203613 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 33 {
+				if c.collectQuestItems(script.ID) {
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2716))
+				}
+			}
+		} else if qs.Status == "REWARD" && questVar(qs.Vars, 0) == 1 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+		switch targetId {
+		case 700061:
+			c.jSetVarByID(qs, 0, 1)
+			c.jUpdate(qs)
+			if questVar(qs.Vars, 0) == 1 && d == -1 {
+				var targetObjectId int32 = o.id
+				_ = targetObjectId
+				c.send(useObject(p.ID, targetObjectId, byte(1)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+				c.jLater(3000, func() {
+					if !(p.targetID == targetObjectId) {
+						return
+					}
+					c.send(useObject(p.ID, targetObjectId, byte(0)))
+					p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+					if c.addQuestItems([]data.QuestItem{{ID: 182203224, Count: 1}}) {
+						c.s.npcDied((c.jTarget()), nil)
+					}
+				})
+			}
+		}
+	} else if targetId == 203622 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if targetId == 203622 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 && d == -1 {
+			return true
+		}
+	}
+	return false
+}
+
+// javaDialog2237 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2237AFertileField.java onDialogEvent.
+// talk npcs: 203629 700145
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203629"], "talk": ["203629", "700145"], "zone": []}
+func (c *conn) javaDialog2237(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203629 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "START" {
+		switch targetId {
+		case 700145:
+			if questVar(qs.Vars, 0) == 0 && d == -1 {
+				var targetObjectId int32 = o.id
+				_ = targetObjectId
+				c.send(useObject(p.ID, targetObjectId, byte(1)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+				c.jLater(3000, func() {
+					if !(p.targetID == targetObjectId) {
+						return
+					}
+					c.send(useObject(p.ID, targetObjectId, byte(0)))
+					p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+					c.addQuestItems([]data.QuestItem{{ID: 182203226, Count: 1}})
+					c.s.npcDied((c.jTarget()), nil)
+				})
+			}
+			fallthrough
+		case 203629:
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 33 {
+				if c.collectQuestItems(script.ID) {
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2716))
+				}
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203629 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog2271 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2271AurtrisLetter.java onDialogEvent.
+// talk npcs: 203655 203654 203557
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203655"], "talk": ["203655", "203654", "203557"], "zone": []}
+func (c *conn) javaDialog2271(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203655 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 1002 {
+				if c.addQuestItems([]data.QuestItem{{ID: 182203247, Count: 1}}) {
+					return c.defaultQuestStartDialog(o, script, d)
+				} else {
+					return true
+				}
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			}
+		}
+	} else if targetId == 203654 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 203557 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
 				c.jSetStatus(qs, "REWARD")
 				c.jUpdate(qs)
 				return c.defaultQuestEndDialog(o, script, d)
@@ -14461,6 +19346,155 @@ func (c *conn) javaDialog2274(o *object, script *data.QuestScript, d int32) bool
 			} else {
 				return c.defaultQuestEndDialog(o, script, d)
 			}
+		}
+	}
+	return false
+}
+
+// javaDialog2288 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2288PutYourMoneyWhereYourMouthIs.java onDialogEvent.
+// talk npcs: 203621
+// register: {"attack": [], "item": [], "kill": ["210564", "210584", "210581", "201047", "210436", "210437", "210440"], "movie": [], "start": ["203621"], "talk": ["203621"], "zone": []}
+func (c *conn) javaDialog2288(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 203621 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			if d == 25 && questVar(qs.Vars, 0) == 4 {
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, 1)
+				return c.jPage(o.id, script.ID, uint16(0))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaKill2288 is its onKillEvent.
+func (c *conn) javaKill2288(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if qs.Status != "START" {
+		return false
+	}
+	if targetId == 210564 || targetId == 210584 || targetId == 210581 || targetId == 210436 || targetId == 201047 || targetId == 210437 || targetId == 210440 {
+		if var_ > 0 && var_ < 4 {
+			c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+			c.jUpdate(qs)
+			return true
+		} else if var_ == 6 {
+			c.jSetStatus(qs, "REWARD")
+			c.jUpdate(qs)
+			c.send(dialogWindow(o.id, uint16(10), 0))
+			return true
+		}
+	}
+	return false
+}
+
+// javaDialog2290 is java/AL-Game/data/scripts/system/handlers/quest/altgard/_2290GrokensEscape.java onDialogEvent.
+// talk npcs: 203608 700178 203607
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["203608"], "talk": ["203608", "700178", "203607"], "zone": []}
+func (c *conn) javaDialog2290(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 203608 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 1002 {
+				if c.beginQuest(script) {
+					npc := o
+					_ = npc
+					npc.move.setDirection(float32(1219.15), float32(1212), float32(247.37))
+					c.s.scheduleMove(npc)
+					return c.jPage(o.id, script.ID, uint16(1003))
+				}
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "START" {
+		switch targetId {
+		case 700178:
+			if questVar(qs.Vars, 0) == 0 && d == -1 {
+				for _, obj := range p.seen {
+					if !(obj.npc != nil) {
+						continue
+					}
+					if (obj).npc.ID != 203608 {
+						continue
+					}
+					if jDistance(float32(p.X), float32(p.Y), float32(p.Z), float32(obj.x), float32(obj.y), float32(obj.z)) > 4 {
+						return false
+					}
+					c.s.npcDied((obj), nil)
+					c.s.despawnNpc((obj), false)
+				}
+				var targetObjectId int32 = o.id
+				_ = targetObjectId
+				c.send(movie(0, uint16(69)))
+				c.send(useObject(p.ID, targetObjectId, byte(1)))
+				p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+				c.jLater(3000, func() {
+					if !(p.targetID == targetObjectId) {
+						return
+					}
+					c.send(useObject(p.ID, targetObjectId, byte(0)))
+					p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+					c.jSetVarByID(qs, 0, 3)
+					c.jUpdate(qs)
+				})
+			}
+		case 203607:
+			if questVar(qs.Vars, 0) == 3 {
+				if d == 25 {
+					return c.jPage(o.id, script.ID, uint16(1693))
+				} else if d == 1009 {
+					c.jRemoveAll(182203208)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.defaultQuestEndDialog(o, script, d)
+				} else {
+					return c.defaultQuestEndDialog(o, script, d)
+				}
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 203607 {
+			return c.defaultQuestEndDialog(o, script, d)
 		}
 	}
 	return false
@@ -14535,6 +19569,199 @@ func (c *conn) javaDialog2316(o *object, script *data.QuestScript, d int32) bool
 		}
 	}
 	return false
+}
+
+// javaDialog2332 is java/AL-Game/data/scripts/system/handlers/quest/morheim/_2332MeatyTreats.java onDialogEvent.
+// talk npcs: 798084
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["798084"], "talk": ["798084"], "zone": []}
+func (c *conn) javaDialog2332(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 798084 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(4762))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs != nil && qs.Status == "START" {
+		if targetId == 798084 {
+			if d == 25 {
+				if c.collectQuestItems(script.ID) {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1693))
+				}
+			} else if d >= 10000 && d <= 10002 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+(d-10000))
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(d-9995))
+			}
+		}
+	} else if d == 17 && qs.Status == "REWARD" && targetId == 798084 {
+		c.questFinish(script, uint16(d), int(questVar(qs.Vars, 0)))
+		return c.jPage(o.id, script.ID, uint16(1008))
+	} else if qs.Status == "COMPLETE" && targetId == 798084 {
+		return c.jPage(o.id, script.ID, uint16(1008))
+	}
+	return false
+}
+
+// javaDialog2393 is java/AL-Game/data/scripts/system/handlers/quest/morheim/_2393TheLoveOfAFather.java onDialogEvent.
+// talk npcs: 204343
+// register: {"attack": [], "item": ["182204162"], "kill": [], "movie": [], "start": ["204343"], "talk": ["204343"], "zone": []}
+func (c *conn) javaDialog2393(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 204343 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(4762))
+			} else if d == 1002 {
+				if c.addQuestItems([]data.QuestItem{{ID: 182204162, Count: 1}}) {
+					return c.defaultQuestStartDialog(o, script, d)
+				} else {
+					return true
+				}
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "REWARD" {
+			if d == 25 && qs.Status == "REWARD" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 2)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog2495 is java/AL-Game/data/scripts/system/handlers/quest/morheim/_2495SpriggNightlights.java onDialogEvent.
+// talk npcs: 798125 700317 700319 700318
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["798125"], "talk": ["798125", "700317", "700319", "700318"], "zone": []}
+func (c *conn) javaDialog2495(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var targetId int32 = 0
+	_ = targetId
+	if int32(p.level) < 21 {
+		return false
+	}
+	targetId = o.npc.ID
+	if targetId == 798125 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs.Status == "START" {
+			var itemCount int64
+			_ = itemCount
+			var itemCount1 int64
+			_ = itemCount1
+			var itemCount2 int64
+			_ = itemCount2
+			if d == 25 && questVar(qs.Vars, 0) == 0 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 33 && questVar(qs.Vars, 0) == 0 {
+				itemCount = c.s.countItems(p, 182204227)
+				itemCount1 = c.s.countItems(p, 182204228)
+				itemCount2 = c.s.countItems(p, 182204229)
+				if itemCount > 4 && itemCount1 > 4 && itemCount2 > 4 {
+					c.jRemoveAll(182204227)
+					c.jRemoveAll(182204228)
+					c.jRemoveAll(182204229)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2716))
+				}
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs.Status == "REWARD" {
+			if d == 25 && questVar(qs.Vars, 0) == 5 {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else if d == 25 && questVar(qs.Vars, 0) == 6 {
+				return c.jPage(o.id, script.ID, uint16(6))
+			} else if d == 25 && questVar(qs.Vars, 0) == 7 {
+				return c.jPage(o.id, script.ID, uint16(7))
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 700317 {
+		var itemCount int64
+		_ = itemCount
+		itemCount = c.s.countItems(p, 182204227)
+		if qs.Status == "START" && questVar(qs.Vars, 0) == 0 && itemCount < 5 {
+			var targetObjectId int32 = o.id
+			_ = targetObjectId
+			p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+			c.jLater(3000, func() {
+				p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+			})
+			return true
+		} else {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 700318 {
+		var itemCount1 int64
+		_ = itemCount1
+		itemCount1 = c.s.countItems(p, 182204228)
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 && itemCount1 < 5 {
+			var targetObjectId int32 = o.id
+			_ = targetObjectId
+			p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+			c.jLater(3000, func() {
+				p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+			})
+			return true
+		} else {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 700319 {
+		var itemCount2 int64
+		_ = itemCount2
+		itemCount2 = c.s.countItems(p, 182204229)
+		if qs.Status == "START" && questVar(qs.Vars, 0) == 0 && itemCount2 < 5 {
+			var targetObjectId int32 = o.id
+			_ = targetObjectId
+			p.broadcast(c.s.playerEmotionTo(p, emoteNeutralMode2, 0, targetObjectId, 0, 0, 0, 0), true)
+			c.jLater(3000, func() {
+				p.broadcast(c.s.playerEmotionTo(p, emoteStartLoot, 0, targetObjectId, 0, 0, 0, 0), true)
+			})
+			return true
+		} else {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else {
+		return c.defaultQuestEndDialog(o, script, d)
+	}
 }
 
 // javaDialog2500 is java/AL-Game/data/scripts/system/handlers/quest/beluslan/_2500OrdersFromNerita.java onDialogEvent.
@@ -14652,6 +19879,234 @@ func (c *conn) javaDialog2578(o *object, script *data.QuestScript, d int32) bool
 	return false
 }
 
+// javaDialog2641 is java/AL-Game/data/scripts/system/handlers/quest/beluslan/_2641PowwowWiththeMau.java onDialogEvent.
+// talk npcs: 204871 204795 204798 204796 204700
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204817"], "talk": ["204871", "204795", "204798", "204796", "204700"], "zone": []}
+func (c *conn) javaDialog2641(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 204817 {
+		if qs == nil {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204795 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204798 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204796 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 2 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204700 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog2653 is java/AL-Game/data/scripts/system/handlers/quest/beluslan/_2653SpyFindingBollvig.java onDialogEvent.
+// talk npcs: 204650 204655 204775
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204650"], "talk": ["204650", "204655", "204775"], "zone": []}
+func (c *conn) javaDialog2653(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 204650 {
+		if qs == nil {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204655 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == -1 {
+				c.s.tell(p, "25")
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204775 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog2654 is java/AL-Game/data/scripts/system/handlers/quest/beluslan/_2654SpyTheLastPersuasion.java onDialogEvent.
+// talk npcs: 204775 204655
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204775"], "talk": ["204775", "204655"], "zone": []}
+func (c *conn) javaDialog2654(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 204775 {
+		if qs == nil {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204655 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 0)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog2670 is java/AL-Game/data/scripts/system/handlers/quest/beluslan/_2670TheAncientBook.java onDialogEvent.
+// talk npcs: 204702 204208
+// register: {"attack": [], "item": ["182204501"], "kill": [], "movie": [], "start": [], "talk": ["204702", "204208"], "zone": []}
+func (c *conn) javaDialog2670(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if targetId == 0 {
+		if d == 1002 {
+			c.beginQuest(script)
+			c.send(dialogWindow(0, uint16(0), 0))
+			return true
+		}
+	} else if targetId == 204702 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204208 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jRemoveAll(182204501)
+				c.jSetVar(qs, 1)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaItemUse2670 is its onItemUseEvent.
+func (c *conn) javaItemUse2670(o *object, script *data.QuestScript, d int32, item *store.Item) bool {
+	p := c.player
+	_ = p
+	var id int32 = item.ItemID
+	_ = id
+	var itemObjId int32 = item.UniqueID
+	_ = itemObjId
+	if id != 182204501 {
+		return false
+	}
+	p.broadcast(itemUsageAnimation(p.ID, itemObjId, id, 3000, byte(0), 0), true)
+	c.jLater(3000, func() {
+		p.broadcast(itemUsageAnimation(p.ID, itemObjId, id, 0, byte(1), 0), true)
+		c.jPage(0, script.ID, uint16(4))
+	})
+	return true
+}
+
 // javaDialog2701 is java/AL-Game/data/scripts/system/handlers/quest/reshanta/_2701TheGovernorsSummons.java onDialogEvent.
 // talk npcs: 278001
 // register: {"attack": [], "item": [], "kill": [], "movie": [], "start": [], "talk": ["278001"], "zone": ["RUSSET_PLAZA_400010000"]}
@@ -14705,6 +20160,146 @@ func (c *conn) javaEnterZone2701(o *object, script *data.QuestScript, d int32, z
 	}
 	c.beginQuest(script)
 	return true
+}
+
+// javaDialog2722 is java/AL-Game/data/scripts/system/handlers/quest/reshanta/_2722TheComfortsofHome.java onDialogEvent.
+// talk npcs: 278047 278056 278126 278043 278032 278037 278040 278068 278066
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["278047"], "talk": ["278047", "278056", "278126", "278043", "278032", "278037", "278040", "278068", "278066"], "zone": []}
+func (c *conn) javaDialog2722(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 278047 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(4762))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 278056 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 278126 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 1009 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 278043 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 2 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2034))
+			} else if d == 10003 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 278032 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 3 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 10004 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 278037 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 4 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2716))
+			} else if d == 10005 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 278040 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 5 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(3057))
+			} else if d == 10006 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 278068 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 6 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(3398))
+			} else if d == 10255 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 278066 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else if d == 17 {
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
 }
 
 // javaDialog2846 is java/AL-Game/data/scripts/system/handlers/quest/reshanta/_2846TheRedMatter.java onDialogEvent.
@@ -15390,6 +20985,47 @@ func (c *conn) javaDialog2904(o *object, script *data.QuestScript, d int32) bool
 	return false
 }
 
+// javaDialog2911 is java/AL-Game/data/scripts/system/handlers/quest/pandaemonium/_2911SongOfBlessing.java onDialogEvent.
+// talk npcs: 204079 204193
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204079"], "talk": ["204079", "204193"], "zone": []}
+func (c *conn) javaDialog2911(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 204079 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 204193 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVar(qs, 2)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(5))
+			} else if d == 10001 {
+				c.jSetVar(qs, 3)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(6))
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
 // javaDialog2966 is java/AL-Game/data/scripts/system/handlers/quest/pandaemonium/_2966ASwordGoneAstray.java onDialogEvent.
 // talk npcs: 278055
 func (c *conn) javaDialog2966(o *object, script *data.QuestScript, d int32) bool {
@@ -15592,6 +21228,619 @@ func (c *conn) javaDialog2971(o *object, script *data.QuestScript, d int32) bool
 		}
 	}
 	return false
+}
+
+// javaDialog2988 is java/AL-Game/data/scripts/system/handlers/quest/pandaemonium/_2988TheWiseinDisguise.java onDialogEvent.
+// talk npcs: 204182 204146
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204182", "204338", "204213", "204146"], "talk": ["204182", "204146"], "zone": []}
+func (c *conn) javaDialog2988(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 204182 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	if qs.Status == "START" {
+		if targetId == 204338 && var_ == 0 {
+			switch d {
+			case 25:
+				return c.jPage(o.id, script.ID, uint16(1352))
+			case 10000:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		} else if targetId == 204213 && var_ == 1 {
+			switch d {
+			case 25:
+				return c.jPage(o.id, script.ID, uint16(1693))
+			case 10001:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		} else if targetId == 204146 && var_ == 2 {
+			switch d {
+			case 25:
+				return c.jPage(o.id, script.ID, uint16(2034))
+			case 2035:
+				if c.s.countItems(p, 186000039) == 1 {
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					c.jRemoveAll(186000039)
+					return c.jPage(o.id, script.ID, uint16(2035))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2120))
+				}
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 204146 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog2989 is java/AL-Game/data/scripts/system/handlers/quest/pandaemonium/_2989CeremonyoftheWise.java onDialogEvent.
+// talk npcs: 204146
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["204056", "204057", "204058", "204059", "204146"], "talk": ["204146"], "zone": []}
+func (c *conn) javaDialog2989(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 204146 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	if qs.Status == "START" {
+		playerClass := p.Class
+		_ = playerClass
+		switch targetId {
+		case 204056:
+			switch d {
+			case 25:
+				if playerClass == "GLADIATOR" || playerClass == "TEMPLAR" {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1438))
+				}
+			case 10000:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 204057:
+			switch d {
+			case 25:
+				if playerClass == "ASSASSIN" || playerClass == "RANGER" {
+					return c.jPage(o.id, script.ID, uint16(1693))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(1779))
+				}
+			case 10000:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 204058:
+			switch d {
+			case 25:
+				if playerClass == "SORCERER" || playerClass == "SPIRIT_MASTER" {
+					return c.jPage(o.id, script.ID, uint16(2034))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2120))
+				}
+			case 10000:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 204059:
+			switch d {
+			case 25:
+				if playerClass == "CLERIC" || playerClass == "CHANTER" {
+					return c.jPage(o.id, script.ID, uint16(2375))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(2461))
+				}
+			case 10000:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+			fallthrough
+		case 204146:
+			switch d {
+			case 25:
+				if var_ == 1 {
+					return c.jPage(o.id, script.ID, uint16(2716))
+				} else if var_ == 2 {
+					return c.jPage(o.id, script.ID, uint16(3057))
+				} else if var_ == 3 {
+					if p.dp < 4000 {
+						return c.jPage(o.id, script.ID, uint16(3484))
+					} else {
+						return c.jPage(o.id, script.ID, uint16(3398))
+					}
+				} else if var_ == 4 {
+					if p.dp < 4000 {
+						return c.jPage(o.id, script.ID, uint16(3825))
+					} else {
+						return c.jPage(o.id, script.ID, uint16(3739))
+					}
+				}
+				fallthrough
+			case 1009:
+				if var_ == 3 {
+					c.send(movie(0, uint16(137)))
+					c.jSetDP(0)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else if var_ == 4 {
+					c.send(movie(0, uint16(137)))
+					c.jSetDP(0)
+					c.jSetStatus(qs, "REWARD")
+					c.jUpdate(qs)
+					return c.jPage(o.id, script.ID, uint16(5))
+				} else {
+					return c.defaultQuestEndDialog(o, script, d)
+				}
+			case 10001:
+				c.jSetVarByID(qs, 0, var_+1)
+				c.jUpdate(qs)
+				return c.jPage(o.id, script.ID, uint16(3057))
+			case 10003:
+				c.jSetVarByID(qs, 0, 3)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			case 10004:
+				c.jSetVarByID(qs, 0, 4)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 204146 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog2990 is java/AL-Game/data/scripts/system/handlers/quest/pandaemonium/_2990MakingTheDaevanionWeapon.java onDialogEvent.
+// talk npcs: 204146
+// register: {"attack": [], "item": [], "kill": ["256617", "253720", "254513"], "movie": [], "start": ["204146"], "talk": ["204146"], "zone": []}
+func (c *conn) javaDialog2990(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status == "NONE" {
+		if targetId == 204146 {
+			if d == 25 {
+				var plate int32 = int32(p.setPartsWorn(c.s.data, 9))
+				_ = plate
+				var chain int32 = int32(p.setPartsWorn(c.s.data, 8))
+				_ = chain
+				var leather int32 = int32(p.setPartsWorn(c.s.data, 7))
+				_ = leather
+				var cloth int32 = int32(p.setPartsWorn(c.s.data, 6))
+				_ = cloth
+				if plate != 5 && chain != 5 && leather != 5 && cloth != 5 {
+					return c.jPage(o.id, script.ID, uint16(4848))
+				} else {
+					return c.jPage(o.id, script.ID, uint16(4762))
+				}
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	if qs == nil {
+		return false
+	}
+	var var_ int32 = questVar(qs.Vars, 0)
+	_ = var_
+	var var1 int32 = questVar(qs.Vars, 1)
+	_ = var1
+	if qs.Status == "START" {
+		if targetId == 204146 {
+			switch d {
+			case 25:
+				if var_ == 0 {
+					return c.jPage(o.id, script.ID, uint16(1011))
+				}
+				if var_ == 1 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				}
+				if var_ == 2 && var1 == 60 {
+					return c.jPage(o.id, script.ID, uint16(1693))
+				}
+				if var_ == 3 && c.s.countItems(p, 186000040) > 0 {
+					return c.jPage(o.id, script.ID, uint16(2034))
+				}
+				fallthrough
+			case 33:
+				if var_ == 0 {
+					if c.collectQuestItems(script.ID) {
+						c.jSetVarByID(qs, 0, var_+1)
+						c.jUpdate(qs)
+						return c.jPage(o.id, script.ID, uint16(10000))
+					} else {
+						return c.jPage(o.id, script.ID, uint16(10001))
+					}
+				}
+			case 1352:
+				if var_ == 0 {
+					return c.jPage(o.id, script.ID, uint16(1352))
+				}
+				fallthrough
+			case 2035:
+				if var_ == 3 && c.s.countItems(p, 186000040) > 0 {
+					if p.dp < 4000 {
+						return c.jPage(o.id, script.ID, uint16(2120))
+					} else {
+						c.jRemoveAll(186000040)
+						c.jSetDP(0)
+						c.jSetStatus(qs, "REWARD")
+						c.jUpdate(qs)
+						return c.jPage(o.id, script.ID, uint16(5))
+					}
+				}
+			case 10001:
+				if var_ == 1 {
+					c.jSetVarByID(qs, 0, var_+1)
+					c.jUpdate(qs)
+					c.send(dialogWindow(o.id, uint16(10), 0))
+					return true
+				}
+			case 10002:
+				if var_ == 2 {
+					c.jSetVarByID(qs, 0, var_+1)
+					c.jUpdate(qs)
+					c.send(dialogWindow(o.id, uint16(10), 0))
+					return true
+				}
+			}
+		}
+		return false
+	} else if qs.Status == "REWARD" {
+		if targetId == 204146 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+		return false
+	}
+	return false
+}
+
+// javaKill2990 is its onKillEvent.
+func (c *conn) javaKill2990(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	if qs == nil || qs.Status != "START" {
+		return false
+	}
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if (targetId == 256617 || targetId == 253720 || targetId == 254513) && questVar(qs.Vars, 0) == 2 {
+		switch targetId {
+		case 256617:
+			if java2990A >= 0 && java2990A < 30 {
+				java2990A += 1
+				java2990ALL = java2990C
+				java2990ALL = java2990ALL << 7
+				java2990ALL += java2990B
+				java2990ALL = java2990ALL << 7
+				java2990ALL += java2990A
+				java2990ALL = java2990ALL << 7
+				java2990ALL += 2
+				c.jSetVar(qs, java2990ALL)
+				c.jUpdate(qs)
+			}
+		case 253720:
+			if java2990B >= 0 && java2990B < 30 {
+				java2990B += 1
+				java2990ALL = java2990C
+				java2990ALL = java2990ALL << 7
+				java2990ALL += java2990B
+				java2990ALL = java2990ALL << 7
+				java2990ALL += java2990A
+				java2990ALL = java2990ALL << 7
+				java2990ALL += 2
+				c.jSetVar(qs, java2990ALL)
+				c.jUpdate(qs)
+			}
+		case 254513:
+			if java2990C >= 0 && java2990C < 30 {
+				java2990C += 1
+				java2990ALL = java2990C
+				java2990ALL = java2990ALL << 7
+				java2990ALL += java2990B
+				java2990ALL = java2990ALL << 7
+				java2990ALL += java2990A
+				java2990ALL = java2990ALL << 7
+				java2990ALL += 2
+				c.jSetVar(qs, java2990ALL)
+				c.jUpdate(qs)
+			}
+		}
+	}
+	if questVar(qs.Vars, 0) == 2 && java2990A == 30 && java2990B == 30 && java2990C == 30 {
+		c.jSetVarByID(qs, 1, 60)
+		c.jUpdate(qs)
+		return true
+	}
+	return false
+}
+
+// java2990A is the handler object's A field: Java keeps one for every player.
+var java2990A int32 = 0
+
+// java2990C is the handler object's C field: Java keeps one for every player.
+var java2990C int32 = 0
+
+// java2990ALL is the handler object's ALL field: Java keeps one for every player.
+var java2990ALL int32 = 0
+
+// java2990B is the handler object's B field: Java keeps one for every player.
+var java2990B int32 = 0
+
+// javaDialog3001 is java/AL-Game/data/scripts/system/handlers/quest/theobomos/_3001UnearthingtheTruth.java onDialogEvent.
+// talk npcs: 798132 798133 798136 798139
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["798132"], "talk": ["798132", "798133", "798136", "798139"], "zone": []}
+func (c *conn) javaDialog3001(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 798132 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
+				c.jUpdate(qs)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 798133 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 798139 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 2 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2034))
+			} else if d == 10002 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 798136 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 10001 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaDialog3008 is java/AL-Game/data/scripts/system/handlers/quest/theobomos/_3008WickedThiefKelaino.java onDialogEvent.
+// talk npcs: 798150 798138 798146
+// register: {"attack": [], "item": [], "kill": [], "movie": [], "start": ["798150"], "talk": ["798150", "798138", "798146"], "zone": []}
+func (c *conn) javaDialog3008(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	qs := p.quest(script.ID)
+	_ = qs
+	if targetId == 798150 {
+		if qs == nil || qs.Status == "NONE" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1011))
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "START" {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jSetVar(qs, 3)
+				c.jUpdate(qs)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		} else if qs != nil && qs.Status == "REWARD" {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	} else if targetId == 798138 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 798146 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 1 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1693))
+			} else if d == 10001 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if qs.Status == "REWARD" {
+		if targetId == 798150 {
+			return c.defaultQuestEndDialog(o, script, d)
+		}
+	}
+	return false
+}
+
+// javaDialog3048 is java/AL-Game/data/scripts/system/handlers/quest/theobomos/_3048OwneroftheAngledBladeDagger.java onDialogEvent.
+// talk npcs: 798208 798206
+// register: {"attack": [], "item": ["182208033"], "kill": [], "movie": [], "start": [], "talk": ["798208", "798206"], "zone": []}
+func (c *conn) javaDialog3048(o *object, script *data.QuestScript, d int32) bool {
+	p := c.player
+	_ = p
+	qs := p.quest(script.ID)
+	_ = qs
+	var targetId int32 = 0
+	_ = targetId
+	targetId = o.npc.ID
+	if targetId == 0 {
+		if d == 1002 {
+			c.beginQuest(script)
+			c.send(dialogWindow(0, uint16(0), 0))
+			return true
+		}
+	} else if targetId == 798208 {
+		if qs != nil && qs.Status == "START" && questVar(qs.Vars, 0) == 0 {
+			if d == 25 {
+				return c.jPage(o.id, script.ID, uint16(1352))
+			} else if d == 10000 {
+				c.jSetVarByID(qs, 0, questVar(qs.Vars, 0)+1)
+				c.jUpdate(qs)
+				c.send(dialogWindow(o.id, uint16(10), 0))
+				return true
+			} else {
+				return c.defaultQuestStartDialog(o, script, d)
+			}
+		}
+	} else if targetId == 798206 {
+		if qs != nil {
+			if d == 25 && qs.Status == "START" {
+				return c.jPage(o.id, script.ID, uint16(2375))
+			} else if d == 1009 {
+				c.jRemoveAll(182208033)
+				c.jSetVar(qs, 1)
+				c.jSetStatus(qs, "REWARD")
+				c.jUpdate(qs)
+				return c.defaultQuestEndDialog(o, script, d)
+			} else {
+				return c.defaultQuestEndDialog(o, script, d)
+			}
+		}
+	}
+	return false
+}
+
+// javaItemUse3048 is its onItemUseEvent.
+func (c *conn) javaItemUse3048(o *object, script *data.QuestScript, d int32, item *store.Item) bool {
+	p := c.player
+	_ = p
+	var id int32 = item.ItemID
+	_ = id
+	var itemObjId int32 = item.UniqueID
+	_ = itemObjId
+	if id != 182208033 {
+		return false
+	}
+	p.broadcast(itemUsageAnimation(p.ID, itemObjId, id, 3000, byte(0), 0), true)
+	c.jLater(3000, func() {
+		p.broadcast(itemUsageAnimation(p.ID, itemObjId, id, 0, byte(1), 0), true)
+		c.jPage(0, script.ID, uint16(4))
+	})
+	return true
 }
 
 // javaDialog3049 is java/AL-Game/data/scripts/system/handlers/quest/theobomos/_3049BloodMarkstheSpot.java onDialogEvent.

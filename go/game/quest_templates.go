@@ -479,3 +479,35 @@ func ascensionMorph(kind byte) *wire.Writer {
 	w.C(kind)
 	return w
 }
+
+// jSetDP is PlayerCommonData.setDp: not for a starting class; capped at the maximum, then the dp info to everyone
+// around, the stats and the dp update.
+func (c *conn) jSetDP(dp int32) {
+	p := c.player
+	if startingClass(p.Class) {
+		return
+	}
+	p.dp = min(dp, p.stats.current(data.MaxDP))
+	info := wire.Packet(smDpInfo)
+	info.D(p.ID)
+	info.H(uint16(p.dp))
+	p.broadcast(info, true)
+	c.send(c.s.statsInfo(p))
+	update := wire.Packet(smStatupdateDp)
+	update.H(uint16(p.dp))
+	c.send(update)
+}
+
+// jIf is Java's conditional operator.
+func jIf[T any](cond bool, a, b T) T {
+	if cond {
+		return a
+	}
+	return b
+}
+
+// jSetCompleteCount is QuestState.setCompliteCount.
+func (c *conn) jSetCompleteCount(q *store.Quest, count int32) {
+	q.CompleteCount = count
+	c.jSave(q)
+}

@@ -94,6 +94,14 @@ public class QuestTraceDump
 			d.register(qe);
 		String only = System.getProperty("questIds", "");
 		Map<Integer, QuestHandler> handlers = get(qe, QuestEngine.class, "questHandlers");
+		// Handlers that keep int fields share them between players; every probe starts from their initial values.
+		for (QuestHandler h : handlers.values())
+			for (Field f : h.getClass().getDeclaredFields())
+				if (f.getType() == int.class && !Modifier.isStatic(f.getModifiers()) && !Modifier.isFinal(f.getModifiers()))
+				{
+					f.setAccessible(true);
+					FIELDS.add(new Object[] { h, f, f.getInt(h) });
+				}
 		List<Integer> ids = new ArrayList<>(handlers.keySet());
 		Collections.sort(ids);
 		try (PrintWriter w = new PrintWriter(out, "UTF-8"))
@@ -208,6 +216,7 @@ public class QuestTraceDump
 		/** One select (or click when dialog is -1) on a fresh player in state; null for a service id nobody handled. */
 		Probe probe(String state, int npcId, int dialog) throws Exception
 		{
+			resetFields();
 			Probe pr = new Probe(id, state, npcId, dialog);
 			AionConnection con = fakeConnection();
 			Player p = player(state, con);
@@ -321,6 +330,14 @@ public class QuestTraceDump
 			World.getInstance().storeObject(p);
 			return p;
 		}
+	}
+
+	static final List<Object[]>	FIELDS		= new ArrayList<>();
+
+	static void resetFields() throws Exception
+	{
+		for (Object[] x : FIELDS)
+			((Field) x[1]).setInt(x[0], (Integer) x[2]);
 	}
 
 	static final int	PLAYER_OBJ	= 0x10577;

@@ -183,6 +183,7 @@ func parityDefault(quest int32, state string, npc, dialog int32) parityProbe {
 
 // parityRun is one probe on the Go side: a fresh player in state, next to one npc with the Java harness' object id.
 func parityRun(d *data.Data, script *data.QuestScript, q *parityQuest, state string, npcID, dialog int32) (got parityProbe) {
+	javaResetFields() // the Java harness also starts every probe from the handlers' initial fields
 	s := testServer(d)
 	p := wrathchild(s)
 	p.Race, p.Class, p.Gender, p.level = q.Race, q.Class, q.Gender, q.Level

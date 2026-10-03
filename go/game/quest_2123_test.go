@@ -1,9 +1,11 @@
 package game
 
 import (
+	"slices"
 	"testing"
 	"time"
 
+	"aionlightning/game/data"
 	"aionlightning/game/store"
 )
 
@@ -97,7 +99,10 @@ func TestImprisonedGourmetTalkTimerAndRegistration(t *testing.T) {
 	d, s, p, c, script, packets := customQuestPortFixture(t, imprisonedGourmetQuestID, []store.Quest{{ID: imprisonedGourmetQuestID, Status: "START"}})
 	p.Race = "ASMODIANS"
 	npc := questCatalogNPC(s, p, imprisonedGourmetTalkNPC, 0x3125)
-	if len(d.QuestStarts[imprisonedGourmetStartNPC]) != 1 || len(d.QuestCustomTalks[imprisonedGourmetTalkNPC]) != 1 {
+	has := func(list []*data.QuestScript) bool {
+		return slices.ContainsFunc(list, func(s *data.QuestScript) bool { return s.ID == imprisonedGourmetQuestID })
+	}
+	if !has(d.QuestStarts[imprisonedGourmetStartNPC]) || !has(d.QuestCustomTalks[imprisonedGourmetTalkNPC]) {
 		t.Fatal("NPC start or auxiliary talk event is not registered")
 	}
 	if !c.imprisonedGourmetDialog(npc, script, -1) || packets.last(smEmotion) == nil {

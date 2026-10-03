@@ -34,7 +34,7 @@ TOKEN = re.compile(r'''
   | (?P<num>0[xX][0-9a-fA-F]+[lL]?|\d+\.\d*[fF]?|\d+[fFlL]?)
   | (?P<str>"(?:\\.|[^"\\])*")
   | (?P<id>[A-Za-z_$][A-Za-z0-9_$]*)
-  | (?P<op>==|!=|<=|>=|&&|\|\||\+\+|--|\+=|-=|[-+*/%<>=!?:;,.(){}\[\]&|@])
+  | (?P<op><<|>>|==|!=|<=|>=|&&|\|\||\+\+|--|\+=|-=|[-+*/%<>=!?:;,.(){}\[\]&|@])
 ''', re.S | re.X)
 
 
@@ -208,7 +208,7 @@ class Parser:
         self.eat(';')
         return ('expr', e)
 
-    PREC = [('||',), ('&&',), ('==', '!='), ('<', '>', '<=', '>='), ('+', '-'), ('*', '/', '%')]
+    PREC = [('||',), ('&&',), ('==', '!='), ('<', '>', '<=', '>='), ('<<', '>>'), ('+', '-'), ('*', '/', '%')]
 
     def expr(self, level=0):
         if level == len(self.PREC):
@@ -222,7 +222,11 @@ class Parser:
             self.eat()
             return ('instanceof', left, self.eat())
         if level == 0 and self.peek() == '?':
-            raise Unsupported('?:')
+            self.eat('?')
+            a = self.expr()
+            self.eat(':')
+            b = self.expr()
+            return ('ternary', left, a, b)
         return left
 
     def unary(self):
@@ -335,7 +339,10 @@ class Emitter:
         self.src = src
         self.helpers = {}  # name -> Go source
         # class int fields used as constants (questId is script.ID)
-        self.constants = {n: v for n, v in re.findall(r'\n\s*(?:private|protected|public)?\s*(?:final\s+)?(?:static\s+)?(?:final\s+)?int\s+(\w+)\s*=\s*(-?\d+)\s*;', src) if n != 'questId'}
+        decls = re.findall(r'\n\s*((?:(?:private|protected|public|static|final)\s+)*)int\s+(\w+)\s*(?:=\s*(-?\d+))?\s*;', src)
+        self.constants = {n: v for mods, n, v in decls if n != 'questId' and 'final' in mods and v}
+        # mutable int fields of the handler object: one value for every player, as in Java
+        self.fields = {n: v or '0' for mods, n, v in decls if 'final' not in mods}
         self.locals = {}  # java name -> kind: quest, obj, int, long, bool
         self.pre = []
         self.closure = 0
@@ -360,12 +367,19 @@ class Emitter:
         if t == 'paren':
             go, ty = self.ex(e[1])
             return '(' + go + ')', ty
+        if t == 'ternary':
+            ga, ta = self.ex(e[2])
+            gb, tb = self.ex(e[3])
+            return 'jIf(%s, %s, %s)' % (self.x(e[1]), ga, gb), (ta if ta != 'num' else tb)
         if t == 'cast':
             go, ty = self.ex(e[2])
             gotype = {'byte': 'byte', 'int': 'int32', 'long': 'int64', 'float': 'float32', 'short': 'int16', 'double': 'float64'}[e[1]]
             return '%s(%s)' % (gotype, go), ('int' if e[1] in ('int', 'short') else 'long' if e[1] == 'long' else 'num')
         if t == 'preinc':
             target = e[2]
+            if target[0] == 'name' and target[1] not in self.locals and target[1] in self.fields:
+                self.pre.append('%s %s 1' % (self.field(target[1]), '+=' if e[1] == '++' else '-='))
+                return self.field(target[1]), 'int'
             if target[0] != 'name' or target[1] not in self.locals:
                 raise Unsupported('++ of ' + dotted(target))
             self.pre.append('%s %s 1' % (goname(target[1]), '+=' if e[1] == '++' else '-='))
@@ -403,6 +417,8 @@ class Emitter:
                 return goname(n), kind
             if n in self.constants:
                 return self.constants[n], 'num'
+            if n in self.fields:
+                return self.field(n), 'int'
             raise Unsupported('name ' + n)
         s = dotted(e)
         fixed = {
@@ -419,6 +435,7 @@ class Emitter:
             'player.getCommonData().getPlayerClass()': ('p.Class', 'enum'),
             'player.getCommonData().getGender()': ('p.Gender', 'enum'),
             'player.getInstanceId()': ('p.instance', 'int'),
+            'player.getX()': ('p.X', 'num'), 'player.getY()': ('p.Y', 'num'), 'player.getZ()': ('p.Z', 'num'),
             'player.getWorldId()': ('p.WorldID', 'int'),
             'player.getTarget()': ('c.jTarget()', 'obj'),
         }
@@ -501,6 +518,8 @@ class Emitter:
                 return 'c.jSetVar(%s, %s)' % (q, self.num(a[0])), 'void'
             if name == 'setStatus':
                 return 'c.jSetStatus(%s, %s)' % (q, self.x(a[0])), 'void'
+            if name == 'setCompliteCount':
+                return 'c.jSetCompleteCount(%s, %s)' % (q, self.num(a[0])), 'void'
             raise Unsupported('qs.' + name)
         if name == 'getQuestVars' and recv is not None and self.ex(recv)[1] == 'questvars':
             return self.x(recv) + '.Vars', 'int'
@@ -512,7 +531,7 @@ class Emitter:
             return self.obj(recv) + '.npc.ID', 'int'
         if r == 'player.getInventory()' and name == 'getItemCountByItemId':
             return 'c.s.countItems(p, %s)' % self.num(a[0]), 'long'
-        if recv is None and re.search(r'private\s+(void|boolean|int)\s+%s\s*\(' % name, self.src):
+        if recv is None and re.search(r'(?:private|public|protected)\s+(void|boolean|int)\s+%s\s*\(' % name, self.src):
             return self.helper(name, a)
         if recv is None or r == 'this':
             if name == 'sendQuestDialog':
@@ -624,6 +643,32 @@ class Emitter:
             if name == 'getCurrentStat':
                 return '%s.stats.current(%s)' % (o, stat), 'int'
             return '%s.stats.set(%s, %s, false)' % (o, stat, self.num(a[1])), 'void'
+        if r == 'player.getRates()' and name in ('getQuestXpRate', 'getQuestKinahRate'):
+            return '1', 'num'  # the regular rates, as the server's quest rewards use
+        if r == 'player.getCommonData()' and name == 'addExp':
+            return 'c.s.giveExp(p, int64(%s))' % self.num(a[0]), 'void'
+        if r == 'player.getCommonData()' and name == 'addAp':
+            return 'c.s.addAP(p, int32(%s))' % self.num(a[0]), 'void'
+        if r == 'player.getCommonData()' and name == 'getDp' and not a:
+            return 'p.dp', 'int'
+        if r == 'player.getCommonData()' and name == 'setDp':
+            return 'c.jSetDP(%s)' % self.num(a[0]), 'void'
+        if r == 'player.getEquipment()' and name == 'itemSetPartsEquipped':
+            return 'int32(p.setPartsWorn(c.s.data, %s))' % self.num(a[0]), 'int'
+        if recv is not None and recv[0] == 'call' and recv[2] == 'getMoveController' and not recv[3]:
+            o = self.obj(recv[1])
+            if name == 'setNewDirection':
+                return '%s.move.setDirection(%s)' % (o, ', '.join('float32(%s)' % self.num(x) for x in a)), 'void'
+            if name == 'schedule' and not a:
+                return 'c.s.scheduleMove(%s)' % o, 'void'
+            if name == 'isScheduled' and not a:
+                return '%s.move.scheduled()' % o, 'bool'
+            if name == 'setFollowTarget':
+                return '%s.move.follow = %s' % (o, self.x(a[0])), 'void'
+            if name == 'setDistance':
+                return '%s.move.distance = float32(%s)' % (o, self.num(a[0])), 'void'
+            if name == 'stop' and not a:
+                return '%s.move.stop()' % o, 'void'
         if r == 'player.getCommonData()' and name == 'setPlayerClass':
             return 'p.Class = %s' % self.x(a[0]), 'void'
         if r == 'player.getCommonData()' and name == 'upgradePlayer':
@@ -707,6 +752,8 @@ class Emitter:
                 key = dotted(pk[2][0]).split('.', 1)[1]
                 code = int(re.search(r'\b%s\((0x[0-9A-Fa-f]+|\d+)\)' % re.escape(key), java).group(1), 0)
                 return 'c.send(systemMessage(%d%s))' % (code, ''.join(', ' + self.x(x) for x in pk[2][1:])), 'void'
+            if pk[1] == 'SM_QUEST_ACCEPTED' and len(pk[2]) == 3 and dotted(pk[2][1]).startswith('QuestStatus.'):
+                return 'c.send(questAccepted(2, store.Quest{ID: %s, Status: %s, Vars: %s}))' % (self.num(pk[2][0]), self.x(pk[2][1]), self.num(pk[2][2])), 'void'
             if pk[1] == 'SM_ASCENSION_MORPH' and len(pk[2]) == 1:
                 return 'c.send(ascensionMorph(byte(%s)))' % self.num(pk[2][0]), 'void'
             if pk[1] == 'SM_DIALOG_WINDOW':
@@ -717,9 +764,16 @@ class Emitter:
             raise Unsupported('packet ' + pk[1])
         raise Unsupported('call %s.%s' % (r, name))
 
+    def field(self, n):
+        go = 'java%d%s' % (self.qid, n[0].upper() + n[1:])
+        key = '__field_' + n
+        if key not in self.helpers:
+            self.helpers[key] = '// %s is the handler object\'s %s field: Java keeps one for every player.\nvar %s int32 = %s\n' % (go, n, go, self.fields[n])
+        return go
+
     def helper(self, name, args):
         """A private method of the handler class, translated once as its own Go method."""
-        m = re.search(r'private\s+(void|boolean|int)\s+%s\s*\(([^)]*)\)\s*\{' % name, self.src)
+        m = re.search(r'(?:private|public|protected)\s+(void|boolean|int)\s+%s\s*\(([^)]*)\)\s*\{' % name, self.src)
         ret, params = m.group(1), [x.split() for x in m.group(2).split(',') if x.strip()]
         params = [x[1:] if x[0] == 'final' else x for x in params]
         gofn = 'java%d%s' % (self.qid, name[0].upper() + name[1:])
@@ -877,6 +931,15 @@ class Emitter:
             raise Unsupported('local of type ' + jtype)
         if t == 'assign':
             target, op, value = s[1], s[2], s[3]
+            if target[0] == 'field' and dotted(target[1]) == 'this' and target[2] in self.fields:
+                target = ('fieldref', target[2])
+            elif target[0] == 'name' and target[1] not in self.locals and target[1] in self.fields:
+                target = ('fieldref', target[1])
+            if target[0] == 'fieldref':
+                go, ty = self.ex(value)
+                if ty == 'long':
+                    go = 'int32(%s)' % go
+                return [pad + '%s %s %s' % (self.field(target[1]), op, go)]
             if target[0] != 'name' or target[1] not in self.locals:
                 raise Unsupported('assignment to ' + dotted(target))
             go, ty = self.ex(value)
@@ -996,7 +1059,10 @@ def has_break(s):
 
 
 def java_file(qid):
-    files = glob.glob(os.path.join(JAVA, '*', '_%d[A-Za-z]*.java' % qid))
+    files = sorted(glob.glob(os.path.join(JAVA, '*', '_%d[A-Za-z_]*.java' % qid)))
+    if len(files) > 1:
+        # Java loads every copy and their register() calls all apply; take the one that also offers the quest.
+        files = [f for f in files if 'addOnQuestStart' in open(f).read()][:1] or files[:1]
     if len(files) != 1:
         raise Unsupported('no single Java file for %d' % qid)
     return files[0]
@@ -1004,7 +1070,7 @@ def java_file(qid):
 
 def method_body(src, name, ret=None):
     if ret is not None:
-        m = re.search(r'private\s+%s\s+%s\s*\([^)]*\)\s*\{' % (ret, name), src)
+        m = re.search(r'(?:private|public|protected)\s+%s\s+%s\s*\([^)]*\)\s*\{' % (ret, name), src)
     else:
         m = re.search(r'public\s+boolean\s+%s\s*\(\s*QuestEnv\s+\w+[^)]*\)\s*\{' % name, src)
     if not m:
@@ -1239,6 +1305,11 @@ def write(funcs):
         listed = [str(i) for i in ids if has(event, i) and regs[i].get(kind)]
         out += '// %s are the translated handlers registered for that event.\n' % name
         out += 'var %s = []int32{%s}\n\n' % (name, ', '.join(listed))
+    fields = []
+    for i in ids:
+        fields += re.findall(r'\nvar (java\w+) int32 = (-?\d+)\n', funcs[i])
+    out += '// javaResetFields puts the translated handlers\' object fields back to their initial values (tests).\n'
+    out += 'func javaResetFields() {\n' + ''.join('\t%s = %s\n' % f for f in fields) + '}\n\n'
     out += '// javaTalkNPCs are the npcs each translated handler registers its talk event on (register()).\n'
     out += 'var javaTalkNPCs = map[int32][]int32{\n'
     for n in sorted(talks):

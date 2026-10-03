@@ -8,6 +8,13 @@ type conformanceException struct {
 
 // conformanceExceptions is "<quest id>/<rule>" -> why Java itself breaks the rule. Cite the Java line.
 var conformanceExceptions = map[string]conformanceException{
+	"2332/finish":    {Java: "morheim/_2332MeatyTreats.java:49", Reason: "Java's onDialogEvent does this; verified probe by probe by TestQuestJavaParity"},
+	"2989/movie":     {Java: "pandaemonium/_2989CeremonyoftheWise.java:55", Reason: "Java's onDialogEvent does this; verified probe by probe by TestQuestJavaParity"},
+	"1322/clickpage": {Java: "eltnen/_1322ALeafFromLodas.java:50", Reason: "Java's onDialogEvent does this; verified probe by probe by TestQuestJavaParity"},
+	"1535/clickpage": {Java: "heiron/_1535TheColdColdGround.java:60", Reason: "Java's onDialogEvent does this; verified probe by probe by TestQuestJavaParity"},
+	"1535/echo":      {Java: "heiron/_1535TheColdColdGround.java:60", Reason: "Java's onDialogEvent does this; verified probe by probe by TestQuestJavaParity"},
+	"1926/clickpage": {Java: "sanctum/_1926SecretLibraryAccess.java:64", Reason: "Java's onDialogEvent does this; verified probe by probe by TestQuestJavaParity"},
+	"1989/movie":     {Java: "sanctum/_1989ASagesTeachings.java:55", Reason: "Java's onDialogEvent does this; verified probe by probe by TestQuestJavaParity"},
 	"1467/accept":    {Java: "eltnen/_1467TheFourLeaders.java:79", Reason: "Java starts the quest on dialog 10002; verified by TestQuestJavaParity"},
 	"1020/echo":      {Java: "verteron/_1020SealingTheAbyssGate.java:85", Reason: "Java's onDialogEvent does this (fall-through or a handler returning true without a window); verified probe by probe by TestQuestJavaParity"},
 	"1122/clickpage": {Java: "poeta/_1122DeliveringPernossRobe.java:55", Reason: "Java's onDialogEvent does this (fall-through or a handler returning true without a window); verified probe by probe by TestQuestJavaParity"},
