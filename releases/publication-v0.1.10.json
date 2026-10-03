@@ -1,0 +1,17 @@
+{
+  "release": "0.1.10",
+  "sourceRevision": "044c1ca177bf7ab6f841131e479afca630f8536b",
+  "verifiedAt": "2026-10-03T21:47:22.532557+00:00",
+  "tags": [
+    {
+      "role": "game-go",
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-game-go-v0.1.10",
+      "digest": "sha256:b5c11442383f0e96d6efb6df864fff5fc3c60bcc510c155ac609737127391c35"
+    },
+    {
+      "role": "game-go",
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-game-go-sha-044c1ca177bf",
+      "digest": "sha256:b5c11442383f0e96d6efb6df864fff5fc3c60bcc510c155ac609737127391c35"
+    }
+  ]
+}
