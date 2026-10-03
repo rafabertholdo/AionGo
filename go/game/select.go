@@ -363,9 +363,7 @@ func (c *conn) quit(r *wire.Reader) {
 	logout := r.C() == 1
 	c.leaveWorld()
 	c.state = inAuthed
-	w := wire.Packet(smQuitResponse)
-	w.D(1)
-	w.C(0)
+	w := quitResponse()
 	if logout {
 		c.send(w)
 		return
@@ -390,4 +388,12 @@ func readAppearance(r *wire.Reader) *store.Appearance {
 	r.C()
 	a.Height = r.F()
 	return a
+}
+
+// quitResponse is the Aion 1.9 final packet used for logout and server kicks.
+func quitResponse() *wire.Writer {
+	w := wire.Packet(smQuitResponse)
+	w.D(1)
+	w.C(0)
+	return w
 }

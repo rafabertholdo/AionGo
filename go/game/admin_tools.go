@@ -305,10 +305,7 @@ func (s *Server) shutdownPlayers(restart bool) {
 	}
 	s.adminShutdownTasks = nil
 	for _, p := range s.spawned {
-		w := wire.Packet(smQuitResponse)
-		w.D(1)
-		w.C(0)
-		p.conn.close(w)
+		p.conn.close(quitResponse())
 	}
 	if s.config.Shutdown != nil {
 		go s.config.Shutdown(restart)

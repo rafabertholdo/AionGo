@@ -8,13 +8,16 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"log/slog"
 	"net"
 	"net/netip"
 	"os"
+	"os/signal"
 	"strconv"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -31,6 +34,8 @@ func main() {
 		level = slog.LevelDebug
 	}
 	log := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: level}))
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 	started := time.Now()
 
 	host, err := netip.ParseAddr(env("HOST_NAME", "127.0.0.1"))
@@ -96,16 +101,11 @@ func main() {
 	}
 	// ReRun and aion-servers.sh wait for this line, as AL-Game prints it.
 	log.Info("Total Boot Time", "seconds", time.Since(started).Seconds())
-	go func() {
-		restart := <-shutdown
-		log.Info("administrative shutdown", "restart", restart)
-		clients.Close()
-	}()
-	if err := server.Serve(clients); err != nil {
-		fail(log, "serving players", err)
-	}
-	server.CloseClients()
+	serveErr := serveGame(ctx, server, clients, shutdown, log)
 	db.Close()
+	if serveErr != nil {
+		fail(log, "serving players", serveErr)
+	}
 }
 
 func env(name, fallback string) string {
@@ -125,4 +125,33 @@ func number(text string, fallback int) int {
 func fail(log *slog.Logger, what string, err error) {
 	log.Error(what, "err", err)
 	os.Exit(1)
+}
+
+type gameServer interface {
+	Serve(net.Listener) error
+	CloseClients()
+}
+
+// Stop accepting clients first, then kick and save every existing connection.
+func serveGame(ctx context.Context, server gameServer, clients net.Listener, shutdown <-chan bool, log *slog.Logger) error {
+	finished := make(chan struct{})
+	watcherDone := make(chan struct{})
+	go func() {
+		defer close(watcherDone)
+		select {
+		case <-ctx.Done():
+			log.Info("process shutdown requested")
+		case restart := <-shutdown:
+			log.Info("administrative shutdown", "restart", restart)
+		case <-finished:
+			return
+		}
+		clients.Close()
+	}()
+	err := server.Serve(clients)
+	clients.Close()
+	close(finished)
+	<-watcherDone
+	server.CloseClients()
+	return err
 }

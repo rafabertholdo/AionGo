@@ -74,7 +74,7 @@ type Server struct {
 	chat  *chatLink
 
 	clientWG sync.WaitGroup
-	clients  map[net.Conn]bool
+	clients  map[net.Conn]*conn
 	mu       sync.Mutex
 	accounts map[int32]*conn // logged in, by account id
 	players  map[int32]*conn // in the world, by player id
@@ -167,15 +167,16 @@ func (s *Server) Serve(l net.Listener) error {
 
 		s.mu.Lock()
 		if s.clients == nil {
-			s.clients = map[net.Conn]bool{}
+			s.clients = map[net.Conn]*conn{}
 		}
-		s.clients[c] = true
+		client := s.newClient(c)
+		s.clients[c] = client
 		s.clientWG.Add(1)
 		s.mu.Unlock()
 		go func() {
 			defer s.clientWG.Done()
 			defer func() { s.mu.Lock(); delete(s.clients, c); s.mu.Unlock() }()
-			s.handle(c)
+			s.handle(client)
 		}()
 
 	}
@@ -230,16 +231,22 @@ func (s *Server) currentConfig() Config {
 	return s.config
 }
 
-// CloseClients is called after Serve returns. It waits for character saves before process exit.
+// CloseClients is called after Serve returns. Every connected client receives the
+// same final packet as an administrative kick, including the character screen.
+// It waits for reader cleanup and character saves before process exit.
 func (s *Server) CloseClients() {
 	s.mu.Lock()
-	clients := make([]net.Conn, 0, len(s.clients))
-	for c := range s.clients {
+	clients := make([]*conn, 0, len(s.clients))
+	for _, c := range s.clients {
 		clients = append(clients, c)
 	}
 	s.mu.Unlock()
+	// A stalled client must not delay sending the kick to everyone else.
+	var kicks sync.WaitGroup
 	for _, c := range clients {
-		c.Close()
+		kicks.Go(func() { c.close(quitResponse()) })
 	}
+	kicks.Wait()
 	s.clientWG.Wait()
+	s.log.Info("game clients disconnected and character saves completed", "clients", len(clients))
 }

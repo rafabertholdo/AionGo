@@ -44,6 +44,7 @@ type conn struct {
 	netConn net.Conn
 	ip      string
 	crypt   *gameCrypt
+	key     int32
 	state   stateSet
 	account *account
 	player  *player // in the world
@@ -65,17 +66,21 @@ type conn struct {
 	dialogPassed  atomic.Bool
 }
 
-func (s *Server) handle(nc net.Conn) {
+func (s *Server) newClient(nc net.Conn) *conn {
 	ip, _, _ := net.SplitHostPort(nc.RemoteAddr().String())
 	var key [4]byte
 	_, _ = rand.Read(key[:])
 	crypt, sent := newGameCrypt(binary.LittleEndian.Uint32(key[:]))
-	c := &conn{s: s, netConn: nc, ip: ip, crypt: crypt, state: inConnected}
+	return &conn{s: s, netConn: nc, ip: ip, crypt: crypt, key: sent, state: inConnected}
+}
+
+func (s *Server) handle(c *conn) {
+	nc, ip := c.netConn, c.ip
 	s.log.Info("connection", "ip", ip)
 	defer c.disconnected()
 
 	w := wire.Packet(smKey)
-	w.D(sent)
+	w.D(c.key)
 	c.send(w)
 	verified, strays := false, 0
 	for {
