@@ -5,6 +5,19 @@ static data, database schema, and Go admin website. Git commits and pushes are
 allowed within the user's task scope; the restriction in `the-one` applies only
 to that sibling repository.
 
+This repository is public on GitHub. Never write private infrastructure or access
+details into repository files, including documentation, scripts, tests, fixtures,
+logs, or generated artifacts. This includes credentials, tokens, private keys,
+AWS account/profile/instance identifiers, SSH connection details, and private
+deployment addresses, paths, or backup locations. Use generic placeholders in
+public examples and keep operational notes and secrets outside the repository.
+Do not copy private configuration from sibling repositories or local machine
+settings into this repository. Before committing or pushing, review the full
+diff and new files for private information; do not include secrets in commit
+messages, PR descriptions, or published tool output. If existing repository
+content appears to expose private information, flag it to the user without
+repeating the sensitive values; do not rewrite Git history without authorization.
+
 For Go coding, review, debugging and setup, read `.agents/skills/golang-how-to/SKILL.md`
 and the relevant topic skills. Apply them within the module's Go 1.25 target,
 preserving Aion 1.9 packet bytes, opcodes, ordering, rounding and login crypto.
