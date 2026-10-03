@@ -13,10 +13,7 @@
   "goVet": "passed",
   "format": "gofmt clean",
   "vps": {
-    "address": "15.228.191.246",
     "verifiedAt": "2026-10-03T09:48:58.093272+00:00",
-    "databaseBackup": "/opt/aiongo/backups/pre-v0.1.2.sql.gz",
-    "databaseVolume": "aiongo_db-data",
     "checks": {
       "publicTCP2106": true,
       "publicTCP7777": true,

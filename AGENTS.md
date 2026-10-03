@@ -18,6 +18,10 @@ messages, PR descriptions, or published tool output. If existing repository
 content appears to expose private information, flag it to the user without
 repeating the sensitive values; do not rewrite Git history without authorization.
 
+For VPS deployments, read the private operational runbook at
+`../the-one/docs/AION_VPS_DEPLOYMENT.md`. Keep its connection details and
+operational records out of this public repository.
+
 For Go coding, review, debugging and setup, read `.agents/skills/golang-how-to/SKILL.md`
 and the relevant topic skills. Apply them within the module's Go 1.25 target,
 preserving Aion 1.9 packet bytes, opcodes, ordering, rounding and login crypto.

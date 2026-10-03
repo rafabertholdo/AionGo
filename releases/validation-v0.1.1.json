@@ -27,8 +27,6 @@
   "swiftFiles": "scoped lint and format passed",
   "repositorySwiftLint": "existing violations: 616 total, 26 serious",
   "vps": {
-    "address": "15.228.191.246",
-    "databaseBackup": "/opt/aiongo/backups/pre-commands-v0.1.1.sql.gz",
     "pingPacket": "passed",
     "adminCommands": "invul toggles, bookmark add/list/delete, spawn/delete, configure show, sys info passed",
     "databasePersistenceSchema": "passed with rolled-back writes",

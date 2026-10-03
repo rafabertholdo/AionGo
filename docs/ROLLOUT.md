@@ -85,12 +85,11 @@ the built OCI digest. See [image digests](../releases/v0.1.2.json),
 [publication](../releases/publication-v0.1.2.json), and
 [validation](../releases/validation-v0.1.2.json).
 
-The São Paulo VPS (`15.228.191.246`) now runs database, Go login, Go chat,
-Go game and panel images at `0.1.2`. All five deployed digests and source labels
-match the publication record. The existing `aiongo_db-data` volume was retained.
-A compressed, validated database backup is stored privately on the VPS at
-`/opt/aiongo/backups/pre-v0.1.2.sql.gz`; the previous Compose file is
-`/opt/aiongo/backups/compose-pre-v0.1.2.yaml`.
+Deployment verification confirmed all five image digests and source labels
+matched the publication record. The database volume was preserved, and a
+compressed database backup was validated before replacement. Private deployment
+addresses, configuration and backup locations are maintained outside this
+public repository.
 
 Validation: 2,349 Go tests passed, zero failed, seven database-dependent tests
 skipped; Go vet and formatting passed; all 15 image-tooling tests passed.
