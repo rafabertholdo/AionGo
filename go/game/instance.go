@@ -176,9 +176,10 @@ func (s *Server) portalUse(p *player, portal *data.Portal) {
 		s.teleportToInstance(p, world, in.id, portal.Exit.X, portal.Exit.Y, portal.Exit.Z, 0, 0)
 	}
 	switch {
-	case portal.Group && p.group == nil:
+	// ponytail: Go-only deviation for instance testing; a GM without a group gets a solo instance of a group portal.
+	case portal.Group && p.group == nil && p.conn.account.accessLevel == 0:
 		p.conn.send(systemMessage(msgInstanceGroupOnly))
-	case portal.Group:
+	case portal.Group && p.group != nil:
 		in := s.registeredInstance(world, p.group.id)
 		if in == nil {
 			in = s.newInstance(world)

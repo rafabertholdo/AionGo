@@ -54,3 +54,29 @@ func TestInstance(t *testing.T) {
 		}
 	}
 }
+
+// TestGroupPortalGM: a group portal turns away a player without a group, but takes a GM alone into an instance of its own.
+func TestGroupPortalGM(t *testing.T) {
+	d := staticDataOrSkip(t)
+	portal := d.Portals[700413] // Nochsana Training Camp, Elyos
+	if portal == nil || !portal.Group {
+		t.Skip("no Nochsana Training Camp portal in the data")
+	}
+	s := testServer(d)
+	p, tap := fighter(t, s, 1000)
+	s.spawn(p)
+	s.visMu.Lock()
+	defer s.visMu.Unlock()
+	p.level, p.Race = int(portal.MinLevel), portal.Race
+	world := portal.Exit.MapID
+	s.portalUse(p, portal)
+	if p.WorldID == world || tap.count(smSystemMessage) != 1 {
+		t.Fatalf("a player without a group entered: world %d, %v", p.WorldID, tap.counts)
+	}
+	p.conn.account.accessLevel = 1
+	s.portalUse(p, portal)
+	in := s.registeredInstance(world, p.ID)
+	if in == nil || p.WorldID != world || p.instance != in.id {
+		t.Fatalf("the GM isn't in its own instance: world %d, instance %d", p.WorldID, p.instance)
+	}
+}
