@@ -1,0 +1,27 @@
+{
+  "release": "0.1.11",
+  "sourceRevision": "fbdb0e1e404d8bac83ae7a1d4ef4e0283be61317",
+  "verifiedAt": "2026-10-04T00:39:09.707073+00:00",
+  "tags": [
+    {
+      "role": "db",
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-db-mariadb11-v0.1.11",
+      "digest": "sha256:0ac740db6f46b2365727a10c0fb78d68a918ade09919507f523550bc5824f0d6"
+    },
+    {
+      "role": "db",
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-db-mariadb11-sha-fbdb0e1e404d",
+      "digest": "sha256:0ac740db6f46b2365727a10c0fb78d68a918ade09919507f523550bc5824f0d6"
+    },
+    {
+      "role": "game-go",
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-game-go-v0.1.11",
+      "digest": "sha256:2f4663d4db15c0db4318adadbd5d2c2bdb0116e3fdae1b182373f1825306e759"
+    },
+    {
+      "role": "game-go",
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-game-go-sha-fbdb0e1e404d",
+      "digest": "sha256:2f4663d4db15c0db4318adadbd5d2c2bdb0116e3fdae1b182373f1825306e759"
+    }
+  ]
+}
