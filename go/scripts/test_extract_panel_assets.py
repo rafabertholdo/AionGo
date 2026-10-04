@@ -43,5 +43,28 @@ class ExtractGearSets(unittest.TestCase):
             self.assertNotIn('set-129', by_key)
 
 
+class ExtractSkills(unittest.TestCase):
+    def test_classes_renamed_and_stigmas_dropped(self):
+        with tempfile.TemporaryDirectory() as directory:
+            static = Path(directory) / 'static'
+            output = Path(directory) / 'output'
+            (static / 'skill_tree').mkdir(parents=True)
+            output.mkdir()
+            (static / 'skill_tree' / 'skill_tree.xml').write_text(
+                '<skill_tree>'
+                '<skill skillId="1" skillLevel="2" minLevel="3" race="ALL" classId="PRIEST" autolearn="true"/>'
+                '<skill skillId="4" skillLevel="1" minLevel="9" race="ELYOS" classId="CLERIC"/>'
+                '<skill skillId="5" skillLevel="1" minLevel="20" race="ALL" classId="FIGHTER" stigma="true"/>'
+                '</skill_tree>',
+                encoding='utf-8',
+            )
+            ASSETS.STATIC = str(static)
+            ASSETS.OUT = str(output)
+
+            self.assertEqual(2, ASSETS.extract_skills())
+            skills = json.loads((output / 'skills.json').read_text(encoding='utf-8'))
+            self.assertEqual({'CLERIC': [[1, 2, 3, 'ALL']], 'PRIEST': [[4, 1, 9, 'ELYOS']]}, skills)
+
+
 if __name__ == '__main__':
     unittest.main()

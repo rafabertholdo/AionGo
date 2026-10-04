@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"maps"
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -31,6 +33,66 @@ func TestAscensionPreparation(t *testing.T) {
 		if _, err := prepareAscension(input[0], input[1], input[2]); err == nil {
 			t.Errorf("accepted unsupported preparation: %v", input)
 		}
+	}
+}
+
+func TestNTCPreparation(t *testing.T) {
+	plan, err := prepareNTC("ELYOS", "WARRIOR", "TEMPLAR")
+	if err != nil || plan.class != "TEMPLAR" || plan.world != 400010000 || plan.x != 2890 || len(plan.quests) != 28 {
+		t.Fatalf("Elyos warrior: %+v, %v", plan, err)
+	}
+	if got := plan.gear[len(plan.gear)-2:]; got[0] != (equipItem{1, 100000975}) || got[1] != (equipItem{2, 115001027}) {
+		t.Fatalf("Templar weapons: %v", got)
+	}
+	plan, err = prepareNTC("ASMODIANS", "SPIRIT_MASTER", "")
+	if err != nil || plan.class != "SPIRIT_MASTER" || plan.x != 876.7211 || plan.quests[len(plan.quests)-1] != 2947 {
+		t.Fatalf("Asmodian spiritmaster: %+v, %v", plan, err)
+	}
+	if plan.gear[0] != (equipItem{1 << 3, 110101127}) || plan.gear[5] != (equipItem{1, 100600815}) {
+		t.Fatalf("Archon Recruit's gear: %v", plan.gear)
+	}
+	for _, input := range [][3]string{{"ELYOS", "WARRIOR", ""}, {"ELYOS", "WARRIOR", "RANGER"}, {"UNKNOWN", "CHANTER", ""}} {
+		if _, err := prepareNTC(input[0], input[1], input[2]); err == nil {
+			t.Errorf("accepted %v", input)
+		}
+	}
+}
+
+// The preset's item ids must stay level-25 gear of the server's item data.
+func TestNTCGearData(t *testing.T) {
+	dir := os.Getenv("AION_DATA")
+	if dir == "" {
+		t.Skip("set AION_DATA to the static data folder")
+	}
+	data, err := os.ReadFile(dir + "/items/item_templates.xml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, race := range []string{"ELYOS", "ASMODIANS"} {
+		for class := range ntcClassGear {
+			plan, err := prepareNTC(race, class, "")
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, item := range plan.gear {
+				if !bytes.Contains(data, fmt.Appendf(nil, `<item_template id="%d" level="25"`, item.id)) {
+					t.Errorf("%s %s: item %d is not level-25 gear", race, class, item.id)
+				}
+			}
+		}
+	}
+}
+
+func TestSkillsAt(t *testing.T) {
+	a := &assets{skills: map[string][]skillLearn{
+		"ALL":     {{1801, 1, 1, "ALL"}},
+		"WARRIOR": {{169, 9, 9, "ALL"}},
+		"TEMPLAR": {{200, 1, 10, "ALL"}, {200, 3, 20, "ALL"}, {200, 4, 26, "ALL"}, {300, 1, 12, "ASMODIANS"}},
+		"RANGER":  {{400, 1, 10, "ALL"}},
+	}}
+	want := map[int32]int32{1801: 1, 169: 9, 200: 3}
+	if got := a.skillsAt("TEMPLAR", "ELYOS", 25); !maps.Equal(got, want) {
+		t.Fatalf("skillsAt = %v, want %v", got, want)
 	}
 }
 
@@ -314,5 +376,111 @@ func TestCharacterGrantsDatabase(t *testing.T) {
 	}
 	if _, err := p.grantItem(request, "Hero", 3004, 1); err == nil {
 		t.Fatal("granted an item to an online character")
+	}
+}
+
+// This integration test creates its own schema and never writes a game character.
+func TestNTCDatabase(t *testing.T) {
+	host := os.Getenv("AION_TEST_DB")
+	if host == "" {
+		t.Skip("set AION_TEST_DB for MariaDB integration")
+	}
+	config := mysql.NewConfig()
+	config.Net, config.Addr, config.User, config.Passwd = "tcp", host+":3306", "root", "aion"
+	db, err := sql.Open("mysql", config.FormatDSN())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	schema := fmt.Sprintf("panel_ntc_test_%d", time.Now().UnixNano())
+	if _, err := db.Exec("CREATE DATABASE " + schema); err != nil {
+		t.Fatal(err)
+	}
+	defer db.Exec("DROP DATABASE " + schema)
+	for _, statement := range []string{
+		`CREATE TABLE ` + schema + `.players (id INT PRIMARY KEY, name VARCHAR(50), race VARCHAR(20), player_class VARCHAR(20), online BOOL, cube_size INT, deletion_date DATETIME NULL, exp BIGINT, recoverexp BIGINT, world_id INT, x FLOAT, y FLOAT, z FLOAT, heading INT) ENGINE=InnoDB`,
+		`CREATE TABLE ` + schema + `.player_quests (player_id INT, quest_id INT, status VARCHAR(20), quest_vars INT, complete_count INT, PRIMARY KEY(player_id,quest_id)) ENGINE=InnoDB`,
+		`CREATE TABLE ` + schema + `.player_skills (player_id INT, skillId INT, skillLevel INT, PRIMARY KEY(player_id,skillId)) ENGINE=InnoDB`,
+		`CREATE TABLE ` + schema + `.inventory (itemUniqueId INT PRIMARY KEY, itemId INT, itemCount BIGINT, itemColor INT, itemOwner INT, isEquiped BOOL, isSoulBound BOOL, slot INT, itemLocation INT NULL, enchant TINYINT, itemSkin INT, fusionedItem INT) ENGINE=InnoDB`,
+		`INSERT INTO ` + schema + `.players VALUES (1,'Hero','ELYOS','PRIEST',0,0,NULL,0,42,210010000,1,2,3,4)`,
+		`INSERT INTO ` + schema + `.player_quests VALUES (1,1031,'START',2,0)`,
+		`INSERT INTO ` + schema + `.player_skills VALUES (1,169,12)`,
+		`INSERT INTO ` + schema + `.inventory VALUES (20,100100001,1,0,1,1,0,1,0,0,0,0)`, // old mace
+		`INSERT INTO ` + schema + `.inventory VALUES (21,115000001,1,0,1,1,0,2,0,0,0,0)`, // old shield
+		`INSERT INTO ` + schema + `.inventory VALUES (22,125000001,1,0,1,1,0,4,0,0,0,0)`, // helmet stays
+	} {
+		if _, err := db.Exec(statement); err != nil {
+			t.Fatal(err)
+		}
+	}
+	exp := make([]int64, 50)
+	for i := range exp {
+		exp[i] = int64(i) * 1000
+	}
+	p := &panel{db: db, gsDB: schema, log: slog.New(slog.NewTextHandler(io.Discard, nil)), assets: &assets{
+		exp:    exp,
+		skills: map[string][]skillLearn{"CHANTER": {{169, 5, 20, "ALL"}, {500, 2, 25, "ALL"}, {501, 1, 30, "ALL"}}},
+	}}
+	request := httptest.NewRequest("POST", "/admin/character", nil)
+	if _, err := p.prepareNTC(request, "Hero", ""); err == nil {
+		t.Fatal("prepared a base class without a choice")
+	}
+	for range 2 { // repeating the preset keeps one set of gear
+		if class, err := p.prepareNTC(request, "Hero", "CHANTER"); err != nil || class != "CHANTER" {
+			t.Fatal(class, err)
+		}
+	}
+	var class string
+	var level int64
+	var world int
+	if err := db.QueryRow(`SELECT player_class,exp,world_id FROM `+schema+`.players WHERE id=1`).Scan(&class, &level, &world); err != nil {
+		t.Fatal(err)
+	}
+	if class != "CHANTER" || level != 24000 || world != 400010000 {
+		t.Fatalf("character: %s %d %d", class, level, world)
+	}
+	var completed int
+	if err := db.QueryRow(`SELECT COUNT(*) FROM ` + schema + `.player_quests WHERE status='COMPLETE' AND complete_count=1`).Scan(&completed); err != nil || completed != 28 {
+		t.Fatal("completed quests", completed, err)
+	}
+	skills := map[int32]int32{}
+	rows, err := db.Query(`SELECT skillId, skillLevel FROM ` + schema + `.player_skills`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for rows.Next() {
+		var id, level int32
+		if err := rows.Scan(&id, &level); err != nil {
+			t.Fatal(err)
+		}
+		skills[id] = level
+	}
+	if !maps.Equal(skills, map[int32]int32{169: 12, 500: 2}) {
+		t.Fatalf("skills: %v", skills)
+	}
+	equipped := map[int64]int32{}
+	var cube []int32
+	rows, err = db.Query(`SELECT itemId, isEquiped, slot FROM ` + schema + `.inventory`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for rows.Next() {
+		var id int32
+		var isEquipped bool
+		var slot int64
+		if err := rows.Scan(&id, &isEquipped, &slot); err != nil {
+			t.Fatal(err)
+		}
+		if isEquipped {
+			equipped[slot] = id
+		} else {
+			cube = append(cube, id)
+		}
+	}
+	if len(equipped) != 7 || equipped[1] != 101500760 || equipped[4] != 125000001 || equipped[8] != 110501041 {
+		t.Fatalf("equipped: %v", equipped)
+	}
+	if slices.Sort(cube); !slices.Equal(cube, []int32{100100001, 115000001}) {
+		t.Fatalf("cube: %v", cube)
 	}
 }

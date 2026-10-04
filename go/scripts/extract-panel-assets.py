@@ -8,6 +8,7 @@ and writes, into the output folder:
   items.json   item id -> name, icon, quality, level, type, stats, bonuses
   gear-sets.json curated gear sets and the item ids each grants
   exp.json     total experience at the start of each level (AL-Game's table)
+  skills.json  class -> [skill id, skill level, min level, race] of the skill tree, without stigmas
   icons/       item icons as PNG
   skins/       every UI skin of the client's atlases, cut out as PNG
   skins.css    .s-<skin> and .p-<preset> classes drawing them (9-slices as border-image)
@@ -226,6 +227,25 @@ def extract_gear_sets():
     return len(sets)
 
 
+# skill_tree.xml keeps legacy class names, with Priest and Cleric reversed (game/data skillTreeClass).
+SKILL_TREE_CLASSES = {'FIGHTER': 'GLADIATOR', 'KNIGHT': 'TEMPLAR', 'WIZARD': 'SORCERER',
+                      'ELEMENTALLIST': 'SPIRIT_MASTER', 'CLERIC': 'PRIEST', 'PRIEST': 'CLERIC'}
+
+
+def extract_skills():
+    """Writes the skill tree by player class, for the instance presets that teach a level's skills."""
+    skills = {}
+    for skill in ET.parse(f'{STATIC}/skill_tree/skill_tree.xml').getroot().iter('skill'):
+        if skill.get('stigma') == 'true':
+            continue
+        cls = SKILL_TREE_CLASSES.get(skill.get('classId'), skill.get('classId'))
+        skills.setdefault(cls, []).append([int(skill.get('skillId')), int(skill.get('skillLevel')),
+                                           int(skill.get('minLevel')), skill.get('race', 'ALL')])
+    with open(f'{OUT}/skills.json', 'w') as out:
+        json.dump(skills, out, separators=(',', ':'))
+    return sum(len(entries) for entries in skills.values())
+
+
 def icon_to_png(raw, path):
     Image.open(io.BytesIO(raw)).crop((0, 0, ICON_SIZE, ICON_SIZE)).save(path, optimize=True)
 
@@ -329,7 +349,8 @@ def main():
     exp = [int(e.text) for e in ET.parse(f'{STATIC}/player_experience_table.xml').getroot().iter('exp')]
     json.dump(exp, open(f'{OUT}/exp.json', 'w'))
     gear_sets = extract_gear_sets()
-    print(f'{len(items)} items, {icons} icons, {skins} skins, {presets} presets, {len(exp)} levels, {gear_sets} gear sets -> {OUT}')
+    skills = extract_skills()
+    print(f'{len(items)} items, {icons} icons, {skins} skins, {presets} presets, {len(exp)} levels, {gear_sets} gear sets, {skills} skills -> {OUT}')
 
 
 if __name__ == '__main__':

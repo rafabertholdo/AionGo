@@ -202,6 +202,13 @@ input:checked + .tab { color:#f1ead0; }
 <p>Set level 9, complete the starting campaign, advance Ascension to the conversation that enters the trial instance, and move beside Pernos (Elyos) or Munin (Asmodian). Requires a base class. Campaign rewards are not granted. Asmodian Ascension requires the Java server.</p>
 <button{{if .Online}} disabled{{end}}>Prepare for Ascension trial</button>
 </form>
+<form method="post" action="/admin/character">
+<input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
+<input type="hidden" name="action" value="ntc">
+<p>Instance tester, Nochsana Training Camp: set level 25, complete the campaign below level 25 and the Abyss access quests, learn every skill of the level including spellbook skills (not stigmas), equip the class's level-25 Recruit's armor and weapons, and move beside the camp's portal in the Abyss. Replaced equipment goes to the cube. Entering needs a group. Campaign rewards are not granted.</p>
+{{with advanced .Class}}<label>Ascend to <select name="class" required><option value="">Choose a class…</option>{{range .}}<option value="{{.}}">{{title .}}</option>{{end}}</select></label>{{end}}
+<button{{if .Online}} disabled{{end}}>Prepare for Nochsana Training Camp</button>
+</form>
 </details>
 </section>
 {{end}}

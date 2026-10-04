@@ -11,6 +11,7 @@ import (
 	"html/template"
 	"math"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -58,6 +59,123 @@ func prepareAscension(race, class, schema string) (ascensionPreparation, error) 
 	default:
 		return ascensionPreparation{}, errors.New("Unsupported character race.")
 	}
+}
+
+// advancedClasses are the classes each base class can ascend to.
+var advancedClasses = map[string][]string{
+	"WARRIOR": {"GLADIATOR", "TEMPLAR"},
+	"SCOUT":   {"ASSASSIN", "RANGER"},
+	"MAGE":    {"SORCERER", "SPIRIT_MASTER"},
+	"PRIEST":  {"CLERIC", "CHANTER"},
+}
+
+// ntcLevel is Nochsana Training Camp's entry level (portal_templates.xml allows 25 to 28).
+const ntcLevel = 25
+
+type instancePreparation struct {
+	class   string
+	quests  []int // completed, rewards not granted
+	gear    []equipItem
+	world   int
+	x, y, z float64
+}
+
+type equipItem struct {
+	slot int64 // AL-Game's ItemSlot
+	id   int32
+}
+
+func questRange(first, last int) []int {
+	var quests []int
+	for quest := first; quest <= last; quest++ {
+		quests = append(quests, quest)
+	}
+	return quests
+}
+
+// ntcQuests are each race's campaign missions below level 25, in chain order, and the Abyss access quests.
+var ntcQuests = map[string][]int{
+	"ELYOS":     slices.Concat(questRange(1000, 1007), questRange(1011, 1023), questRange(1031, 1034), questRange(1920, 1922)),
+	"ASMODIANS": slices.Concat(questRange(2000, 2009), questRange(2011, 2022), questRange(2031, 2033), questRange(2945, 2947)),
+}
+
+// ntcArmor is the level-25 Guardian Recruit's vendor armor: torso, gloves, shoulders, pants, boots.
+var ntcArmor = map[string][]int32{
+	"plate":   {110601025, 111601002, 112600975, 113600986, 114600982},
+	"chain":   {110501041, 111501011, 112500960, 113501019, 114501027},
+	"leather": {110301073, 111301028, 112300973, 113301045, 114301080},
+	"cloth":   {110101126, 111101021, 112100980, 113101034, 114101062},
+}
+
+var ntcArmorSlots = []int64{1 << 3, 1 << 4, 1 << 11, 1 << 12, 1 << 5}
+
+// ntcClassGear is each advanced class's armor and Guardian Recruit's weapons (main hand, then off hand).
+var ntcClassGear = map[string]struct {
+	armor   string
+	weapons []int32
+}{
+	"GLADIATOR":     {"plate", []int32{100900733}},            // greatsword
+	"TEMPLAR":       {"plate", []int32{100000975, 115001027}}, // sword, shield
+	"ASSASSIN":      {"leather", []int32{100200866, 100200866}},
+	"RANGER":        {"leather", []int32{101700779}},
+	"SORCERER":      {"cloth", []int32{100500758}}, // orb
+	"SPIRIT_MASTER": {"cloth", []int32{100600814}}, // spellbook
+	"CLERIC":        {"chain", []int32{100100739, 115001027}},
+	"CHANTER":       {"chain", []int32{101500760}},
+}
+
+// prepareNTC picks the advanced class (a base class ascends to choice) and what it takes to stand at the
+// Nochsana Training Camp portal in the Abyss.
+func prepareNTC(race, class, choice string) (instancePreparation, error) {
+	if options, ok := advancedClasses[class]; ok {
+		if !slices.Contains(options, choice) {
+			return instancePreparation{}, errors.New("Choose the advanced class this character ascends to.")
+		}
+		class = choice
+	}
+	gear, ok := ntcClassGear[class]
+	if !ok {
+		return instancePreparation{}, errors.New("Unsupported character class.")
+	}
+	plan := instancePreparation{class: class, quests: ntcQuests[race], world: 400010000}
+	// Asmodian Archon Recruit's items are each Guardian Recruit's id plus one.
+	raceOffset := int32(0)
+	switch race {
+	case "ELYOS":
+		plan.x, plan.y, plan.z = 2890, 754, 1498.5786
+	case "ASMODIANS":
+		plan.x, plan.y, plan.z = 876.7211, 3079.2874, 1644.5786
+		raceOffset = 1
+	default:
+		return instancePreparation{}, errors.New("Unsupported character race.")
+	}
+	for i, id := range ntcArmor[gear.armor] {
+		plan.gear = append(plan.gear, equipItem{ntcArmorSlots[i], id + raceOffset})
+	}
+	for i, id := range gear.weapons {
+		plan.gear = append(plan.gear, equipItem{1 << i, id + raceOffset})
+	}
+	return plan, nil
+}
+
+// skillsAt is every non-stigma skill a class of race knows at level, at its highest level: the
+// autolearned ones and the spellbook ones. Base-class entries end at level 9.
+func (a *assets) skillsAt(class, race string, level int32) map[int32]int32 {
+	base := class
+	for b, options := range advancedClasses {
+		if slices.Contains(options, class) {
+			base = b
+		}
+	}
+	skills := map[int32]int32{}
+	for _, c := range []string{"ALL", base, class} {
+		for _, s := range a.skills[c] {
+			if s.MinLevel <= level && (s.Race == "ALL" || s.Race == race) && s.Level > skills[s.ID] {
+				skills[s.ID] = s.Level
+			}
+		}
+	}
+	return skills
 }
 
 func (a *assets) experienceForLevel(level int) (int64, error) {
@@ -113,6 +231,10 @@ func (p *panel) editCharacter(u *user, w http.ResponseWriter, r *http.Request) {
 		if action == "ascension" {
 			message = "Ready for Ascension: level 9, previous campaign quests completed. Log in and speak to Pernos (Elyos) or Munin (Asmodian) to enter the Ascension trial instance. Complete the trial there to choose your class. Quest rewards were not granted."
 		}
+	case "ntc":
+		var class string
+		class, err = p.prepareNTC(r, name, r.FormValue("class"))
+		message = fmt.Sprintf("Ready for Nochsana Training Camp: level %d %s with the campaign below level 25 and Abyss access completed, the level's skills learned and Recruit's gear equipped. Log in beside the camp's portal in the Abyss; entering takes a group. Quest rewards were not granted.", ntcLevel, title(class))
 	case "kinah":
 		var amount int64
 		amount, err = positiveAmount(r.FormValue("amount"), math.MaxInt64)
@@ -475,6 +597,121 @@ func (p *panel) updateCharacter(r *http.Request, name, action string, exp int64)
 	}
 	if err = tx.Commit(); err != nil {
 		return p.editDatabaseError(err)
+	}
+	return nil
+}
+
+// prepareNTC sets the level, class, campaign, skills and equipment of an NTC run, and moves the character
+// beside the camp's portal. Replaced equipment goes to the cube; it returns the class.
+func (p *panel) prepareNTC(r *http.Request, name, choice string) (string, error) {
+	if len(p.assets.skills) == 0 {
+		return "", errors.New("The panel's skill tree is missing. Refresh the panel assets before preparing an instance.")
+	}
+	exp, err := p.assets.experienceForLevel(ntcLevel)
+	if err != nil {
+		return "", err
+	}
+	tx, err := p.db.BeginTx(r.Context(), nil)
+	if err != nil {
+		return "", errors.New("Unable to save the character.")
+	}
+	defer tx.Rollback()
+	record, err := p.lockOfflineCharacter(r.Context(), tx, name)
+	if err != nil {
+		return "", err
+	}
+	plan, err := prepareNTC(record.race, record.class, choice)
+	if err != nil {
+		return "", err
+	}
+	ctx := r.Context()
+	if _, err = tx.ExecContext(ctx, `UPDATE `+p.gsDB+`.players SET player_class = ?, exp = ?, recoverexp = 0, world_id = ?, x = ?, y = ?, z = ?, heading = 0 WHERE id = ?`,
+		plan.class, exp, plan.world, plan.x, plan.y, plan.z, record.id); err != nil {
+		return "", p.editDatabaseError(err)
+	}
+	for _, quest := range plan.quests {
+		if _, err = tx.ExecContext(ctx, `INSERT INTO `+p.gsDB+`.player_quests (player_id, quest_id, status, quest_vars, complete_count) VALUES (?, ?, 'COMPLETE', 0, 1) ON DUPLICATE KEY UPDATE status = VALUES(status), quest_vars = VALUES(quest_vars), complete_count = GREATEST(complete_count, 1)`, record.id, quest); err != nil {
+			return "", p.editDatabaseError(err)
+		}
+	}
+	for id, level := range p.assets.skillsAt(plan.class, record.race, ntcLevel) {
+		if _, err = tx.ExecContext(ctx, `INSERT INTO `+p.gsDB+`.player_skills (player_id, skillId, skillLevel) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE skillLevel = GREATEST(skillLevel, VALUES(skillLevel))`, record.id, id, level); err != nil {
+			return "", p.editDatabaseError(err)
+		}
+	}
+	if err = p.equip(ctx, tx, record, plan.gear); err != nil {
+		return "", err
+	}
+	if err = tx.Commit(); err != nil {
+		return "", p.editDatabaseError(err)
+	}
+	return plan.class, nil
+}
+
+// equip puts gear in its slots. What those slots and the off hand held goes to the cube, unless it is the same item.
+func (p *panel) equip(ctx context.Context, tx *sql.Tx, record characterEditRecord, gear []equipItem) error {
+	want := map[int64]int32{}
+	for _, item := range gear {
+		want[item.slot] = item.id
+	}
+	rows, err := tx.QueryContext(ctx, `SELECT itemUniqueId, itemId, slot FROM `+p.gsDB+`.inventory WHERE itemOwner = ? AND isEquiped = 1 FOR UPDATE`, record.id)
+	if err != nil {
+		return p.editDatabaseError(err)
+	}
+	var unequip []int32
+	for rows.Next() {
+		var uniqueID, itemID int32
+		var slot int64
+		if err = rows.Scan(&uniqueID, &itemID, &slot); err != nil {
+			rows.Close()
+			return p.editDatabaseError(err)
+		}
+		id, ok := want[slot]
+		switch {
+		case ok && id == itemID:
+			delete(want, slot)
+		case ok || slot == 1<<1: // a two-handed weapon needs the off hand empty
+			unequip = append(unequip, uniqueID)
+		}
+	}
+	if err = rows.Err(); err != nil {
+		rows.Close()
+		return p.editDatabaseError(err)
+	}
+	if err = rows.Close(); err != nil {
+		return p.editDatabaseError(err)
+	}
+	if len(unequip) > 0 {
+		var usedSlots int
+		if err = tx.QueryRowContext(ctx, `SELECT COUNT(*) FROM `+p.gsDB+
+			`.inventory WHERE itemOwner = ? AND isEquiped = 0 AND COALESCE(itemLocation, 0) = 0 AND itemId <> ?`,
+			record.id, kinahID).Scan(&usedSlots); err != nil {
+			return p.editDatabaseError(err)
+		}
+		if free := baseCubeSlots + record.cubeSize*9 - usedSlots; free < len(unequip) {
+			return fmt.Errorf("The character's cube needs %d free slots for the replaced equipment; it has %d.", len(unequip), max(free, 0))
+		}
+		for _, uniqueID := range unequip {
+			if _, err = tx.ExecContext(ctx, `UPDATE `+p.gsDB+`.inventory SET isEquiped = 0, slot = ? WHERE itemUniqueId = ?`, adminItemSlot, uniqueID); err != nil {
+				return p.editDatabaseError(err)
+			}
+		}
+	}
+	ids, err := p.reserveAdminItemIDs(ctx, tx, len(want))
+	if err != nil {
+		return err
+	}
+	i := 0
+	for _, item := range gear {
+		if _, ok := want[item.slot]; !ok {
+			continue
+		}
+		if _, err = tx.ExecContext(ctx, `INSERT INTO `+p.gsDB+`.inventory
+			(itemUniqueId, itemId, itemCount, itemColor, itemOwner, isEquiped, isSoulBound, slot, itemLocation, enchant, itemSkin, fusionedItem)
+			VALUES (?, ?, 1, 0, ?, 1, 0, ?, 0, 0, 0, 0)`, ids[i], item.id, record.id, item.slot); err != nil {
+			return p.editDatabaseError(err)
+		}
+		i++
 	}
 	return nil
 }

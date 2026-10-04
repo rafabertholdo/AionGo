@@ -30,10 +30,21 @@ type itemInfo struct {
 
 // assets are the client's item data and UI art; without them the page still lists items by id.
 type assets struct {
-	dir   string
-	items map[int32]itemInfo
-	sets  []gearSetInfo
-	exp   []int64 // total experience at the start of each level, from level 1
+	dir    string
+	items  map[int32]itemInfo
+	sets   []gearSetInfo
+	exp    []int64                 // total experience at the start of each level, from level 1
+	skills map[string][]skillLearn // skill tree by player class, without stigmas
+}
+
+// skillLearn is a skills.json entry: [skill id, skill level, min level, race].
+type skillLearn struct {
+	ID, Level, MinLevel int32
+	Race                string
+}
+
+func (s *skillLearn) UnmarshalJSON(b []byte) error {
+	return json.Unmarshal(b, &[4]any{&s.ID, &s.Level, &s.MinLevel, &s.Race})
 }
 
 type gearSetInfo struct {
@@ -98,7 +109,7 @@ func isSpellbookItem(item itemInfo) bool {
 
 func loadAssets(dir string, log *slog.Logger) *assets {
 	a := &assets{dir: dir, items: map[int32]itemInfo{}}
-	for name, into := range map[string]any{"items.json": &a.items, "gear-sets.json": &a.sets, "exp.json": &a.exp} {
+	for name, into := range map[string]any{"items.json": &a.items, "gear-sets.json": &a.sets, "exp.json": &a.exp, "skills.json": &a.skills} {
 		data, err := os.ReadFile(filepath.Join(dir, name))
 		if err == nil {
 			err = json.Unmarshal(data, into)
@@ -197,22 +208,25 @@ var (
 	//go:embed character.html
 	characterHTML string
 	characterPage = template.Must(template.New("character").Funcs(template.FuncMap{
-		"title": func(s string) string {
-			s = strings.ToLower(strings.ReplaceAll(s, "_", " "))
-			words := strings.Fields(s)
-			for i, w := range words {
-				words[i] = strings.ToUpper(w[:1]) + w[1:]
-			}
-			return strings.Join(words, " ")
-		},
-		"list":   func(items ...string) []string { return items },
-		"commas": commas,
-		"add":    func(a, b int) int { return a + b },
-		"mul":    func(a, b int) int { return a * b },
-		"mod":    func(a, b int) int { return a % b },
-		"div":    func(a, b int) int { return a / b },
+		"title":    title,
+		"advanced": func(class string) []string { return advancedClasses[class] },
+		"list":     func(items ...string) []string { return items },
+		"commas":   commas,
+		"add":      func(a, b int) int { return a + b },
+		"mul":      func(a, b int) int { return a * b },
+		"mod":      func(a, b int) int { return a % b },
+		"div":      func(a, b int) int { return a / b },
 	}).Parse(characterHTML))
 )
+
+// title turns an enum name like SPIRIT_MASTER into Spirit Master.
+func title(s string) string {
+	words := strings.Fields(strings.ToLower(strings.ReplaceAll(s, "_", " ")))
+	for i, w := range words {
+		words[i] = strings.ToUpper(w[:1]) + w[1:]
+	}
+	return strings.Join(words, " ")
+}
 
 func (p *panel) character(u *user, w http.ResponseWriter, r *http.Request) {
 	v := characterView{User: u, Query: strings.TrimSpace(r.URL.Query().Get("name"))}
