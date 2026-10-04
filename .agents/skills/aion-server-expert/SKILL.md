@@ -255,9 +255,11 @@ AL-Game's other packets; every packet with no capture from the morning stack is 
 
 ## Quest porting and current status
 
-Read `go/PORTING.md` for subsystem status, `go/QUEST_PORTING.md` for the quest
-handoff, and `go/QUEST_AUDIT.md` for outstanding conformance findings. Do not
-copy dated handler counts into this skill. Query the live claim inventory:
+Read `go/PORTING.md` for authoritative subsystem and quest status, and
+`go/QUEST_AUDIT.md` for outstanding conformance findings. Do not
+copy dated handler counts into this skill. The claim inventory scans custom
+registrations and local claim markers; a free ID may already use an XML or
+prologue handler. Check the roadmap before treating it as unported:
 
 ```sh
 python3 go/scripts/quest-claim.py status

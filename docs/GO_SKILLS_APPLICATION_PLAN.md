@@ -8,7 +8,7 @@ sample, not an exhaustive audit or a claim that all checks have passed.
 Planning update, 2026-10-02: the porting roadmap now incorporates a critical
 Go reliability pass before broader non-quest feature work, followed by a full
 codebase review alongside porting. Quest implementation and quest correctness
-continue in parallel. See [JAVA_GO_PORT_PLAN.md](JAVA_GO_PORT_PLAN.md).
+continue in parallel. See [the port status](../go/PORTING.md).
 
 ## Scope and findings
 

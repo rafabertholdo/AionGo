@@ -1,274 +1,204 @@
-# Porting Aion Lightning 1.9 to Go
+# Java-to-Go port status
 
-The goal is every server in Go, speaking the same protocols and using the same
-database and `AL-Game/data`, so the 1.9 client and existing characters work
-unchanged. Automated tests cover broad behavior; representative flows must
-also be checked with the real client and old 1.9 server recordings.
+Updated 2026-10-04 by comparing the current Go source, Java handlers and XML
+catalog. This is the single authoritative port status and remaining-work
+roadmap, including quests. It replaces `docs/JAVA_GO_PORT_PLAN.md` and
+`go/QUEST_PORTING.md`.
 
-## Done
+The target is the implemented Aion 1.9 behavior of the Java login, chat and
+game servers, using the same static data and compatible database schemas.
+Java 21 source contains known 2.0 packet leftovers; old 1.9 recordings and the
+real client resolve protocol disagreements. Source coverage, automated parity,
+client verification and deployment are separate facts. No overall completion
+percentage or current running-image claim follows from this inventory.
 
-- **Login server** (`login/`, `cmd/loginserver`) — all of AL-Login: client
-  login with its Blowfish/RSA crypto, server list, play, reconnect; game server
-  registration, account auth, kicks, access level, bans; account time.
-- **Chat server** (`chat/`, `cmd/chatserver`) — all of AL-CServer, except that
-  a message now reaches only its own channel, not every channel of its kind.
-- The login server lets a restarted game server register again at once: a
-  killed container never closes its old connection, which AL-Login would
-  hold on to until TCP gave up.
+## Implemented systems
 
-## Game server (`game/`, `cmd/gameserver`)
+| Area | Go implementation and coverage |
+| --- | --- |
+| Login | `login/`, `cmd/loginserver`: Blowfish/RSA, server list, play/reconnect, game registration, account authentication, kicks, access levels, bans and account time. Restarted game servers can replace stale registrations. |
+| Chat | `chat/`, `cmd/chatserver`: Java chat behavior; messages are restricted to their own channel rather than all channels of the same kind. |
+| Characters and world entry | Character creation/select/delete/restore, stat calculation, inventory, skills, quests, settings, titles, macros, bind point, weather and saving. Packet goldens include world entry and the corrected 1.9 player-info layout. |
+| World and combat | Visibility, map channels, movement, walking/wandering NPCs, aggro/chase/home AI, attacks, NPC skills, death/respawn, experience/levels, regeneration, resurrection, PvP and duels. |
+| Items and economy | Cube, equipment, drops, shops, warehouses/account warehouse, gathering/crafting, enchanting, manastones, godstones, stigmas, dye, remodelling, arms fusion, trade, private stores, mail and broker. |
+| Skills | Casting, targets, cooldowns, interrupts, damage/healing, buffs/debuffs, control effects, shields, dispels, signets, auras, traps, servants and spirit-master summons. Saved effects and skill/item cooldowns persist across relogs. |
+| Social | Friends, blocks, whispers, player search/LFG, six-player groups and loot roll/bid, 24-player alliances, subgroup moves, target brands, legions, emblem send/modify, history and kisks. |
+| World services | NPC/flight teleporters, instance isolation, rifts, siege ownership/influence, zones, drowning/death levels, weather/game time, bind stones, postboxes, announcements, HTML welcome, optional simple class change, petitions, punishments and admin commands. |
 
-The local development stack runs the Go game server; Java remains the behavior
-reference until Go reaches parity.
-Packets are checked byte for byte against AL-Game's: `cmd/gamesniff` relays a
-client to either server and logs every packet decrypted, and
-`game/testdata/java-enter-world.txt` is AL-Game entering the world with
-Wrathchild, which `game/world_test.go` compares the Go packets with.
+These systems have implementations and automated checks of varying scope.
+Their presence does not certify every Java branch or every client flow.
+Login and chat also remain part of the final source review.
 
-1. [x] Network: game crypto, opcodes, framing; login server link (register,
-   account auth); chat server link.
-2. [x] Character select: list (AL-Game's order: never played, then most
-   recent), name check, create, delete, restore. Checked with the client.
-3. [x] Entering the world: skills, quests, recipes, UI settings, inventory,
-   stats (AL-Game's stat engine: class templates, item modifiers, sets,
-   manastones, titles, mastery and other passive skills), bind point, macros,
-   titles, channel, abyss rank, weather, chat token; moving; leaving the world
-   and saving position, life stats, settings and the game clock. The client
-   enters the world with Wrathchild on the Go server.
-   Left for later milestones: god stones and enchantment in stats (7), item
-   cooldowns and saved effects (8), sieges in SM_SIEGE_LOCATION_INFO (11),
-   friends, blocks and mail (10). A new character's first login starts its
-   race's intro quest and movie through the first quest handlers (9).
-   Moving hasn't been tried in the client: synthetic keys and clicks don't
-   reach the game once in the world (Wine raw input), so it needs real hands.
-4. [x] World: known lists (visibility distance 95, all spawned players checked
-   on each move, no map regions yet); seeing other players; moving (every
-   movement type of CM_MOVE except flying and gliding state); normal and shout
-   chat to those in range. Checked with the client: `cmd/aionbot` walks and talks
-   as a second player and the client sees her.
-   Emotions and player states (sit, weapon out, walk, loot) and target selection
-   match the 1.9 server's (`game/testdata/play-session-1.9.txt`).
-   Left: flying, group, alliance, legion and whisper chat (10), admin commands (11).
-5. [~] Static data: NPC and gatherable templates, tribes and spawns loaded; every
-   spawn group of the maps that aren't instances puts its pool at its first
-   spots (50,739 npcs and 13,608 gatherables), and players see them within the
-   visibility distance (map squares of 256 make the lookup cheap). SM_NPC_INFO
-   and SM_GATHERABLE_INFO match the 1.9 server's byte for byte
-   (`game/testdata/*-1.9.txt`, from the server the client was written for).
-   Spawns take object ids from `firstObjectID` up, as AL-Game's take the first
-   ids: with a low id (Gopherina, id 1, was created before the floor) the
-   1.9 client shows an unnamed object where the player stands.
-   Left: walking npcs (npc_walker.xml, random walks), respawns, static
-   objects, instances, day and night spawns, the channels of twin maps.
-6. [~] Combat: normal attacks (AL-Game's damage formulas, hit statuses, multiple
-   hits), monsters that notice, chase, hit and lose interest, walk home and
-   heal (the AI's events, states and desires ported as they are, at the same
-   one second and half second beats), npcs that walk their routes or wander,
-   death, corpses that decay, respawns, experience and levels, a player's
-   life and mana coming back on their own and the client told of them within
-   100 ms. Checked with the aionbot (`-fight`), which fights the nearest
-   monster over the network, and `TestFightAMonster`.
-   Aggro fix: AL-Game's SEE_PLAYER handler does nothing to a monster that is
-   already ACTIVE and scheduled, so a wandering/walking monster (most spawns
-   have `rw`) never noticed anyone; the port now looks again when a player
-   comes into view and the monster has no AggressionDesire, and a fight isn't
-   dropped because someone else comes into view. AttackDesire/MoveToTargetDesire
-   `onClear` (weapon away, stop following) were empty. `aggro_test.go` covers
-   approach, range, level+10, entering the world, wandering monsters, linked
-   tribes, and going home and healing. The static data has no `AGGRESSIVE`
-   npc_type: aggression is the tribe's (AggroIcon).
-   Death costs experience (a third of it for good, the rest recoverable), and the
-   player revives at the bind point or by skill, rebirth or a resurrection stone.
-   Duels (request, confirmation, no death, result) and attacks between players of
-   different races.
-   Killing a player of the other race gives abyss points by the damage done (groups share),
-   and the dead loses some; abyss ranks follow the points.
-   Left: the abyss's other sources of points, the skills of the high ranks, the legions' shares, duels,
-   summons, drops (7), spells and effects (8), group rewards (10).
-7. [~] Items: drops (droplist, at AL-Game's rate), the corpse's loot window and
-   taking loot, the cube (adding, stacking, moving, removing, kinah),
-   equipping and unequipping with AL-Game's checks (level, race, class, the skill
-   for the weapon or armor, hands), soul binding through question windows, and the
-   client told through SM_ADD_ITEMS, SM_UPDATE_ITEM and SM_UPDATE_PLAYER_APPEARANCE.
-   SM_ADD_ITEMS and SM_UPDATE_ITEM match the 1.9 server's byte for byte.
-   Using items works for the skill actions (potions, food, scrolls: the skill is
-   cast, the item used up, the use delay kept and sent) and skill books.
-   Shops: the buy and sell dialogs (2 and 3) of npcs with a trade list, buying and
-   selling at AL-Game's prices (`shop.go` answers those two dialogs before the quests'
-   `dialogSelect`, which handles the rest). Item cooldowns, self resurrection stones.
-   Warehouse (npc dialog 20, moving, splitting, merging, swapping, deleting, kinah
-   between cube and warehouse), expanding cube and warehouse, soul healing by dialog.
-   The warehouse packets follow AL-Game's and aren't checked against a 1.9 recording.
-   Gathering (materials, the skill and its experience, the plant used up and back after its
-   respawn time), crafting (recipes learned by items or with the skill, components, critical
-   products, skill and player experience), dye scrolls, and the masters who teach the next level of a crafting skill.
-   Enchanting (stones with AL-Game's rates, the stats each level adds) and socketing manastones.
-   Godstone socketing charges the Java service fee, replaces the existing socket and consumes one stone atomically;
-   sockets persist across item reloads and appear in inventory/equipment packets. A godstone on a weapon in hand procs
-   its skill on the player's target when the player attacks (GodStone's ATTACK observer, `godstoneProcs`).
-   Account warehouse (`accountwh.go`: item and kinah rows in location 2 owned by the account id, 17 places, no expansion,
-   shared by the characters of an account, sent with the warehouse dialog; AL-Game has no restrictions on what goes in).
-   Left: the other item actions (supplements for enchants), crafting stations (static objects),
-   the legion warehouse, abyss shops, enchanting, stigmas, mail, the broker.
-8. [~] Skills engine: the skill templates read as they are in the XML; casting
-   (properties, conditions, cast time, cooldowns, interrupts by movement and
-   damage), targets (one, area, friends, enemies), effects: damage (magic
-   and physical, front and back modifiers), healing (hp, mp, fp, dp), stat
-   buffs and debuffs, damage and healing over time, poison and bleeding,
-   stun, root, sleep, paralyze, fear, silence, blind, snare, slow, bind,
-   shields, taunts, dispelling buffs; effect icons within 100 ms as AL-Game.
-   SM_CASTSPELL and SM_CASTSPELL_END match the 1.9 server's byte for byte.
-   Also transform, hide, always block/dodge/parry/resist, drains, delayed damage,
-   provoking, stagger, stumble, open aerial, spin, pulled, dash, move behind,
-   resurrect and rebirth, dispelling physical and mental debuffs, HP/MP switch.
-   Monsters use the skills of `npc_skills.xml` (SkillUseDesire).
-   Signets (carve and burst), auras, traps and servants, and the summons of spirit masters (the
-   panel, the modes, attacking on command, skills, the client-driven movement, letting go).
-   Stigma stones (shards, the skills they teach while worn, shown as stigma skills).
-   Left: search, skill launchers, the toy pets. Skills are learned on level up (and at 10, the crafting
-   skill switches), matching the 1.9 server's SM_SKILL_LIST.
-9. [~] Quests: the two prologues, four shared Java XML templates
-   (`report_to`, `monster_hunt`, `item_collecting`, `work_order`), and the five
-   specialized XML quests are ported. The Go server dispatches all 1,596 XML
-   declarations, with indexed NPC markers, dialogs, hunt counters, collection and
-   quest drops. Work orders grant temporary components and recipes, check
-   crafting skill ranges, and clean up on completion or abandonment. Eligibility
-   covers race, level, class, gender, prerequisites, and repeat count. Completion handles fixed and selectable
-   items, experience, kinah, titles, Abyss Points, and cube expansion. Quest
-   state and persistent special rewards are saved together. The automated
-   catalog tests start and complete all 1,596 XML quests; these are
-   synthetic tests, not a client or live database parity check.
-   The user confirmed the first Elyos quest at Elpas in the 1.9 client.
-   215 custom Java handlers are now completed and tested, including the first Elyos
-   and Asmodian campaign chains, Poeta's The Nymph's Gown and The Kerub Threat,
-   Elyos quests 1011–1023, Summons to the Citadel (1130), Missing Poppy (1149),
-   Stolen Village Seal (1156), Gaphyrk's Love (1157), Village Seal Found (1158),
-   Sword of Transcendence (1097), The Red Journal (3060), the Asmodian startup
-   and campaign quests 2011–2018, 2123, 2136, 2200, and 2300, Reducing Tursin Strength
-   (1194), Krall Book (1197), A Secret Delivery (1220), and Orders from Telemachus (1300).
-   **Still open:** the current `scripts/quest-claim.py status` reports zero active claims,
-   109 free unported handlers, and 218 registered in Go. Ten registered drafts still
-   need focused tests and are excluded from the free count. Group progress, generic
-   quest work-item cleanup on abandonment, reward edge cases,
-   and broader client verification remain. See [QUEST_PORTING.md](QUEST_PORTING.md)
-   for the source map, exact tests, gaps, and next steps. Do not mark milestone
-   9 complete based on the catalog test alone.
-10. [~] Social: whispers (level 10, blocked players), friends (asking through the
-   question window, notes, online status and login/logout notices to friends in
-   the world), blocks with reasons; stored in `friends` and `blocks`.
-   Groups of six (invitation, leaving, kicking, leader, group chat, member info kept
-   up to date, shared experience and loot rules, kinah sharing). The 1.9 client hasn't
-   seen the group packets yet: they follow AL-Game's, which has 2.0 leftovers elsewhere,
-   so check them against a recorded session.
-   Trading between players (offers of items and kinah, lock, confirm) and private stores
-   (the sign, selling by price, buying through the seller's dialog).
-   Mail (sending with AL-Game's commission, reading, taking the item or the kinah, deleting;
-   the mailbox is loaded five seconds after entering the world).
-   Legions (founding, invitations, ranks, leaving, kicking, brigade general, announcements, nicknames,
-   permissions, chat, levels, disbanding; stored in `legions` and `legion_members`).
-   The broker (registering, browsing by kind and sorting, buying, cancelling, settling the account, expiry).
-   Small requests: titles, macros, taking off effects, looking at a player, searching for players, a group's loot rules.
-   NPC map search (`CM_OBJECT_SEARCH`): first spawn in static file order, including other maps;
-   Java-compatible `SM_SHOW_NPC_ON_MAP`, with capture/client verification still open.
-   Alliances of 24 (invitation merging groups, leaving, banning, captain and vice captains,
-   alliance chat, member info; no loot rules or readiness checks; unverified against 1.9).
-   Group/alliance target brands (`CM_SHOW_BRAND`), including clearing: any member can
-   broadcast Java-compatible `SM_SHOW_BRAND`; capture/client verification remains open.
-   Legion emblems (buying, sending; uploaded emblem images aren't).
-   Legion history (the tabs). Kisks (the item, binding by use mask, resurrections, destruction).
-   Left: the legion warehouse and express mail (AL-Game leaves both off).
-11. [~] Regular npc teleporters (the map, the price, the teleport delay), and admin
-   commands (`//add`, `//kinah`, `//goto`, `//moveto`, `//heal`, `//kill`, `//rez`, `//set level|exp`,
-   `//morph`, `//announce`) for accounts with an access level.
-   Flying and gliding (fly time running out in the air and coming back on the ground).
-   Instances (a portal npc, with its use time and checks of race, level, title and group; an
-   instance of the map with its npcs for the player or group, that goes when it has been empty
-   a minute; logging in inside one) — players see only those of their own instance.
-   Petitions and punishments (petition.go, punish.go, store/punish.go): CM_PETITION files or cancels a player's single
-   open petition (petitions table, queue in memory, SM_PETITION with place and wait, resent on login and when the queue
-   moves; game masters online are told); `//petition [id [delete | reply <text>]]` lists, reads, deletes or answers by mail
-   (`sendLetter`, so the admin pays the commission and must share the race, as in AL-Game). `//gag|ungag`, `//sprison|rprison`
-   (player_punishments: sentence in ms, counted only while online, saved on logout, restored on login into the prison map
-   510010000; chat, attack, skills, items, equipment and invites refused there), `//kick`, and `//ban|unban|banip|unbanip`
-   which send CM_BAN to the login server. Left, as in AL-Game: gags aren't saved; a prison sentence of 0 minutes has no timer.
-   Differences: cancelling with no open petition does nothing (AL-Game files an empty one); `//sprison` on a dead or
-   still-loading player doesn't move him (teleportTo needs a spawned, living player); per-command access levels
-   (administration.properties) aren't checked, any game master may use them; the ban result isn't reported back to the admin.
-   Left: instance-specific scripts (doors, bosses, keys), the twin maps' channels, abyss, the
-   rest of the commands.
-   Rifts (services_rift.go): every 100 minutes one of each region's seven rifts opens at random in Eltnen, Heiron, Morheim
-   and Beluslan (master and its slave in the other race's map, 26 minutes); the master asks the question to go through,
-   teleports to the slave, counts entries and closes both when full; SM_RIFT_STATUS on sight, SM_RIFT_ANNOUNCE on open and on
-   level ready. Left: the other channels of the maps; the level range and race are only shown to the client, as in AL-Game;
-   AL-Game's rifts never close on their own (backwards despawn test), these do after 26 minutes; the 1.9 packet layout
-   of SM_RIFT_ANNOUNCE is the source's own guess, unchecked against a capture.
-   Sieges (services_siege.go): AL-Game's SiegeService is only ownership, not battles. Each fortress, artifact and boss raid
-   has a race, legion, vulnerable and next state (artifacts always vulnerable), owners kept in siege_locations;
-   `//siege capture|set|list|help` (smart prefix matching) changes them, saves, and broadcasts SM_SIEGE_LOCATION_INFO
-   (change) and SM_INFLUENCE_RATIO (fortress 10, artifact 1, boss raids 0) to everyone in the world. Left, as in AL-Game:
-   the siege timer (always 0), the fights, converting a captured fortress's spawns; a 0 total influence sends zeros where AL-Game sends NaN.
-   Zones, weather and game time (zones.go, data/zones.go): zones/zones_*.xml (polygon, top/bottom, priority, fly,
-   breath, links) load with world_maps.xml's death and water levels. A player's zone is found on entering a map and
-   after a same-map teleport (ZONE_REFRESH) and follows moves through the linked zones (ZONE_UPDATE); CM_EMOTION's fly
-   is refused with STR_FLYING_FORBIDDEN_HERE where the zone doesn't say fly (no zone allows it); below the death level a
-   player dies, and below the water level less 1.6 heights it drowns (a tenth of max HP every 2 s) unless the zone is
-   breathable. Weather is redrawn every 2 h by a 2-minute check and its map's players told (before, only at login);
-   SM_GAME_TIME goes to everyone every 3 minutes. Left, as in AL-Game: it sends no zone-name packet, and day/night
-   events have no caller; zones are checked on each move, not in a 4 s batch; AL-Game keeps a stale zone on a refresh
-   that finds none and never looks it up on login (so its flying check waits for a teleport), here it does;
-   the quest engine's onEnterZone isn't called (the quest files belong to another change: hook it in `updateZone`);
+Recent completed features previously listed as missing include LFG, godstones,
+group loot roll/bid, map channels, custom settings, saved effects/cooldowns,
+`search`, `returnpoint`, `mpuseovertime`, `onetimeboostskillattack`,
+`magiccounteratk`, `petorderuseultraskill`, and the 15-second disconnect delay.
+Request implementations also include `CM_SHOW_BRAND`, `CM_ALLIANCE_GROUP_CHANGE`,
+`CM_OPEN_STATICDOOR`, `CM_CLIENT_COMMAND_ROLL`, `CM_OBJECT_SEARCH`,
+`CM_REPORT_PLAYER`, `CM_CLIENT_COMMAND_LOC` and `CM_DISCONNECT`.
 
-## To check against the 1.9 client
+## Quests: all source quest IDs are covered
 
-Everything below was ported from AL-Game's source and tested with unit tests (and the SQL
-against the real database: `AION_TEST_DB=<db host> go test ./game/store`), but no recorded
-1.9 session has these packets, and the source has 2.0 leftovers. Record a session with
-`docker/capture-1.9.sh` doing each of these on the Java stack, save it under
-`game/testdata/`, and compare the way `TestCastPacketsMatchClient19` does:
+There is no remaining backlog of unported Java quest IDs. The current source
+inventory contains **1,923 distinct quest IDs**, covered as follows:
 
-- godstone socketing/replacement, the service fee and weapon glow after equipping/relogging;
-- groups (invite, accept, leave, kick, leader, loot rules), group chat;
-  group loot rolls and quality settings are implemented with protected winner
-  reservations and atomic grants; bids pay the winning bid, shared among the other
-  members asked, in the same transaction as the item;
-- saved effects and skill cooldowns (player_effects) across relogs; the search,
-  returnpoint, mpuseovertime, onetimeboostskillattack, magiccounteratk and
-  petorderuseultraskill skill effects;
-- friends, blocks, whispers, `/who` (CM_PLAYER_SEARCH), looking at a player;
-  LFG status 9, LFG-only search and result status 2 are implemented with packet
-  regression tests; real-client confirmation remains pending;
-- trading, private stores, mail (send, read, take), the broker (register, list, buy, settle);
-- warehouse (open, put in, take out, expand), cube expansion, soul healing;
-- npc teleporters, portals into a dungeon (SM_CHANNEL_INFO with the instance);
-- flying, gliding and landing; duels; summons of a spirit master;
-- gathering and crafting (SM_GATHER_UPDATE, SM_CRAFT_UPDATE), enchanting, stigma stones, dye;
-- founding and running a legion.
+| Source/implementation | Count | Evidence |
+| --- | ---: | --- |
+| XML declarations | 1,596 | `java/AL-Game/data/static_data/quest_script_data/*.xml`, loaded by `game/data/quest_scripts.go`: 170 report-to, 316 monster hunts, 613 item collections, 492 work orders and five specialized XML quests. |
+| Custom Go registrations | 325 | `QuestCustom` entries in `game/data/quest_scripts.go`; hand-written/shared handlers and translated Java handlers. |
+| Race prologues | 2 | Quests 1000 and 2000 run through `game/quest.go:startPrologue`. |
 
-Item remodelling (CM_ITEM_REMODEL: skin and dye taken from another item, or removed with a pattern reshaper, 1000 kinah, level 20) and arms fusion (CM_FUSION_WEAPONS/CM_BREAK_WEAPONS, `services_remodel.go`); as in AL-Game a fused weapon's manastones are not transferred, its stats are not added, and the fusion fee is checked but never charged. 
+The Java custom-handler tree has **330 files representing 329 distinct IDs**.
+Of those IDs, 325 have custom registrations; 1139 is covered by the XML monster
+hunt, 3913 by the XML report-to handler, and 1000/2000 by the prologue path.
+Do not add Java file counts to the XML count without deduplicating IDs.
+Quest metadata also contains entries without executable handlers; metadata
+counts are not playable-quest coverage counts.
 
-Small controllers and services (`services_small.go`; hooks on CM_SHOW_DIALOG and CM_DIALOG_SELECT that sort after the quests'):
-bind stones (npc type RESURRECT, `bind_points.xml`: the question, the price, SM_SET_BIND_POINT, the level-update broadcast, AL-Game's
-race and territory refusals unless `Config.CrossFactionBinding`, no binding in the prison map), postboxes (dialog 18), the item
-`extract` action (item 165000001: five seconds, then the item and one extractor become 1-3 enchantment stones), HTMLService
-(SM_QUESTIONNAIRE in chunks; `HTML/welcome.xhtml` shown on entering the world when `Config.HTMLWelcome`), AnnouncementService (the
-`announcements` table, one repeating task per row, by faction and chat type; loaded once at start, no reload command) and
-ClassChangeService (`Config.SimpleSecondClass`, off as in AL-Game's custom.properties: the level 9 dialog on login and on level up, the
-choice sets the class, recomputes stats and skills, completes quests 1006/1007 or 2008/2009; the class is saved with the character).
-The three flags are the env vars `AION_SIMPLE_2NDCLASS`, `AION_HTML_WELCOME`, `AION_CROSS_FACTION_BINDING` of cmd/gameserver.
-Differences: AL-Game takes a class choice from anyone at any time (and always completes the quests), here only a level 9 player of the
-matching first class may choose, and the quests' dialog handler sees the packet when it isn't one; the bind stone doesn't leave a kisk.
-Not ported: StaticObjectController (empty in AL-Game; static objects, `spawns/StaticObjects`, send the client nothing, and no code looks
-them up), ActionitemController (USEITEM npcs: its dialog is the quest engine's, with the quest work items).
+`python3 go/scripts/quest-claim.py status` currently prints 329 handlers,
+325 registered, zero claimed and two free (1139 and 2000). This tool only scans
+custom registrations and local claim markers, so **its free count is not a
+missing-quest count**. Both entries already have implementations. Local claim
+state can change this output without changing source coverage.
 
-Not ported yet: siege battles (below), the legion warehouse.
-Flight teleporters (flight.go): the earlier note was wrong, npc_teleporter.xml has 58 FLIGHT teleporters with a `teleportid` per destination, but
-the path itself is in the client (AL-Game has no path data either). CM_TELEPORT_SELECT on a FLIGHT teleporter charges the same 0.8 x price,
-sets the flying bit (FLIGHT_TELEPORT shares FLYING's), clears ACTIVE, and broadcasts SM_EMOTION START_FLYTELEPORT(path id); SM_PLAYER_INFO
-adds path id and distance while it lasts; CM_FLIGHT_TELEPORT moves the player to the client's position and keeps the distance;
-LAND_FLYTELEPORT lands (state back to ACTIVE, zone refreshed). Left, as in AL-Game: nothing checks the client's positions against the
-path, and nothing lands a player who disconnects mid-flight (the state isn't saved).
-Pets: AL-Game 1.9 has no pet system (no PetService, no SM_PET*/CM_PET* packets, no adopt action; `pet_skills` static data is unused).
-`ToyPetSpawnAction` is the kisk, ported in `services_kisk.go`. Nothing to port.
+### Implementation and evidence
+
+- Shared XML behavior is in `game/quest_dialog.go`, `quest_templates.go`,
+  `quest_workorder.go`, `quest_xml.go`, `quest_world.go` and `loot.go`.
+- Custom behavior is in `game/quest_*.go`. Generated Java translations are in
+  `game/quest_java_dialogs.go`, produced by `go/scripts/quest-java-port.py`.
+  `game/quest_java_events.go` dispatches translated kills, attacks, item use,
+  zones, movies, world entry, deaths and quest finishes. Level-up and other
+  shared hooks also participate; these events are implemented, not an unported
+  handler backlog.
+- `TestQuestJavaParity` replays `QuestTraceDump` dialog probes, comparing quest
+  packets, state, inventory and experience. The local 2026-10-03 trace artifact
+  contains all 1,923 IDs, and its report contains no differing-probe rows.
+  This artifact was inspected, not regenerated during this documentation update.
+  The test skips IDs absent from `Data.QuestScripts` (the separate prologue
+  path), probes where Java throws, and explicit `parityDeviation` cases. An
+  empty report therefore does not mean every event was verified.
+- Catalog tests cover all XML families using synthetic fixtures. Work-order
+  turn-in tests inject crafted goods; they do not prove a live crafting chain.
+  Focused custom-handler and event tests provide additional evidence.
+- The first Elyos quest was previously confirmed by the user in the 1.9
+  client. Broader individual quest/client confirmation is not recorded here.
+
+### Remaining quest correctness and verification
+
+1. Extend parity probes beyond dialogs to kills, attacks, item use, zones,
+   world entry, deaths, movies, timers, spawns and teleports. Inspect event
+   branches and shared helper side effects against Java.
+2. Audit party kill credit, generic work-item cleanup on completion/abandonment,
+   special rewards, and atomic or idempotent item/experience/kinah persistence.
+   Treat these as cross-system parity/reliability checks, not missing quest IDs.
+3. Reconcile the open findings in [QUEST_AUDIT.md](QUEST_AUDIT.md) with Java
+   behavior and parity evidence. A matching dialog probe does not automatically
+   close every conformance finding.
+4. Check representative 1.9 client flows and disposable-database persistence:
+   dialog pages, NPC availability, quest drops, timers and rewards. Do not ask
+   the user to play every quest as a substitute for automated coverage.
+
+Use [QUEST_HANDLER_AGENT.md](QUEST_HANDLER_AGENT.md) for bounded implementation
+and verification batches, [QUEST_TRIAGE.md](QUEST_TRIAGE.md) for symptoms, and
+[QUEST_DEBUG.md](QUEST_DEBUG.md) for Java/Go comparisons. These documents describe
+workflow and findings; maintain coverage/status only in this roadmap.
+
+## Confirmed missing Java behavior
+
+| Behavior | Java evidence | Current Go gap |
+| --- | --- | --- |
+| Fall damage | `CM_MOVE` calls `StatFunctions.calculateFallDamage` when enabled, for grounded active players meeting the movement/distance conditions. | `game/world.go:move` explicitly notes fall damage is unported. |
+| Enchantment-stone supplements | `services/EnchantService.java:enchantItem` adjusts success chance and consumes the applicable supplement quantity. | `game/enchant.go:startEnchanting` passes supplements only to manastone socketing; `enchantItem` has no supplement argument or handling. Manastone supplements already work. |
+
+Java source paths in this table are under
+`java/AL-Game/src/main/java/com/aionemu/gameserver/`.
+This is a confirmed list, not an exhaustive method-by-method certification.
+
+## Remaining source audit
+
+- Channel interactions with rifts, broadcasts and world-scoped scans.
+- Handler-managed spawns and static/action objects; crafting station checks;
+  instance-specific doors, keys and boss behavior. Establish which branches
+  Java actually implements before adding dungeon functionality.
+- Abyss shop currency, prices, conditions and rank restrictions; legion
+  contribution/reward edges; alliance readiness/loot and group reward edges.
+- Java DAO/configuration coverage, command branches, and reconnect/restart
+  persistence. The Go command catalog lists the Java admin command set, so an
+  old note saying “rest of the commands” is not proof of missing commands.
+- Packet safety, authorization, concurrency, lifecycle and transaction review
+  across all Go packages. Follow
+  [GO_SKILLS_APPLICATION_PLAN.md](../docs/GO_SKILLS_APPLICATION_PLAN.md) and
+  record fixes and actual checks in
+  [GO_REVIEW_LEDGER.md](../docs/GO_REVIEW_LEDGER.md).
+
+Implement confirmed gaps in bounded batches. Audit existing systems before
+scheduling their reimplementation. Keep port coverage and Go review evidence
+separate, and update this document when either establishes a new port gap.
+
+## Implemented behavior awaiting broader verification
+
+Compare old 1.9 captures and representative client flows for:
+
+- Groups, loot roll/bid, alliance subgroup changes/brands, friends, blocks,
+  whispers, LFG/search and player inspection.
+- Trade, private stores, mail, broker, warehouses, cube expansion and soul healing.
+- Teleporters, channels, instances, static doors, flight/gliding, duels and summons.
+- Gathering, crafting, enchanting, godstone socketing/procs, stigmas, dye and legions.
+- Settings, saved effects and cooldowns across relogs/restarts, plus disconnect
+  cleanup and persistence. Java flags report/disconnect opcodes as uncertain.
+
+Use existing captures before recording duplicates. Byte parity with Java 21
+alone does not prove compatibility with the 1.9 client.
+
+Existing databases may need the item-cooldown schema update shipped in the
+source: `ALTER TABLE item_cooldowns MODIFY use_delay INT UNSIGNED NOT NULL`.
+Delays can reach 43,200,000 ms. This documentation update does not apply migrations.
+
+## Java limitations and intentional differences
+
+- Siege battles/timers and captured-fortress spawn conversion are absent from
+  Java; both servers implement ownership/influence. Working battles are new work.
+- Legion warehouse/express mail are disabled or unavailable in the reference.
+  A general pet system is absent; `ToyPetSpawnAction` is the implemented kisk.
+- `skilllauncher` is a Java stub. Legion emblem upload has no observable Java
+  implementation; send/modify are ported. Static objects send no client packets.
+- `CM_SHOW_MAP`, `CM_QUESTIONNAIRE` and the trivial group-response path match
+  inert Java behavior; empty handlers do not by themselves indicate port gaps.
+- Go intentionally restricts chat to its channel, expires rifts after 26 minutes,
+  and restores saved effect duration without Java's relog extension. Defensive
+  request validation and the simple-class-change eligibility checks also differ.
+
+Validate disabled paths before deciding to expand their scope. Day/night event
+scheduling and broader dungeon mechanics likewise need source-backed scope.
+
+## Development checks
+
+Run from the repository root, sequentially on this host:
+
+```sh
+go/scripts/run-go.sh go test -json ./...
+go/scripts/run-go.sh go vet ./...
+go/scripts/run-go.sh gofmt -l .
+go/scripts/run-go.sh go build ./cmd/...
+```
+
+The wrapper mounts Java static data and sets `AION_DATA`. Database integration
+requires disposable fixtures; absent optional fixtures must be reported as skips.
+Report exact passed/failed/skipped test-node counts, including subtests, for
+new verification runs. Run `go/scripts/quest-parity.sh` to regenerate Java
+traces and execute the parity comparison; traces are local artifacts and the
+parity test skips when they are absent.
+
+For quest code changes, use focused checks during implementation, then one full
+suite/vet pass and one local game image for the completed batch as described in
+[QUEST_HANDLER_AGENT.md](QUEST_HANDLER_AGENT.md). Documentation-only updates
+need source-count and link checks, not a server image or server test run.
+
+Image names/releases come from `image-manifest.json`. Port verification does
+not authorize deployment or stack restarts. Keep Go and Java game databases
+separate and preserve persistent database volumes. The runtime's actual deployed
+revision must be inspected when relevant; dated handoffs cannot establish it.
 
 ## How to test gathering
 

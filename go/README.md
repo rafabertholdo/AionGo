@@ -1,8 +1,8 @@
 # Aion 1.9 server in Go
 
 This is the tracked Go port of Aion Lightning's login, chat and game servers.
-Progress and known gaps are in [PORTING.md](PORTING.md); the quest migration
-handoff is in [QUEST_PORTING.md](QUEST_PORTING.md). The original Java
+Subsystem and quest coverage, known gaps and verification work are maintained
+in [PORTING.md](PORTING.md). The original Java
 source and its 55 MB of game data remain at
 `java`; this module uses
 the original `AL-Game/data/static_data` without copying it into the repository.

@@ -96,12 +96,15 @@ The generic rules only find what they can see; when auditing, still diff the who
 handler branch by branch.
 
 Use this brief for a fresh agent context. The overall objective and current counts
-are in [QUEST_PORTING.md](QUEST_PORTING.md). Take only Java handler IDs claimed to your agent name. Identical handlers may share one Go implementation after each source ID has been individually claimed. The Java source is
+are in [PORTING.md](PORTING.md). Take only Java handler IDs claimed to your agent name. Identical handlers may share one Go implementation after each source ID has been individually claimed. The Java source is
 under `java/AL-Game`.
 
-## Claim your handler first (several agents port quests at once)
+## Claim coordination for new handler work
 
-Never pick a handler by eye. From `Apps/AionServer`:
+All current source quest IDs are covered, as documented in `PORTING.md`.
+Use audit claims for existing findings. For newly identified custom-handler
+gaps, check shared XML/prologue coverage before treating a free ID as unported.
+The claim commands below coordinate new handler work. From `go/`:
 
 ```sh
 scripts/quest-claim.py next <your-name>            # claims and prints the lowest free id
@@ -146,14 +149,14 @@ claimed. Port only ids you hold; if `claim` fails, take another.
    treating a partial test as completion.
 3. The integrating agent owns shared registration and dispatch edits:
    `game/data/quest_scripts.go`, `game/quest_custom.go`, shared event wiring,
-   `QUEST_PORTING.md`, and `PORTING.md`. Provide the registration facts (NPC,
+   `PORTING.md`. Provide the registration facts (NPC,
    object, item and kill IDs) and function name in your handoff. If your test
    requires registration before it runs, say so; integration will follow.
 
 ## Verify and hand off
 
 - Format changed Go files with `scripts/run-go.sh gofmt -w ...` from
-  `Apps/AionServer`. Apple `container` attaches Go cache volumes to one
+  `go/`. Apple `container` attaches Go cache volumes to one
   container at a time: coordinate Go commands with the integrating agent and
   run them sequentially.
 - Run the focused test for each handler you implement. Do not run the
