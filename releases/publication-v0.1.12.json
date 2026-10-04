@@ -1,0 +1,17 @@
+{
+  "release": "0.1.12",
+  "sourceRevision": "2429adf861ce861c6d24af128716dd5e54fa95f3",
+  "verifiedAt": "2026-10-04T01:46:22.556543+00:00",
+  "tags": [
+    {
+      "role": "panel",
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-panel-go-v0.1.12",
+      "digest": "sha256:d0a8817ce08500519132ff5cf11a06e457918f50a94c059e25902fe04c29c389"
+    },
+    {
+      "role": "panel",
+      "reference": "docker.io/rafabertholdo/aiongo:1.9-panel-go-sha-2429adf861ce",
+      "digest": "sha256:d0a8817ce08500519132ff5cf11a06e457918f50a94c059e25902fe04c29c389"
+    }
+  ]
+}

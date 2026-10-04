@@ -1,0 +1,8 @@
+{
+  "release": "0.1.12",
+  "sourceRevision": "2429adf861ce861c6d24af128716dd5e54fa95f3",
+  "platform": "linux/arm64",
+  "images": [
+    "panel"
+  ]
+}
