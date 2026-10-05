@@ -158,6 +158,7 @@ func (c *conn) levelReady(*wire.Reader) {
 	c.sealingAbyssGateEnterWorld()
 	c.creatingMonsterEnterWorld()
 	c.javaEnterWorld()
+	s.darkPoetaEnter(p)
 	c.send(systemMessage(msgChannelEntered, 1))
 	// The 1.9 client takes current HP only once its level is loaded.
 	c.send(statUpdate(smStatupdateHp, p.life.HP, p.stats.current(data.MaxHP)))
@@ -224,7 +225,6 @@ const (
 // move is CM_MOVE: where the player is now, and where it is heading. Those who
 // see the player are told, and the players it comes near or leaves behind
 // start or stop seeing it.
-// ponytail: fall damage is not ported (PORTING.md 11).
 func (c *conn) move(r *wire.Reader) {
 	p := c.player
 	if p == nil {
@@ -253,16 +253,8 @@ func (c *conn) move(r *wire.Reader) {
 	if !p.spawned {
 		return
 	}
+	fromZ := p.Z
 	at := func() { s.updatePosition(p, x, y, z, heading) }
-	defer func() {
-		switch kind {
-		case moveGlideStartMouse, moveGlideDown, moveGlideUp, moveValidateGlide:
-			s.switchToGliding(p)
-		case moveStartMouse, moveStartKeyboard, moveMovingElevator, moveOnElevator, moveStayingElevator,
-			moveValidateMouse, moveValidateKeyboard, moveStop:
-			s.stopGliding(p)
-		}
-	}()
 	switch kind {
 	case moveStartMouse, moveStartKeyboard, moveMovingElevator, moveOnElevator, moveStayingElevator:
 		if in := p.interaction; in != nil && in.abortOnMove && in.inProgress() {
@@ -298,9 +290,49 @@ func (c *conn) move(r *wire.Reader) {
 		p.broadcast(movePacket(p.ID, x, y, z, heading, kind, nil, nil), false)
 		at()
 	}
+	switch kind {
+	case moveGlideStartMouse, moveGlideDown, moveGlideUp, moveValidateGlide:
+		s.switchToGliding(p)
+	case moveStartMouse, moveStartKeyboard, moveMovingElevator, moveOnElevator, moveStayingElevator,
+		moveValidateMouse, moveValidateKeyboard, moveStop:
+		s.stopGliding(p)
+	}
+	distance := fromZ - z
+	if p.inState(stateActive) && !p.inState(stateFlying) && !p.inState(stateGliding) &&
+		(kind == moveStop || distance >= fallDeathMidair) && s.fallDamage(p, distance) {
+		return // the player was revived at its bind point
+	}
 	if kind != moveStop {
 		c.endProtectionLocked()
 	}
+}
+
+// Fall heights in meters, this server's falldamage.properties; damage is 1% of maximum life per meter.
+const (
+	fallDamageMinimum = 10
+	fallDeathOnLand   = 50
+	fallDeathMidair   = 200
+)
+
+// fallDamage is StatFunctions.calculateFallDamage. It reports whether the fall killed the player, who is then
+// revived at its bind point.
+func (s *Server) fallDamage(p *player, distance float32) bool {
+	// Unlike Java, a dead player can't fall into a free revive.
+	if p.dead || p.adminInvulnerable {
+		return false
+	}
+	if distance >= fallDeathOnLand {
+		s.stopGliding(p)
+		s.reducePlayerHP(p, p.life.HP, p)
+		s.bindRevive(p)
+		return true
+	}
+	if distance >= fallDamageMinimum {
+		damage := int32(distance * float32(p.stats.current(data.MaxHP)) / 100)
+		s.reducePlayerHP(p, damage, p)
+		p.conn.send(attackStatus(p, statusDamage, 0, damage))
+	}
+	return false
 }
 
 func finitePosition(x, y, z float32) bool {
@@ -451,6 +483,7 @@ func (c *conn) leaveWorld() {
 		s.releaseSummon(p.summon, unsummonLogout)
 	}
 	s.legionLogout(p)
+	s.removePlayerFindGroups(p)
 	s.leaveGroup(p)
 	s.leaveAlliance(p, allianceLeaving)
 	s.loseDuel(p)

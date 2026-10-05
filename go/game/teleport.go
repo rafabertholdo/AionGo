@@ -122,11 +122,7 @@ func (c *conn) revive(r *wire.Reader) {
 	defer s.visMu.Unlock()
 	switch kind {
 	case reviveBind:
-		s.reviveAt(p, 25, 25)
-		p.conn.send(systemMessage(msgRevive))
-		p.conn.send(s.statsInfo(p))
-		p.conn.send(s.playerInfo(p, false))
-		s.moveToBind(p, true, 0)
+		s.bindRevive(p)
 	case reviveKisk:
 		s.kiskRevive(p)
 	case reviveSkill:
@@ -144,6 +140,15 @@ func (c *conn) revive(r *wire.Reader) {
 		s.decreaseItemCount(p, stone, 1)
 		s.reviveWithEmotion(p, 15)
 	}
+}
+
+// bindRevive is ReviveController.bindRevive: the player comes back at its bind point.
+func (s *Server) bindRevive(p *player) {
+	s.reviveAt(p, 25, 25)
+	p.conn.send(systemMessage(msgRevive))
+	p.conn.send(s.statsInfo(p))
+	p.conn.send(s.playerInfo(p, false))
+	s.moveToBind(p, true, 0)
 }
 
 // reviveWithEmotion is ReviveController.skillRevive and its likes: the player gets up where it fell.

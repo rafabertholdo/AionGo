@@ -98,14 +98,16 @@ func (s *Server) spawnAll() {
 
 // spawnMap puts the spawn groups of a map in an instance of it, and returns how many npcs and gatherables that made.
 func (s *Server) spawnMap(id, inst int32) (npcs, gatherables int) {
+	m := s.data.WorldMaps[id]
+	noRespawn := m != nil && m.Instance // instance npcs stay dead
 	for _, group := range s.data.Spawns[id] {
-		if group.Handler != "" {
+		if group.Handler != "" || id == darkPoetaWorld && darkPoetaHeld[group.NpcID] {
 			continue
 		}
 		for _, spot := range group.Spots[:group.Pool] {
 			o := &object{spawnGroup: group, spawnSpot: spot, id: s.ids.nextID(), worldID: id, instance: inst, x: spot.X, y: spot.Y, z: spot.Z,
 				heading: byte(spot.Heading), staticID: spot.StaticID, homeX: spot.X, homeY: spot.Y, homeZ: spot.Z,
-				interval: group.Interval, walker: spot.Walker, randomWalk: max(spot.Random, group.Random)}
+				interval: group.Interval, walker: spot.Walker, randomWalk: max(spot.Random, group.Random), noRespawn: noRespawn}
 			if isGatherable(group.NpcID) {
 				if o.gatherable = s.data.Gatherables[group.NpcID]; o.gatherable == nil {
 					s.ids.release(o.id)

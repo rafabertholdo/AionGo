@@ -162,6 +162,7 @@ func (s *Server) newGroup(leader *player) {
 	g := &group{id: s.ids.nextID(), leader: leader, members: []*player{leader}, rule: lootRoundRobin}
 	leader.group = g
 	leader.conn.send(groupInfo(g))
+	s.repostFindGroup(leader, s.takeFindGroup(leader))
 }
 
 // groupInfo is SM_GROUP_INFO: the group's leader and its loot rules.
@@ -224,10 +225,15 @@ func (s *Server) groupMemberInfo(g *group, p *player, event groupEvent) *wire.Wr
 
 // addToGroup is PlayerGroup.addPlayerToGroup.
 func (s *Server) addToGroup(g *group, p *player) {
+	s.removePlayerFindGroups(p)
 	g.members = append(g.members, p)
 	p.group = g
 	p.conn.send(groupInfo(g))
 	s.updateGroup(g, p, groupEnter)
+	if g.full() {
+		race, _ := raceGender(g.leader.Character)
+		s.removeFindGroup(race, findGroupRecruit, g.id)
+	}
 }
 
 // updateGroup is PlayerGroup.updateGroupUIToEvent.
@@ -302,6 +308,10 @@ func (s *Server) leaveGroup(p *player) {
 
 // disbandGroup is GroupService.disbandGroup.
 func (s *Server) disbandGroup(g *group) {
+	if len(g.members) > 0 {
+		race, _ := raceGender(g.members[0].Character)
+		s.removeFindGroup(race, findGroupRecruit, g.id)
+	}
 	s.ids.release(g.id)
 	for _, m := range g.members {
 		m.group = nil

@@ -104,6 +104,9 @@ type Server struct {
 	fxDirty     map[creature]bool                         // whose effect icons are to be sent
 	drops       map[int32][]store.Drop                    // what each monster may drop, by npc id
 	lootRolls   map[*object]bool                          // corpses with active rolls or uncollected winners, guarded by visMu
+	// findGroups are the Find Group posts, made on the first post, guarded by visMu like findGroupListID.
+	findGroups      map[findGroupKey]*findGroupPost
+	findGroupListID int32 // the last SM_FIND_GROUP list id: a new one clears the client's list
 
 	clockBase  int32 // game time at start
 	clockStart time.Time

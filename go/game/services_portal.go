@@ -41,7 +41,9 @@ func (c *conn) portalDialog(id int32) bool {
 		}
 		c.send(useObject(p.ID, o.id, 0))
 		p.broadcast(s.playerEmotionTo(p, emoteEndQuestLoot, 0, o.id, 0, 0, 0, 0), true)
-		s.portalUse(p, portal)
+		if !s.darkPoetaExit(p, o) {
+			s.portalUse(p, portal)
+		}
 	})
 	return true
 }

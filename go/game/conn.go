@@ -109,7 +109,7 @@ func (s *Server) handle(c *conn) {
 		s.log.Debug("packet", "opcode", fmt.Sprintf("%#02x", opcode), "size", len(payload))
 		handler, known := handlers[opcode]
 		if !known || clientPacketStates[opcode]&c.state == 0 {
-			s.log.Debug("unhandled packet", "opcode", opcode, "state", c.state)
+			s.log.Debug("unhandled packet", "opcode", fmt.Sprintf("%#02x", opcode), "state", c.state, "hex", fmt.Sprintf("%x", payload))
 			continue
 		}
 		c.worldMu.Lock()

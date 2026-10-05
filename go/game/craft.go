@@ -395,6 +395,7 @@ func (s *Server) startGathering(p *player, o *object) {
 		p.conn.send(gatherUpdate(t, material, in.currentSuccess, in.currentFailure, 6))
 		p.broadcast(gatherStatus(p, o, 2), true)
 		p.conn.send(systemMessage(msgGatherSuccess, descriptionID(material.NameID)))
+		s.darkPoetaGather(p)
 		if !s.addItem(p, material.ItemID, 1) {
 			p.conn.send(systemMessage(msgGatherFull)) // the cube filled up meanwhile
 		}

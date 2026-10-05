@@ -25,6 +25,10 @@ const (
 	cmStartLoot        = 0x05
 	cmLootItem         = 0x06
 	cmChatMessage      = 0x86 // CM_CHAT_MESSAGE_PUBLIC
+	cmFindGroup        = 0x40
+	cmQuestionResponse = 0x9d
+	cmWhisper          = 0x87 // CM_CHAT_MESSAGE_WHISPER
+	cmChatWindow       = 0xb0
 	cmQuit             = 0xee
 	cmLevelReady       = 0xf4
 	cmVersionCheck     = 0xf3
@@ -34,6 +38,7 @@ const (
 // Server packet opcodes this client reads.
 const (
 	SmMessage          = 0x14
+	SmQuestionWindow   = 0x50
 	SmPlayerInfo       = 0x1c
 	SmPlayerSpawn      = 0x2d
 	SmNpcInfo          = 0x2a
@@ -334,6 +339,40 @@ func (g *Game) Say(text string) {
 	w := wire.Packet(cmChatMessage)
 	w.C(0) // ChatType NORMAL
 	w.S(text)
+	g.Send(w)
+}
+
+// AnswerQuestion answers a question window (SM_QUESTION_WINDOW) by its code.
+func (g *Game) AnswerQuestion(code int32, yes bool) {
+	w := wire.Packet(cmQuestionResponse)
+	w.D(code)
+	w.Bool(yes)
+	g.Send(w)
+}
+
+// ApplyToGroup applies to a Find Group recruit post as the window does: it opens the private chat
+// window with the post's owner (CM_CHAT_WINDOW) and whispers the application.
+func (g *Game) ApplyToGroup(owner, text string) {
+	w := wire.Packet(cmChatWindow)
+	w.S(owner)
+	w.D(0)
+	g.Send(w)
+	w = wire.Packet(cmWhisper)
+	w.S(owner)
+	w.S(text)
+	g.Send(w)
+}
+
+// FindGroupApply posts the character on Find Group's apply list, as the window's
+// "Apply for Group" does: object id, message, group type 0, then class and level.
+func (g *Game) FindGroupApply(id int32, message string, class, level byte) {
+	w := wire.Packet(cmFindGroup)
+	w.C(6)
+	w.D(id)
+	w.S(message)
+	w.C(0)
+	w.C(class)
+	w.C(level)
 	g.Send(w)
 }
 

@@ -18,6 +18,7 @@ type instance struct {
 	registered map[int32]bool // the players (or the group) it is for, by object id
 	group      *group
 	check      *task
+	dp         *darkPoeta // the run, if it is Dark Poeta
 }
 
 func (s *Server) instanceCount(world int32) int32 {
@@ -50,6 +51,9 @@ func (s *Server) newInstance(world int32) *instance {
 	in := &instance{world: world, id: id, registered: map[int32]bool{}}
 	s.instances[[2]int32{world, id}] = in
 	s.spawnMap(world, id)
+	if world == darkPoetaWorld {
+		s.newDarkPoeta(in)
+	}
 	in.check = s.every(instanceCheck, instanceCheck, func() { s.checkInstance(in) })
 	s.log.Info("instance created", "map", world, "instance", id)
 	return in
@@ -92,6 +96,9 @@ func (s *Server) checkInstance(in *instance) {
 // destroyInstance is InstanceService.destroyInstance: its npcs are gone, and those still in it go to the entry point.
 func (s *Server) destroyInstance(in *instance) {
 	in.check.cancel()
+	if in.dp != nil {
+		in.dp.start.cancel()
+	}
 	delete(s.instances, [2]int32{in.world, in.id})
 	for _, id := range sortedKeys(s.byID) {
 		o := s.byID[id]

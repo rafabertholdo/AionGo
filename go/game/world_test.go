@@ -178,3 +178,24 @@ func TestPlayerInfoMatchesClient19(t *testing.T) {
 		t.Errorf("SM_PLAYER_INFO differs from the 1.9 server's:\n%s", diffHex(got, want))
 	}
 }
+
+// TestFallDamage has a player fall: a short fall is free, a longer one costs 1% of its life per meter, and from 50
+// meters it dies and comes back at its bind point.
+func TestFallDamage(t *testing.T) {
+	d := staticDataOrSkip(t)
+	s := testServer(d)
+	p, _ := fighter(t, s, 1000)
+	p.appearance = &store.Appearance{}
+	s.visMu.Lock()
+	defer s.visMu.Unlock()
+	maxHP := p.stats.current(data.MaxHP)
+	if s.fallDamage(p, 9) || p.life.HP != maxHP {
+		t.Fatalf("a 9 m fall left %d of %d life", p.life.HP, maxHP)
+	}
+	if s.fallDamage(p, 20) || p.life.HP != maxHP-int32(20*float32(maxHP)/100) {
+		t.Fatalf("a 20 m fall left %d of %d life", p.life.HP, maxHP)
+	}
+	if !s.fallDamage(p, 50) || p.dead || p.life.HP != maxHP/4 {
+		t.Fatalf("after a 50 m fall: dead %v, %d of %d life", p.dead, p.life.HP, maxHP)
+	}
+}

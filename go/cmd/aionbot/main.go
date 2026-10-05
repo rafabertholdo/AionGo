@@ -25,6 +25,8 @@ func main() {
 	say := flag.String("say", "", "something to say in normal chat, now and then")
 	stay := flag.Duration("stay", time.Minute, "how long to stay in the world")
 	fight := flag.Bool("fight", false, "attack the nearest monster until it dies, and say what happened")
+	apply := flag.String("apply", "", "post this message on Find Group's apply list after entering the world")
+	applyTo := flag.String("applyto", "", "apply to this player's Find Group recruit post (a whisper), then accept their invite")
 	flag.Parse()
 	log := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	fail := func(what string, err error) {
@@ -65,6 +67,16 @@ func main() {
 	}
 	log.Info("in the world", "character", *name, "id", id)
 
+	if *apply != "" {
+		game.FindGroupApply(id, *apply, 0, 1)
+		log.Info("posted on the Find Group apply list", "message", *apply)
+	}
+
+	if *applyTo != "" {
+		game.ApplyToGroup(*applyTo, "Lv. 1 Mage applying to your group. Invite me!")
+		log.Info("applied to a recruit post", "owner", *applyTo)
+	}
+
 	if *fight {
 		fightMonster(game, log)
 	}
@@ -87,11 +99,46 @@ func main() {
 		}
 		time.Sleep(time.Second)
 		game.Move(x, y, spawn.Z, heading, client.MoveStop, 0, 0, 0)
+		if !answer(game, log) {
+			return
+		}
 	}
 	if err := game.Quit(false); err != nil {
 		log.Warn("quitting", "err", err)
 	}
 	log.Info("left the world")
+}
+
+// Questions the bot accepts: group (60000) and alliance (70004) invitations.
+var acceptedQuestions = map[int32]bool{60000: true, 70004: true}
+
+// answer handles the packets that arrived since the last step: it accepts group and alliance
+// invitations and logs whispers. It reports false once the connection has closed.
+func answer(game *client.Game, log *slog.Logger) bool {
+	for {
+		select {
+		case p, ok := <-game.Packets:
+			if !ok {
+				return false
+			}
+			r := p.Reader()
+			switch p.Op {
+			case client.SmQuestionWindow:
+				code := r.D()
+				game.AnswerQuestion(code, acceptedQuestions[code])
+				log.Info("answered a question", "code", code, "accepted", acceptedQuestions[code])
+			case client.SmMessage:
+				if kind := r.C(); kind == 0x04 { // whisper: unreadable, sender id, name, text
+					r.C()
+					r.D()
+					from, text := r.S(), r.S()
+					log.Info("whisper", "from", from, "text", text)
+				}
+			}
+		default:
+			return true
+		}
+	}
 }
 
 // fightMonster attacks the nearest monster it saw on entering the world until it dies, and logs what the server sent.

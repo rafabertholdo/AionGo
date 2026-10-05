@@ -32,8 +32,8 @@ type macroSaver interface {
 const (
 	msgRejectedWatch = 1390114
 	msgSearchLevel   = 1400341
-	maxSearchResults = 100
-	deniedDetails    = 1 // DeniedStatus.VEIW_DETAIL
+	maxSearchResults = 124 // CM_PLAYER_SEARCH.MAX_RESULTS
+	deniedDetails    = 1   // DeniedStatus.VEIW_DETAIL
 )
 
 // titleSet is CM_TITLE_SET: the player wears a title, and those who see it are told.

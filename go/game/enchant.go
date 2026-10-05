@@ -77,7 +77,7 @@ func (s *Server) startEnchanting(p *player, stone, target, supplement *store.Ite
 		}
 		var ok bool
 		if stone.ItemID > 166000000 && stone.ItemID < 167000000 {
-			ok = s.enchantItem(p, stone, target)
+			ok = s.enchantItem(p, stone, target, supplement)
 		} else {
 			ok = s.socketManastone(p, stone, target, supplement)
 		}
@@ -102,9 +102,9 @@ func qualityCap(quality string) int32 {
 	return 0
 }
 
-// enchantItem is EnchantService.enchantItem, without a supplement: a stone that is too low fails, and a failure
-// takes an enchanted item back a level (or to 10).
-func (s *Server) enchantItem(p *player, stone, target *store.Item) bool {
+// enchantItem is EnchantService.enchantItem: a stone that is too low fails, a supplement adds to the chance, and a
+// failure takes an enchanted item back a level (or to 10).
+func (s *Server) enchantItem(p *player, stone, target, supplement *store.Item) bool {
 	st, t := s.template(stone), s.template(target)
 	if st == nil || t == nil || t.Level > st.Level {
 		return false
@@ -112,6 +112,17 @@ func (s *Server) enchantItem(p *player, stone, target *store.Item) bool {
 	success := int32(50)
 	if extra := st.Level - t.Level - qualityCap(t.Quality); extra > 0 {
 		success += extra * 5
+	}
+	if supplement != nil {
+		// Like socketManastone, an unknown supplement or too few of them fail instead of Java's default bonus
+		// and partial use.
+		bonus := manastoneSupplementBonus(s.template(supplement))
+		count := enchantSupplementCount(st.Level, target.Enchant)
+		if bonus == 0 || s.countItems(p, supplement.ItemID) < count {
+			return false
+		}
+		s.decreaseItemsByID(p, supplement.ItemID, count)
+		success += int32(bonus)
 	}
 	success = min(success, 95)
 	won := rnd(0, 100) < success
@@ -210,6 +221,33 @@ func manastoneSupplementBonus(t *data.ItemTemplate) int {
 	default:
 		return 0
 	}
+}
+
+// enchantSupplementCount is how many supplements an enchant stone of the level uses, doubled above +10.
+func enchantSupplementCount(stoneLevel int32, enchant int8) int64 {
+	var count int64
+	switch {
+	case stoneLevel > 90:
+		count = 145
+	case stoneLevel > 80:
+		count = 115
+	case stoneLevel > 70:
+		count = 85
+	case stoneLevel > 60:
+		count = 55
+	case stoneLevel > 50:
+		count = 25
+	case stoneLevel > 40:
+		count = 10
+	case stoneLevel > 30:
+		count = 5
+	default:
+		count = 1
+	}
+	if enchant+1 > 10 {
+		count *= 2
+	}
+	return count
 }
 
 func manastoneSupplementCount(stoneID, level int32, socketed int) int64 {

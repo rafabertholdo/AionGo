@@ -171,12 +171,17 @@ func (s *Server) formAlliance(p, invited *player) {
 		p.conn.send(systemMessage(msgAllianceCantAdd))
 		return
 	}
+	var founderPost *findGroupPost
+	if p.alliance == nil {
+		founderPost = s.takeFindGroup(p)
+	}
 	for _, m := range joining {
 		s.leaveGroup(m)
 	}
 	for _, m := range joining {
 		s.addToAlliance(a, m)
 	}
+	s.repostFindGroup(p, founderPost)
 }
 
 // addToAlliance is AllianceService.addMemberToAlliance.
@@ -192,6 +197,7 @@ func (s *Server) addToAlliance(a *alliance, p *player) {
 	if slot == 0 || a.has(p) {
 		return
 	}
+	s.removePlayerFindGroups(p)
 	a.members = append(a.members, p)
 	a.slots[p] = slot
 	p.alliance = a
@@ -203,6 +209,10 @@ func (s *Server) addToAlliance(a *alliance, p *player) {
 		if m != p {
 			p.conn.send(s.allianceMemberInfo(a, m, allianceEnter))
 		}
+	}
+	if len(a.members) >= maxAllianceSize {
+		race, _ := raceGender(p.Character)
+		s.removeFindGroup(race, findGroupRecruit, a.id)
 	}
 }
 
@@ -342,6 +352,8 @@ func (s *Server) leaveAlliance(p *player, event byte) {
 	p.alliance = nil
 	p.conn.send(wire.Packet(smLeaveGroupMember))
 	if len(a.members) < 2 {
+		race, _ := raceGender(p.Character)
+		s.removeFindGroup(race, findGroupRecruit, a.id)
 		for _, m := range slices.Clone(a.members) {
 			m.alliance = nil
 			m.conn.send(wire.Packet(smLeaveGroupMember))

@@ -14,6 +14,7 @@ func (c *conn) openStaticDoor(r *wire.Reader) {
 	}
 	c.withPlayer(func(s *Server, p *player) {
 		p.broadcast(staticDoorEmotion(doorID), true)
+		s.darkPoetaDoor(p)
 	})
 }
 

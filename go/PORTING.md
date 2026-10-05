@@ -106,18 +106,15 @@ workflow and findings; maintain coverage/status only in this roadmap.
 
 ## Confirmed missing Java behavior
 
-| Behavior | Java evidence | Current Go gap |
-| --- | --- | --- |
-| Fall damage | `CM_MOVE` calls `StatFunctions.calculateFallDamage` when enabled, for grounded active players meeting the movement/distance conditions. | `game/world.go:move` explicitly notes fall damage is unported. |
-| Enchantment-stone supplements | `services/EnchantService.java:enchantItem` adjusts success chance and consumes the applicable supplement quantity. | `game/enchant.go:startEnchanting` passes supplements only to manastone socketing; `enchantItem` has no supplement argument or handling. Manastone supplements already work. |
-
-Java source paths in this table are under
-`java/AL-Game/src/main/java/com/aionemu/gameserver/`.
-This is a confirmed list, not an exhaustive method-by-method certification.
+None currently confirmed. Fall damage (`game/world.go:fallDamage`, using the
+defaults from `falldamage.properties`) and enchantment-stone supplements
+(`game/enchant.go:enchantItem`) were the last listed gaps. Both reject unknown
+or insufficient supplements and ignore falls of dead players, which are
+defensive differences from Java. The Java bind revive also sends prisoners back
+to prison; Go's shared `bindRevive` does not yet.
 
 ## Remaining source audit
 
-- Channel interactions with rifts, broadcasts and world-scoped scans.
 - Handler-managed spawns and static/action objects; crafting station checks;
   instance-specific doors, keys and boss behavior. Establish which branches
   Java actually implements before adding dungeon functionality.
@@ -131,6 +128,14 @@ This is a confirmed list, not an exhaustive method-by-method certification.
   [GO_SKILLS_APPLICATION_PLAN.md](../docs/GO_SKILLS_APPLICATION_PLAN.md) and
   record fixes and actual checks in
   [GO_REVIEW_LEDGER.md](../docs/GO_REVIEW_LEDGER.md).
+
+Audited 2026-10-04: map channels against rifts, broadcasts and world-scoped
+scans. Visibility, broadcasts and object scans are channel-scoped; weather is
+per map in both servers. Java spawns rifts in every channel and picks a random
+spot, but rift maps have no twins and each rift anchor has one spot, so Go's
+first-channel/first-spot rifts match. Player search now returns up to Java's
+125 results; Java instead sends nothing once a further player follows a full
+list, which Go does not copy.
 
 Implement confirmed gaps in bounded batches. Audit existing systems before
 scheduling their reimplementation. Keep port coverage and Go review evidence
