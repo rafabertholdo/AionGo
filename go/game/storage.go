@@ -96,7 +96,7 @@ func (s *Server) sendAdded(p *player, kind byte, item *store.Item) {
 	w.C(kind)
 	w.H(13)
 	w.H(1)
-	s.writeItem(w, p, item)
+	s.writeWarehouseItem(w, p, item)
 	p.conn.send(w)
 }
 
@@ -115,7 +115,7 @@ func (s *Server) sendUpdated(p *player, kind byte, item *store.Item) {
 	w.H(0x24)
 	w.D(t.NameID)
 	w.H(0)
-	s.writeItemDetails(w, p, item, t)
+	s.writeWarehouseItemDetails(w, p, item, t)
 	p.conn.send(w)
 }
 
@@ -131,6 +131,31 @@ func (s *Server) sendDeleted(p *player, kind byte, id int32) {
 	p.conn.send(w)
 }
 
+// writeWarehouseItem includes the warehouse-only byte after the template id.
+func (s *Server) writeWarehouseItem(w *wire.Writer, p *player, item *store.Item) {
+	t := s.data.Items[item.ItemID]
+	if t == nil {
+		t = &data.ItemTemplate{ID: item.ItemID}
+	}
+	w.D(item.UniqueID)
+	w.D(t.ID)
+	w.C(0)
+	w.H(0x24)
+	w.D(t.NameID)
+	w.H(0)
+	s.writeWarehouseItemDetails(w, p, item, t)
+}
+
+func (s *Server) writeWarehouseItemDetails(w *wire.Writer, p *player, item *store.Item, t *data.ItemTemplate) {
+	// SM_WAREHOUSE_INFO and SM_UPDATE_WAREHOUSE_ITEM override the kinah
+	// slot to FFFF; SM_WAREHOUSE_UPDATE inherits InventoryPacket's FF00.
+	kinahSlot := uint16(255)
+	if w.Data[0] != smWarehouseUpdate {
+		kinahSlot = 65535
+	}
+	s.writeItemDetailsMode(w, p, item, t, false, kinahSlot)
+}
+
 // warehouseInfo is SM_WAREHOUSE_INFO: some of the items of a warehouse, ten at a time.
 func (s *Server) warehouseInfo(p *player, items []*store.Item, kind byte, expand int, first bool) *wire.Writer {
 	w := wire.Packet(smWarehouseInfo)
@@ -140,7 +165,7 @@ func (s *Server) warehouseInfo(p *player, items []*store.Item, kind byte, expand
 	w.H(0)
 	w.H(uint16(len(items)))
 	for _, item := range items {
-		s.writeItem(w, p, item)
+		s.writeWarehouseItem(w, p, item)
 	}
 	return w
 }

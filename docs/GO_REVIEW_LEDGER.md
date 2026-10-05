@@ -459,3 +459,30 @@ store tests). Those two and the other store transaction tests passed against a
 disposable MariaDB with the repository schema (7 store tests and their
 subtests, zero failures), which was removed afterward. `go vet ./...` and gofmt are clean. Client and
 capture confirmation of all four remain open. No image was built or deployed.
+
+## Warehouse item packet compatibility (2026-10-05)
+
+Reviewed `game/storage.go`, the shared item writers in `game/worldpackets.go`,
+warehouse packet tests, and the original 1.9 server's warehouse and inventory
+packet bytecode. Applied `golang-how-to`, `golang-troubleshooting`,
+`golang-safety` and `golang-testing`.
+
+Confirmed a client freeze risk: warehouse load/add packets reused the inventory
+header, omitting the byte after the template ID, and all warehouse item paths
+included inventory-only detail suffixes. Warehouse stigmas incorrectly used
+the inventory stigma block. Kinah load/update packets also require an FFFF slot,
+whereas warehouse additions use FF00. Dedicated warehouse headers now use the
+shared detail writer with the correct mode and kinah slot. This changes packet
+serialization without changing stored items or adding dependencies.
+
+`TestWarehouseItemPackets19` checks load/add/update bytes for ordinary items,
+weapons, armor, stigmas and kinah in regular/account storage, including two
+consecutive items after an expansion. All five cases failed against the
+original source and passed after the fix. Expected details were transcribed
+from the original server bytecode; they are not a real-client capture.
+
+Validation: `go test -json ./...` passed 4,599 test nodes (517 top-level tests),
+zero failures and 16 optional database skips. `go vet ./...`, repository-wide
+`gofmt -l .`, `go build ./cmd/...` and `git diff --check` passed. No disposable
+DB fixture was supplied, and no database mutation was needed for this fix.
+Real-client warehouse verification remains open.

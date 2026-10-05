@@ -128,6 +128,11 @@ func (s *Server) writeItem(w *wire.Writer, p *player, item *store.Item) {
 
 // writeItemDetails is what follows an item's general info in the inventory, and in SM_ADD_ITEMS.
 func (s *Server) writeItemDetails(w *wire.Writer, p *player, item *store.Item, t *data.ItemTemplate) {
+	s.writeItemDetailsMode(w, p, item, t, true, 255)
+}
+
+// Warehouse details omit the inventory suffix and encode stigmas as ordinary items.
+func (s *Server) writeItemDetailsMode(w *wire.Writer, p *player, item *store.Item, t *data.ItemTemplate, inventory bool, kinahSlot uint16) {
 	equippedSlot := int32(0)
 	if item.Equipped {
 		equippedSlot = item.Slot
@@ -146,8 +151,10 @@ func (s *Server) writeItemDetails(w *wire.Writer, p *player, item *store.Item, t
 		w.D(0)
 		w.H(0)
 		w.C(0)
-		w.H(255)
-		w.C(0)
+		w.H(kinahSlot)
+		if inventory {
+			w.C(0)
+		}
 	case t.IsWeapon():
 		w.H(0x4b)
 		w.C(0x06)
@@ -173,7 +180,9 @@ func (s *Server) writeItemDetails(w *wire.Writer, p *player, item *store.Item, t
 		w.H(0)
 		w.C(0)
 		w.H(shownSlot)
-		w.C(0)
+		if inventory {
+			w.C(0)
+		}
 	case t.IsArmor():
 		w.H(0x4f)
 		w.C(0x06)
@@ -200,8 +209,10 @@ func (s *Server) writeItemDetails(w *wire.Writer, p *player, item *store.Item, t
 		w.H(0)
 		w.C(0)
 		w.H(shownSlot)
-		w.C(1)
-	case t.IsStigma():
+		if inventory {
+			w.C(1)
+		}
+	case inventory && t.IsStigma():
 		writeStigma(w, item, equippedSlot)
 	default:
 		w.H(0x16)
@@ -213,7 +224,9 @@ func (s *Server) writeItemDetails(w *wire.Writer, p *player, item *store.Item, t
 		w.H(0)
 		w.C(0)
 		w.H(uint16(item.Slot))
-		w.C(0)
+		if inventory {
+			w.C(0)
+		}
 	}
 }
 
