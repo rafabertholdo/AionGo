@@ -1,0 +1,8 @@
+{
+  "release": "0.1.14",
+  "sourceRevision": "ff4ed0448aacc471434d7dc6f0e8d119e624ad34",
+  "platform": "linux/arm64",
+  "images": [
+    "game-go"
+  ]
+}
