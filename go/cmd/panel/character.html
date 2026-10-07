@@ -11,14 +11,15 @@
 :root { --junk:#adadad; --common:#f1f1f1; --rare:#69e15e; --legend:#4ccfff; --unique:#ffc103; --epic:#ff8033; --mythic:#b05cff; }
 * { box-sizing: border-box; }
 body { margin:0; min-height:100vh; background:#14130f radial-gradient(ellipse at top, #2b2a20, #0d0d0a 70%); color:#d9d6c8; font:12px/1.35 AionUI, -apple-system, system-ui, sans-serif; }
-header { display:flex; gap:12px; align-items:center; flex-wrap:wrap; padding:14px 16px; }
+header { display:flex; gap:12px; align-items:center; flex-wrap:wrap; padding:10px 16px; }
 header a { color:#c9b779; text-decoration:none; } header a:hover { text-decoration:underline; }
 header form { display:flex; gap:6px; margin-left:auto; }
 header input { font:inherit; padding:5px 8px; border:1px solid #5a5440; border-radius:4px; background:#1d1c16; color:#eee; width:180px; }
 header button { font:inherit; padding:5px 12px; border:1px solid #8a7c4c; border-radius:4px; background:#4a4228; color:#f2e6bf; cursor:pointer; }
 .note { max-width:420px; margin:40px auto; text-align:center; font-size:14px; }
 .note a { color:#c9b779; display:inline-block; margin:4px 8px; }
-.stage { position:relative; width:406px; margin:8px auto 60px; }
+.layout { display:flex; gap:20px; align-items:flex-start; padding:0 16px 16px; }
+.stage { position:relative; flex:none; width:406px; }
 .w { position:absolute; }
 .bg { position:absolute; inset:0; }
 .text { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; white-space:nowrap; overflow:hidden; }
@@ -40,9 +41,8 @@ input:checked + .tab { color:#f1ead0; }
 .slot:hover { z-index:20; }
 .slot:hover > .hover { display:block; }
 .hover { display:none; position:absolute; inset:0; box-shadow:inset 0 0 0 1px #e8d38a; border-radius:3px; }
-.tip { display:none; position:absolute; top:0; width:340px; padding:12px 14px 12px 12px; pointer-events:none; color:#d6d2c2; }
+.tip { display:none; position:absolute; top:0; left:calc(100% + 6px); width:340px; padding:12px 14px 12px 12px; pointer-events:none; color:#d6d2c2; }
 .slot:hover > .tip { display:block; }
-.tip.r { left:calc(100% + 6px); } .tip.l { right:calc(100% + 6px); }
 .tip .body { position:relative; }
 .tip .name { font-size:14px; margin-bottom:3px; }
 .tip .row { display:flex; justify-content:space-between; }
@@ -53,14 +53,19 @@ input:checked + .tab { color:#f1ead0; }
 .tip .plus { color:#f1f1f1; }
 .q-junk { color:var(--junk); } .q-common { color:var(--common); } .q-rare { color:var(--rare); } .q-legend { color:var(--legend); }
 .q-unique { color:var(--unique); } .q-epic { color:var(--epic); } .q-mythic { color:var(--mythic); }
-.admin-tools { max-width:540px; margin:16px auto; padding:16px; background:#29271e; border:1px solid #8a7c4c; border-radius:6px; font-size:14px; }
-.admin-tools h2 { margin:0 0 6px; font-size:18px; }
+/* Desktop: profile pinned top-left, admin sections flow into columns beside it. */
+.admin-tools { flex:1; min-width:0; max-height:calc(100vh - 80px); overflow:auto; columns:3 280px; column-gap:24px; padding:12px 16px; background:#29271e; border:1px solid #8a7c4c; border-radius:6px; font-size:13px; }
+.admin-tools h2 { margin:0 0 6px; font-size:18px; column-span:all; }
+.admin-tools > p { column-span:all; }
+.admin-section, .admin-tools details { break-inside:avoid; }
 .admin-tools h3 { margin:0 0 8px; font-size:15px; }
 .admin-tools p { margin:6px 0; }
 .admin-tools form { margin:10px 0; }
 .admin-tools input, .admin-tools select, .admin-tools button { font:inherit; padding:6px; border:1px solid #625a43; border-radius:4px; background:#1d1c16; color:#eee; }
 .admin-tools button { background:#4a4228; color:#f2e6bf; cursor:pointer; }
 .admin-tools button:disabled { opacity:.5; cursor:not-allowed; }
+.admin-tools > p[role=status] { padding:8px 12px; border:1px solid #8a7c4c; border-radius:4px; background:#3d3622; color:#f2e6bf; font-size:14px; }
+.admin-tools > p.error { border-color:#c05050; background:#4a1f1f; color:#ffb0b0; }
 .admin-tools .error { color:#ff9c9c; }
 .admin-status { color:#c8c3b2; }
 .admin-section { padding:12px 0; border-top:1px solid #504a39; }
@@ -121,6 +126,70 @@ input:checked + .tab { color:#f1ead0; }
 {{end}}
 
 {{if .Found}}
+<main class="layout">
+<div class="stage" style="height:626px">
+  <!-- Profile: player_info_dialog, 406x431. Its widgets sit below the 17px title band. -->
+  <div class="w" style="left:0;top:0;width:406px;height:431px">
+    <div class="bg p-v4_dialog"></div>
+    <div class="w title" style="left:3px;top:3px;width:400px;height:14px"><div class="text">Profile</div></div>
+    <div class="w" style="left:0;top:17px;width:406px;height:414px">
+      <div class="w" style="left:6px;top:12px;width:187px;height:25px"><div class="bg p-v4_staticbox2"></div><div class="text cname">{{.Name}}</div></div>
+      <div class="w" style="left:194px;top:12px;width:200px;height:25px"><div class="bg p-v4_staticbox2"></div><div class="text">lvl {{.Level}} / {{title .Class}}</div></div>
+
+      <div class="w" style="left:0;top:39px;width:400px;height:372px">
+        {{range $i, $tab := list "Info" "Stigma" "Abyss" "Title"}}
+        <div class="w tab" style="left:{{add 5 (mul $i 78)}}px;top:0;width:78px;height:25px">
+          <div class="bg {{if eq $i 0}}s-v4_tab_button_down{{else}}p-v4_tab_button{{end}}"></div><div class="text">{{$tab}}</div>
+        </div>
+        {{end}}
+        <div class="w" style="left:0;top:25px;width:400px;height:347px">
+          <div class="bg p-v4_tabpage2"></div>
+          <div class="w s-v4_playerinfo_header" style="left:5px;top:7px;width:231px;height:63px"></div>
+          <div class="w s-v4_slot_wing_img" style="left:81px;top:53px;width:80px;height:25px"></div>
+          <div class="w s-v4_potrait_bg" style="left:56px;top:70px;width:130px;height:266px"></div>
+          {{range .Equipment}}
+          <div class="w slot" style="left:{{.X}}px;top:{{.Y}}px;width:{{.Size}}px;height:{{.Size}}px">
+            <div class="bg p-{{.Preset}}"></div>
+            {{with .Item}}{{template "item" .}}<div class="tip">{{template "tip" .}}</div>{{end}}
+          </div>
+          {{end}}
+          <div class="w" style="left:239px;top:4px;width:154px;height:137px">
+            <div class="bg p-v4_staticbox2"></div>
+            <div class="w" style="inset:6px 7px">
+              <div class="stat"><span>Race</span><span>{{title .Race}}</span></div>
+              <div class="stat"><span>Class</span><span>{{title .Class}}</span></div>
+              <div class="stat"><span>Level</span><span class="good">{{.Level}}</span></div>
+              <div class="stat"><span>Status</span><span{{if .Online}} class="good"{{end}}>{{if .Online}}Online{{else}}Offline{{end}}</span></div>
+              <div class="stat"><span>Cube</span><span>{{.Used}}/{{.Limit}}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cube: inventory_attach_dialog, 406x201, joined under the profile. -->
+  <div class="w" style="left:0;top:425px;width:406px;height:201px">
+    <div class="bg p-v4_inv_dialog"></div>
+    {{range $i, $page := .Cube}}<input type="radio" name="cube" id="cube{{$i}}" hidden{{if eq $i 0}} checked{{end}}><label for="cube{{$i}}" class="w tab" style="left:{{add 4 (mul $i 98)}}px;top:5px;width:99px;height:25px"><span class="bg up p-v4_inv_tab_button"></span><span class="bg down s-v4_inv_tab_down"></span><span class="text">{{if eq $i 0}}Default Cube{{else}}Expanded Cube{{end}}</span></label>{{end}}
+    <div class="w p-v4_inv_tabpage" style="left:-2px;top:30px;width:404px;height:137px"></div>
+    {{range $i, $page := .Cube}}
+    <div class="w page page{{$i}}" style="left:6px;top:32px;width:389px;height:130px">
+      {{range $j, $cell := $page}}
+      <div class="w slot" style="left:{{mul (mod $j 9) 43}}px;top:{{mul (div $j 9) 43}}px;width:44px;height:44px">
+        <div class="bg {{if $cell.Closed}}s-v4_slot_close{{else if $cell.Item}}s-v4_slot_filled_bg{{else}}s-v4_slot_bg{{end}}"></div>
+        {{with $cell.Item}}{{template "item" .}}<div class="tip">{{template "tip" .}}</div>{{end}}
+      </div>
+      {{end}}
+    </div>
+    {{end}}
+    <div class="w" style="left:0;top:167px;width:403px;height:29px">
+      <div class="w" style="left:30px;top:3px;width:61px;height:18px"><div class="text" style="justify-content:flex-start">{{.Used}}/{{.Limit}}</div></div>
+      <div class="w" style="left:124px;top:0;width:250px;height:24px"><div class="bg p-v4_staticbox"></div><div class="text money" style="justify-content:flex-end;padding-right:10px">{{commas .Kinah}}</div></div>
+      <div class="w p-v4_gold" style="left:125px;top:1px;width:24px;height:22px"></div>
+    </div>
+  </div>
+</div>
 {{if .User.Admin}}
 <section class="admin-tools" aria-label="Admin character controls">
 <h2>Admin tools · {{.Name}}</h2>
@@ -188,7 +257,7 @@ input:checked + .tab { color:#f1ead0; }
 </form>
 </section>
 
-<details>
+<details open>
 <summary>Character progression</summary>
 <form method="post" action="/admin/character" class="admin-row">
 <input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
@@ -205,76 +274,14 @@ input:checked + .tab { color:#f1ead0; }
 <form method="post" action="/admin/character">
 <input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
 <input type="hidden" name="action" value="ntc">
-<p>Instance tester, Nochsana Training Camp: set level 25, complete the campaign below level 25 and the Abyss access quests, learn every skill of the level including spellbook skills (not stigmas), equip the class's level-25 Recruit's armor and weapons, and move beside the camp's portal in the Abyss. Replaced equipment goes to the cube. Entering needs a group. Campaign rewards are not granted.</p>
+<p>Instance tester, Nochsana Training Camp: set level 25, complete the campaign below level 25 and the Abyss access quests, start the General quest (3702 Elyos / 4702 Asmodian), and place its siege weapon item in the cube. Learn every skill of the level including spellbook skills (not stigmas), equip the class's level-25 Recruit's armor and weapons, and move beside the camp's portal in the Abyss. Replaced equipment goes to the cube. Entering needs a group. Completed campaign quest rewards are not granted.</p>
 {{with advanced .Class}}<label>Ascend to <select name="class" required><option value="">Choose a class…</option>{{range .}}<option value="{{.}}">{{title .}}</option>{{end}}</select></label>{{end}}
 <button{{if .Online}} disabled{{end}}>Prepare for Nochsana Training Camp</button>
 </form>
 </details>
 </section>
 {{end}}
-<div class="stage" style="height:640px">
-  <!-- Profile: player_info_dialog, 406x431. Its widgets sit below the 17px title band. -->
-  <div class="w" style="left:0;top:0;width:406px;height:431px">
-    <div class="bg p-v4_dialog"></div>
-    <div class="w title" style="left:3px;top:3px;width:400px;height:14px"><div class="text">Profile</div></div>
-    <div class="w" style="left:0;top:17px;width:406px;height:414px">
-      <div class="w" style="left:6px;top:12px;width:187px;height:25px"><div class="bg p-v4_staticbox2"></div><div class="text cname">{{.Name}}</div></div>
-      <div class="w" style="left:194px;top:12px;width:200px;height:25px"><div class="bg p-v4_staticbox2"></div><div class="text">lvl {{.Level}} / {{title .Class}}</div></div>
-
-      <div class="w" style="left:0;top:39px;width:400px;height:372px">
-        {{range $i, $tab := list "Info" "Stigma" "Abyss" "Title"}}
-        <div class="w tab" style="left:{{add 5 (mul $i 78)}}px;top:0;width:78px;height:25px">
-          <div class="bg {{if eq $i 0}}s-v4_tab_button_down{{else}}p-v4_tab_button{{end}}"></div><div class="text">{{$tab}}</div>
-        </div>
-        {{end}}
-        <div class="w" style="left:0;top:25px;width:400px;height:347px">
-          <div class="bg p-v4_tabpage2"></div>
-          <div class="w s-v4_playerinfo_header" style="left:5px;top:7px;width:231px;height:63px"></div>
-          <div class="w s-v4_slot_wing_img" style="left:81px;top:53px;width:80px;height:25px"></div>
-          <div class="w s-v4_potrait_bg" style="left:56px;top:70px;width:130px;height:266px"></div>
-          {{range .Equipment}}{{$side := "r"}}{{if lt .X 100}}{{$side = "l"}}{{end}}
-          <div class="w slot" style="left:{{.X}}px;top:{{.Y}}px;width:{{.Size}}px;height:{{.Size}}px">
-            <div class="bg p-{{.Preset}}"></div>
-            {{with .Item}}{{template "item" .}}<div class="tip {{$side}}">{{template "tip" .}}</div>{{end}}
-          </div>
-          {{end}}
-          <div class="w" style="left:239px;top:4px;width:154px;height:137px">
-            <div class="bg p-v4_staticbox2"></div>
-            <div class="w" style="inset:6px 7px">
-              <div class="stat"><span>Race</span><span>{{title .Race}}</span></div>
-              <div class="stat"><span>Class</span><span>{{title .Class}}</span></div>
-              <div class="stat"><span>Level</span><span class="good">{{.Level}}</span></div>
-              <div class="stat"><span>Status</span><span{{if .Online}} class="good"{{end}}>{{if .Online}}Online{{else}}Offline{{end}}</span></div>
-              <div class="stat"><span>Cube</span><span>{{.Used}}/{{.Limit}}</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Cube: inventory_attach_dialog, 406x201, joined under the profile. -->
-  <div class="w" style="left:0;top:425px;width:406px;height:201px">
-    <div class="bg p-v4_inv_dialog"></div>
-    {{range $i, $page := .Cube}}<input type="radio" name="cube" id="cube{{$i}}" hidden{{if eq $i 0}} checked{{end}}><label for="cube{{$i}}" class="w tab" style="left:{{add 4 (mul $i 98)}}px;top:5px;width:99px;height:25px"><span class="bg up p-v4_inv_tab_button"></span><span class="bg down s-v4_inv_tab_down"></span><span class="text">{{if eq $i 0}}Default Cube{{else}}Expanded Cube{{end}}</span></label>{{end}}
-    <div class="w p-v4_inv_tabpage" style="left:-2px;top:30px;width:404px;height:137px"></div>
-    {{range $i, $page := .Cube}}
-    <div class="w page page{{$i}}" style="left:6px;top:32px;width:389px;height:130px">
-      {{range $j, $cell := $page}}
-      <div class="w slot" style="left:{{mul (mod $j 9) 43}}px;top:{{mul (div $j 9) 43}}px;width:44px;height:44px">
-        <div class="bg {{if $cell.Closed}}s-v4_slot_close{{else if $cell.Item}}s-v4_slot_filled_bg{{else}}s-v4_slot_bg{{end}}"></div>
-        {{with $cell.Item}}{{template "item" .}}<div class="tip {{if lt (mod $j 9) 5}}l{{else}}r{{end}}">{{template "tip" .}}</div>{{end}}
-      </div>
-      {{end}}
-    </div>
-    {{end}}
-    <div class="w" style="left:0;top:167px;width:403px;height:29px">
-      <div class="w" style="left:30px;top:3px;width:61px;height:18px"><div class="text" style="justify-content:flex-start">{{.Used}}/{{.Limit}}</div></div>
-      <div class="w" style="left:124px;top:0;width:250px;height:24px"><div class="bg p-v4_staticbox"></div><div class="text money" style="justify-content:flex-end;padding-right:10px">{{commas .Kinah}}</div></div>
-      <div class="w p-v4_gold" style="left:125px;top:1px;width:24px;height:22px"></div>
-    </div>
-  </div>
-</div>
+</main>
 {{end}}
 <script>
 (() => {

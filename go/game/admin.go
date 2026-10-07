@@ -5,6 +5,7 @@ import (
 	"math"
 	"strconv"
 	"strings"
+	"time"
 
 	"aionlightning/game/data"
 	"aionlightning/wire"
@@ -84,7 +85,17 @@ func (s *Server) adminCommand(p *player, text string) {
 	case "kill":
 		if target := s.creatureByID(p.targetID); target != nil {
 			_, maxHP := target.hitPoints()
-			s.gotHit(target, p, 0, statusRegular, maxHP+1)
+			damage := maxHP + 1
+			// "//kill <percent>" hits for a share of max HP, to step bosses through their phases.
+			if len(params) == 1 {
+				pct, err := strconv.ParseFloat(params[0], 64)
+				if err != nil || !(pct > 0 && pct <= 100) {
+					s.tell(p, "syntax //kill [percent of max HP]")
+					return
+				}
+				damage = max(1, int32(float64(maxHP)*pct/100))
+			}
+			s.gotHit(target, p, 0, statusRegular, damage)
 		} else {
 			s.tell(p, "No target selected")
 		}
@@ -229,4 +240,30 @@ func (s *Server) adminMorph(p *player, params []string) {
 	}
 	setModel(target, int32(model))
 	target.broadcast(transformPacket(target), true)
+}
+
+// adminDPS is "//dps <percent>": each second, hit whatever is targeted for that share of its
+// max HP, standing in for a geared group so boss phases and adds can be watched. "//dps" stops it.
+func (s *Server) adminDPS(p *player, params []string) {
+	p.adminDPS.cancel()
+	p.adminDPS = nil
+	if len(params) == 0 || params[0] == "off" {
+		s.tell(p, "dps off")
+		return
+	}
+	pct, err := strconv.ParseFloat(params[0], 64)
+	if len(params) != 1 || err != nil || !(pct > 0 && pct <= 100) {
+		s.tell(p, "syntax //dps <percent of max HP per second> | //dps off")
+		return
+	}
+	p.adminDPS = s.every(0, time.Second, func() {
+		target := s.creatureByID(p.targetID)
+		if target == nil {
+			return
+		}
+		if hp, maxHP := target.hitPoints(); hp > 0 {
+			s.gotHit(target, p, 0, statusRegular, max(1, int32(float64(maxHP)*pct/100)))
+		}
+	})
+	s.tell(p, fmt.Sprintf("dps %g%% of max HP per second", pct))
 }

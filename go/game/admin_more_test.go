@@ -9,6 +9,7 @@ import (
 	"slices"
 	"strconv"
 	"testing"
+	"time"
 
 	"aionlightning/game/data"
 	"aionlightning/game/store"
@@ -513,5 +514,54 @@ func TestAdminQuestAndLegion(t *testing.T) {
 	command(s, a, "legion setlevel Guardians 6")
 	if l.Level != 3 {
 		t.Fatal("invalid legion level applied")
+	}
+}
+
+// TestAdminKillPercent hits a target for a share of max HP instead of killing it outright.
+func TestAdminKillPercent(t *testing.T) {
+	s, a, _, _ := adminFixture(t)
+	command(s, a, "spawn 210133 norespawn")
+	var o *object
+	for _, v := range s.byID {
+		o = v
+	}
+	a.targetID = o.id
+	command(s, a, "kill 10")
+	if want := o.maxHP - o.maxHP/10; o.hp != want {
+		t.Fatalf("hp %d after //kill 10, want %d of %d", o.hp, want, o.maxHP)
+	}
+	command(s, a, "kill 0")
+	if o.hp == 0 {
+		t.Fatal("//kill 0 killed the target")
+	}
+	command(s, a, "kill")
+	if o.hp != 0 {
+		t.Fatalf("hp %d after //kill", o.hp)
+	}
+}
+
+// TestAdminDPS keeps hitting the target each second until it is turned off.
+func TestAdminDPS(t *testing.T) {
+	s, a, _, _ := adminFixture(t)
+	command(s, a, "spawn 210133 norespawn")
+	var o *object
+	for _, v := range s.byID {
+		o = v
+	}
+	a.targetID = o.id
+	command(s, a, "dps 10")
+	time.Sleep(1500 * time.Millisecond)
+	command(s, a, "dps off")
+	s.visMu.Lock()
+	hp, want := o.hp, o.maxHP-2*(o.maxHP/10)
+	s.visMu.Unlock()
+	if hp != want {
+		t.Fatalf("hp %d after two ticks, want %d of %d", hp, want, o.maxHP)
+	}
+	time.Sleep(1200 * time.Millisecond)
+	s.visMu.Lock()
+	defer s.visMu.Unlock()
+	if o.hp != hp {
+		t.Fatal("//dps off kept hitting")
 	}
 }

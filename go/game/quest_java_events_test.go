@@ -47,3 +47,34 @@ func TestJavaQuestEventDispatch(t *testing.T) {
 		}
 	})
 }
+
+func TestFireTempleHardKromedeGrantsHannetsVengeanceCredit(t *testing.T) {
+	_, s, p, c, _, _ := customQuestPortFixture(t, 1470, []store.Quest{{ID: 1470, Status: "START"}})
+	o := &object{worldID: 320100000, npc: s.data.Npcs[214621]}
+	if !c.javaKill(o) || p.quest(1470).Status != "REWARD" {
+		t.Fatal("hard Kromede did not advance Hannet's Vengeance")
+	}
+	if o.npc.ID != 214621 {
+		t.Fatal("quest credit changed the NPC identity used for loot and combat")
+	}
+	before := p.quest(1470).Vars
+	if c.javaKill(o) || p.quest(1470).Vars != before {
+		t.Fatal("repeated credit advanced an already rewarded quest")
+	}
+}
+
+func TestFireTempleHardKromedeCreditRequiresDungeonAndActiveQuest(t *testing.T) {
+	for _, name := range []string{"other map", "inactive quest"} {
+		t.Run(name, func(t *testing.T) {
+			_, s, p, c, _, _ := customQuestPortFixture(t, 1470, nil)
+			world := int32(320100000)
+			if name == "other map" {
+				p.quests = append(p.quests, store.Quest{ID: 1470, Status: "START"})
+				world = 210020000
+			}
+			if c.javaKill(&object{worldID: world, npc: s.data.Npcs[214621]}) {
+				t.Fatal("invalid Kromede kill granted credit")
+			}
+		})
+	}
+}

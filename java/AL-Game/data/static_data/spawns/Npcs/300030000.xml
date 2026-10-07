@@ -19,8 +19,8 @@
 
  -->
 <spawns>
-	<!-- Indratu Fortress Abyss Gate (Object Normal lvl:3)-->
-	<spawn map="300030000" npcid="700565" pool="1" interval="295">
+	<!-- Nochsana Training Camp exit Abyss Gate (Object Normal lvl:3)-->
+	<spawn map="300030000" npcid="700438" pool="1" interval="295">
 		<object staticid="14" x="466.89075" y="708.46313" z="346.6602" h="73"/>
 	</spawn>
 	<!-- Nochsana Artifact (Object Normal lvl:1)-->

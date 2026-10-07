@@ -501,6 +501,7 @@ func (c *conn) leaveWorld() {
 	s.prisonLogout(p)
 	p.restore.cancel()
 	p.fpTask.cancel()
+	p.adminDPS.cancel()
 	p.protection.cancel()
 	if p.dead {
 		s.moveToBind(p, false, 0)

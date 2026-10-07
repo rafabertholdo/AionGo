@@ -19,6 +19,10 @@
 	
  -->
 <spawns>
+	<!-- Nochsana Fortress Gate (client map door marker) -->
+	<spawn map="300030000" npcid="256694" pool="1" interval="14400">
+		<object staticid="23" x="346.237" y="356.81699" z="379.36295" h="0"/>
+	</spawn>
 	<!-- Aetheric Field Guard (Monster Elite lvl:26)-->
 	<spawn map="300030000" npcid="256692" pool="1" interval="300">
 		<object x="381.68384" y="409.1176" z="376.82706" h="16"/>

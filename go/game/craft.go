@@ -356,6 +356,9 @@ func (s *Server) startGathering(p *player, o *object) {
 			level = k.Level
 		}
 	}
+	if o.worldID == darkPoetaWorld && t.ID == 401111 && (s.byID[o.id] != o || o.worldID != p.WorldID || o.instance != p.instance || o.gatherCount >= t.HarvestCount) {
+		return
+	}
 	if level < 0 || level < t.SkillLevel || len(t.Materials) == 0 || p.dead || o.gathering != nil || p.interaction != nil {
 		return
 	}

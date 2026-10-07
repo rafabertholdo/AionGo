@@ -50,13 +50,19 @@ func (s *Server) createSummon(p *player, npcID, skillLevel int32) {
 	}
 	level := t.Level + skillLevel - 1
 	stats := s.data.SummonStatsFor(npcID, level)
+	if stats == nil && isSiegeWeapon(npcID) {
+		// The siege quest summons have NPC templates, but no summon-stats rows.
+		stats = &data.SummonStats{MaxHP: npcMaxHP(t), MaxMP: t.Stats.MaxMP,
+			PDefense: t.Stats.PDef, MResist: t.Stats.MDef,
+			MainHandAttack: t.Stats.Power, RunSpeed: t.Stats.RunSpeedFight}
+	}
 	if stats == nil {
 		return
 	}
 	if p.summon != nil {
 		s.releaseSummon(p.summon, unsummonOther)
 	}
-	o := s.spawnOwned(p, npcID, 2)
+	o := s.newOwned(p, npcID, 2, byte(p.Heading))
 	if o == nil {
 		return
 	}
@@ -69,13 +75,13 @@ func (s *Server) createSummon(p *player, npcID, skillLevel int32) {
 		{data.MaxHP, stats.MaxHP}, {data.MaxMP, stats.MaxMP}, {data.MainHandPower, stats.MainHandAttack},
 		{data.PhysicalDefense, stats.PDefense}, {data.MagicalResist, stats.MResist}, {data.AttackSpeed, 2000},
 		{data.Speed, data.Round(stats.RunSpeed * 1000)}, {data.RegenHp, level + 3}, {data.Knowledge, 100},
+		{data.BoostCastingTime, 100},
 	} {
 		g.initStat(v.stat, v.value)
 	}
 	o.stats, o.maxHP, o.hp = g, stats.MaxHP, stats.MaxHP
 	p.summon = o
-	// It was put in the world before it had its stats: those who see it are told again.
-	s.removeObject(o)
+	// It enters the world once, with its stats: a delete and re-add makes the client fade it out.
 	s.addObject(o)
 	p.conn.send(s.summonPanel(o))
 	o.broadcast(s.emote(o, emoteStartEmote2, 0), true)
@@ -88,6 +94,80 @@ func (s *Server) createSummon(p *player, npcID, skillLevel int32) {
 			s.releaseSummon(o, unsummonDistance)
 		}
 	}))
+}
+
+func isSiegeWeapon(id int32) bool { return id == 201054 || id == 201055 }
+
+func isNochsanaSiegeTarget(summon *object, target creature) bool {
+	gate, ok := target.(*object)
+	return ok && summon.npc != nil && summon.owner != nil && isSiegeWeapon(summon.npc.ID) &&
+		summon.worldID == nochsanaWorld && gate.worldID == nochsanaWorld &&
+		summon.instance == gate.instance && summon.owner.WorldID == gate.worldID &&
+		summon.owner.instance == gate.instance && gate.npc != nil && gate.npc.ID == 256694 && !gate.dead
+}
+
+// The 1.9 client sends CM_SUMMON_COMMAND for the siege pet's Attack button,
+// but does not drive its movement or attacks with follow-up packets. Pursue
+// only this gate; ordinary summons retain their existing client control.
+func (s *Server) startNochsanaSiege(o *object, target creature) bool {
+	if !isNochsanaSiegeTarget(o, target) || !inRange3D(o, target, 50) {
+		return false
+	}
+	o.targetID = target.cid()
+	if o.siegeTask == nil || o.siegeTask.cancelled {
+		o.siegeTask = s.every(0, time.Second, func() { s.nochsanaSiegeStep(o) })
+		o.timers = append(o.timers, o.siegeTask)
+	}
+	return true
+}
+
+func (s *Server) stopNochsanaSiege(o *object) {
+	o.siegeTask.cancel()
+	o.siegeTask = nil
+	o.targetID = 0
+	if o.move.scheduled() {
+		s.stopMoving(o)
+	}
+	o.move.stop()
+	s.cancelSkill(o)
+}
+
+func (s *Server) nochsanaSiegeStep(o *object) {
+	target := s.creatureByID(o.targetID)
+	if o.dead || o.summonMode != summonAttack || o.owner == nil || !o.owner.spawned ||
+		!isNochsanaSiegeTarget(o, target) {
+		s.stopNochsanaSiege(o)
+		if !o.dead && o.summonMode == summonAttack {
+			o.summonMode = summonGuard
+			if o.owner != nil && o.owner.conn != nil {
+				o.owner.conn.send(s.summonUpdate(o))
+			}
+		}
+		return
+	}
+	if !inRange3D(o, target, 6) {
+		o.move.follow = true
+		o.move.distance = 5
+		o.move.speed = 2
+		if !o.move.scheduled() {
+			s.scheduleMove(o)
+		}
+		return
+	}
+	if o.move.scheduled() {
+		s.stopMoving(o)
+		o.move.stop()
+	}
+	if o.cast != nil {
+		return
+	}
+	skillID := int32(18008)
+	if o.npc.ID == 201055 {
+		skillID = 17814
+	}
+	if tmpl := s.data.Skills[skillID]; tmpl != nil {
+		(&skill{s: s, tmpl: tmpl, effector: o, level: 1, first: target}).use()
+	}
 }
 
 func (s *Server) summonPanel(o *object) *wire.Writer {
@@ -138,6 +218,9 @@ func (s *Server) summonUpdate(o *object) *wire.Writer {
 func (s *Server) releaseSummon(o *object, how int) {
 	if o.summonMode == summonRelease {
 		return
+	}
+	if o.siegeTask != nil {
+		s.stopNochsanaSiege(o)
 	}
 	o.summonMode = summonRelease
 	p := o.owner
@@ -212,15 +295,22 @@ func (c *conn) summonCommand(r *wire.Reader) {
 		nameID := descriptionID(o.npc.NameID*2 + 1)
 		switch mode {
 		case summonAttack:
-			if s.creatureByID(target) == nil {
+			creature := s.creatureByID(target)
+			if creature == nil || isSiegeWeapon(o.npc.ID) && !s.startNochsanaSiege(o, creature) {
 				return
 			}
 			o.summonMode = summonAttack
 			p.conn.send(systemMessage(msgSummonAttackMode, nameID))
 		case summonGuard:
+			if o.siegeTask != nil {
+				s.stopNochsanaSiege(o)
+			}
 			o.summonMode = summonGuard
 			p.conn.send(systemMessage(msgSummonGuard, nameID))
 		case summonRest:
+			if o.siegeTask != nil {
+				s.stopNochsanaSiege(o)
+			}
 			o.summonMode = summonRest
 			p.conn.send(systemMessage(msgSummonRest, nameID))
 		case summonRelease:
@@ -243,7 +333,10 @@ func (c *conn) summonAttack(r *wire.Reader) {
 	c.withPlayer(func(s *Server, p *player) {
 		o := p.summon
 		t := s.creatureByID(target)
-		if o == nil || t == nil || t.isDead() || o.dead || o.summonMode == summonRelease || !p.canAttack() || !s.isEnemyOf(p, t) {
+		if o == nil || t == nil || t.isDead() || o.dead || o.summonMode == summonRelease || !p.canAttack() || !s.isEnemyOf(o, t) {
+			return
+		}
+		if isNochsanaSiegeTarget(o, t) && !inRange3D(o, t, 6) {
 			return
 		}
 		if !s.canAttackOut(o) {

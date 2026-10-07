@@ -43,6 +43,10 @@ func loadPortals(dir string) (map[int32]*Portal, []*Portal, error) {
 func (d *Data) InstancePortal(world int32, race string) *Portal {
 	for _, p := range d.PortalList {
 		if p.Instance && p.Exit.MapID == world && (p.Race == "" || p.Race == race || p.Race == "ALL") {
+			entry := p.EntryFor(race)
+			if entry == nil || entry.MapID == world {
+				continue
+			}
 			return p
 		}
 	}

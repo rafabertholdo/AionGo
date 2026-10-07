@@ -27,4 +27,8 @@
 		<object x="225.75142" y="326.3574" z="121.854675" h="35"/>
 		<object x="690.74713" y="1189.9978" z="143.20605" h="59"/>
 	</spawn>
+	<!-- Huge Vine: 1.9 client HSPIDLF1_Harvest_A_1_tree1; Essencetapping 300. -->
+	<spawn map="300040000" npcid="401111" pool="1" interval="21600">
+		<object x="663.97913" y="1169.7542" z="143.60455" h="0"/>
+	</spawn>
 </spawns>

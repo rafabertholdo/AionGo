@@ -486,3 +486,21 @@ zero failures and 16 optional database skips. `go vet ./...`, repository-wide
 `gofmt -l .`, `go build ./cmd/...` and `git diff --check` passed. No disposable
 DB fixture was supplied, and no database mutation was needed for this fix.
 Real-client warehouse verification remains open.
+
+## Dungeon corrections: scoped lifecycle and event review, 2026-10-05
+
+Skills applied: Go routing, troubleshooting, testing, code style and concurrency.
+This reviews the touched dungeon boundaries, not the whole game package.
+
+| Scope | Confirmed finding | Correction / acceptance boundary |
+| --- | --- | --- |
+| `game/services_portal.go`, `data/portals.go` | Seen objects were accepted without life/world/instance/distance checks; delayed use did not revalidate; internal portals could be selected as returns | Check current object and transfer participants; return through an external race-compatible portal. Admission item transactions and ordinary party lifecycle still need separate evidence. |
+| `game/darkpoeta.go`, `npc.go` | Run expiry depended on later events; duplicate deaths and generator events could advance progress; preparing/ended gathers scored | Schedule expiry, cancel it on ending/destruction, credit deaths once per life, track unique generator templates and guard gathering by active time. 1.9 scoring capture and full gameplay remain pending. |
+| `game/ai.go`, `instance.go`, `npc.go` | Despawn only changed AI state; dead guard skipped cleanup, and observer removal could restart AI | Remove observers before immediate task/cast/movement/effect cancellation. Deterministic tests catch tasks surviving instance destruction. Server-wide shutdown remains outside this review. |
+| `game/combat.go`, `skilleffects.go`, `darkpoeta_objects.go` | Barricades used ordinary damage and aggregated multi-hit damage | Cap positive damage per hit after avoidance/shields; keep multiple hits separate for HP/aggro. Existing 1.9 health is retained. |
+| `game/skill.go`, `darkpoeta_objects.go` | Self/area bomb spell did not react with the untargetable mine wall | Observe completed item casts in the same run/area. Natural bomb acquisition and client collision remain unverified. |
+| `game/craft.go` | A depleted vine identity could be reused through a stale gathering request | Reject depleted/stale/cross-run Huge Vine use; exercise skill 299/300 and duplicates. Scar escort release remains unresolved. |
+
+Executed validation and remaining content gaps are recorded in
+[the dungeon handoff](aion-dungeon-fixes/README.md). No dungeon or broader
+critical-pass outcome is certified complete by this review.

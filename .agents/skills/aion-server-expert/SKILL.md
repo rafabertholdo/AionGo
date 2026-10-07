@@ -12,6 +12,19 @@ client observations below are diagnostic evidence, not current progress counts.
 AionGo owns server code, data, schemas, images and the admin website. ReRun client
 integration belongs to `../the-one`; its Git restrictions do not apply here.
 
+## Decompiled 4.6 reference for 1.9 investigations
+
+For requests to improve the Go 1.9 server using the locally analyzed 4.6 server,
+read `docs/AION_46_REVERSE_ENGINEERING.md`. Local artifact locations stay in
+private operational notes outside this repository. It records binary identity, function
+lookup, analysis gaps, and the evidence/validation workflow. Only the main
+server executable has been decompiled so far; other components need separate
+analysis. Treat 4.6 behavior as a hypothesis until independently validated for
+1.9. Preserve the 1.9 protocol and existing quest conformance workflow. Keep
+local binary exports and machine-specific analysis notes outside this public
+repository. If local evidence is unavailable, ask for the artifact locations rather than
+inventing them.
+
 ## Where things live
 
 | What | Path |

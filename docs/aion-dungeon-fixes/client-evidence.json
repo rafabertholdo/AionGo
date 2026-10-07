@@ -1,0 +1,171 @@
+{
+  "recorded": "2026-10-05",
+  "source": "local aion1.9 client identified by the reverse-engineering handoff; no new client session",
+  "archives": [
+    {
+      "relative_path": "Data/npcs/npcs.pak",
+      "sha256": "27e74d0e7aed77e936e585844eec0ae1d44775feca741be8939746e2917ee8b9"
+    },
+    {
+      "relative_path": "Data/world/world.pak",
+      "sha256": "2e2219c8684edaa6aa4a44de95f93dbb358a1db1076591ffb3b660f81afde2b7"
+    },
+    {
+      "relative_path": "Levels/idshulackship/level.pak",
+      "sha256": "3281550ceb7aab1b6bd5dc4adceed80e855e1a1f9fbe93c70dc008aa8009a911"
+    },
+    {
+      "relative_path": "Levels/iddf2_dflame/level.pak",
+      "sha256": "5b0e08713af482e77d01a8e2d619d6965bf68c71a630c18891cced6bdde46048"
+    }
+  ],
+  "npc_records": [
+    {
+      "id": "212846",
+      "name": "FireSanctuaryQueenBoss_37_Ae",
+      "desc": "STR_FireSanctuaryQueenBoss_37_Ae",
+      "ai_name": "ND2_Sum_B",
+      "quest_ai_name": "FireSanctuaryQueenBoss_37_Ae"
+    },
+    {
+      "id": "214621",
+      "name": "FireSanctuaryQueenBossHard_37_Ah",
+      "desc": "STR_FireSanctuaryQueenBossHard_37_Ah",
+      "ai_name": "ND2_Sum_B",
+      "quest_ai_name": "FireSanctuaryQueenBoss_37_Ae"
+    },
+    {
+      "id": "700438",
+      "name": "IDAB1_MiniCastle_exit",
+      "desc": "STR_OBJ_IDAB1_MiniCastle_exit",
+      "ai_name": "ReturnToEntrance",
+      "talking_distance": "7.000000"
+    },
+    {
+      "id": "700522",
+      "name": "IDshulackship_Bag_Q3200",
+      "desc": "STR_OBJ_IDshulackship_Bag_Q3200",
+      "ai_name": "NoAction",
+      "quest_ai_name": "IDshulackship_Bag_Q3200",
+      "talking_distance": "5.000000"
+    },
+    {
+      "id": "700565",
+      "name": "DF3_LF3_Dragonportal_Q1063",
+      "desc": "STR_OBJ_DF3_LF3_Dragonportal_Q1063",
+      "ai_name": "LF3_Dragonportal_Q1063",
+      "talking_distance": "7.000000"
+    },
+    {
+      "id": "730047",
+      "name": "DF2_DragonDoor_In",
+      "desc": "STR_OBJ_DF2_DragonDoor_In",
+      "ai_name": "DF2_DragonDoor_In",
+      "talking_distance": "6.000000"
+    },
+    {
+      "id": "730069",
+      "name": "LF2_DragonDoor_In",
+      "desc": "STR_OBJ_DF2_DragonDoor_In",
+      "ai_name": "LF2_DragonDoor_In",
+      "talking_distance": "6.000000"
+    },
+    {
+      "id": "798332",
+      "name": "Shugo_Shulack_01",
+      "desc": "STR_NPC_Shugo_Shulack_01",
+      "ai_name": "NPC",
+      "quest_ai_name": "Shugo_Shulack_01",
+      "talking_distance": "5.000000"
+    }
+  ],
+  "instance_client_records": [
+    {
+      "id": "3",
+      "desc": "STR_ZONE_NAME_IDDF2_Dflame",
+      "name": "IDDF2_Dflame",
+      "ent_cool_time": "30",
+      "race": "both",
+      "max_member_light": "6",
+      "max_member_dark": "6",
+      "enter_min_level_light": "30",
+      "enter_min_level_dark": "27"
+    },
+    {
+      "id": "7",
+      "desc": "STR_ZONE_NAME_IDDF2A_Adma",
+      "name": "IDDF2A_Adma",
+      "ent_cool_time": "180",
+      "race": "dark",
+      "max_member_light": "0",
+      "max_member_dark": "6",
+      "enter_min_level_dark": "46"
+    },
+    {
+      "id": "8",
+      "desc": "STR_ZONE_NAME_IDAb1_MiniCastle",
+      "name": "IDAb1_MiniCastle",
+      "ent_cool_time": "1080",
+      "race": "both",
+      "max_member_light": "6",
+      "max_member_dark": "6",
+      "enter_min_level_light": "25",
+      "enter_max_level_light": "28",
+      "enter_min_level_dark": "25",
+      "enter_max_level_dark": "28"
+    },
+    {
+      "id": "9",
+      "desc": "STR_ZONE_NAME_IDLF1",
+      "name": "IDLF1",
+      "ent_cool_time": "720",
+      "race": "both",
+      "max_member_light": "6",
+      "max_member_dark": "6",
+      "enter_min_level_light": "50",
+      "enter_min_level_dark": "50"
+    },
+    {
+      "id": "18",
+      "desc": "STR_ZONE_NAME_IDShulackShip",
+      "name": "IDShulackShip",
+      "ent_cool_time": "300",
+      "race": "both",
+      "max_member_light": "6",
+      "max_member_dark": "6",
+      "enter_min_level_light": "40",
+      "enter_min_level_dark": "40"
+    },
+    {
+      "id": "19",
+      "desc": "STR_ZONE_NAME_IDAb1_Dreadgion",
+      "name": "IDAb1_Dreadgion",
+      "ent_cool_time": "120",
+      "race": "both",
+      "max_member_light": "6",
+      "max_member_dark": "6",
+      "enter_min_level_light": "46",
+      "enter_max_level_light": "50",
+      "enter_min_level_dark": "46",
+      "enter_max_level_dark": "50"
+    }
+  ],
+  "steel_rake_markers": {
+    "named_spawn_markers": 675,
+    "resolved_client_npc_names": 660,
+    "limitation": "Markers do not establish activation conditions, pools, corpse lifetime, adds, paths or encounter scripts; they are not directly imported as unconditional server spawns."
+  },
+  "fire_temple_boss_markers": [
+    {
+      "Angles": "0,-0,-129.99998",
+      "dir": "140",
+      "Ignore_heightcheck": "0",
+      "iidle_range": "-1",
+      "Name": "C5Dg249",
+      "npc": "FireSanctuaryQueenBossHard_37_Ah",
+      "Pos": "421.99353,93.189148,122",
+      "Type": "SP",
+      "use_dir": "0"
+    }
+  ]
+}

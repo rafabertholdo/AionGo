@@ -45,6 +45,7 @@ type object struct {
 	actionTask              *task        // ActionitemController.onDialogRequest use timer
 	gathering               *interaction // a player gathering it
 	owner                   *player      // who made it, if it is a trap or a servant
+	siegeTask               *task        // the Nochsana siege weapon pursuing its assigned gate
 	kisk                    *kisk        // what it is besides, if it is a kisk
 	rift                    *rift        // what it is besides, if it is a rift
 	objectType              uint16       // NpcObjectType, if it isn't a normal npc
@@ -164,7 +165,7 @@ func (s *Server) npcInfo(o *object, p *player) *wire.Writer {
 	if s.data.Tribes.AggroIcon(race == 1, t.Tribe) {
 		kind = npcTypeAggro
 	}
-	if o.kisk != nil && o.kisk.ownerRace != p.Race {
+	if o.kisk != nil && o.kisk.ownerRace != p.Race || isNochsanaGate(o) {
 		kind = npcTypeIDs["ATTACKABLE"]
 	}
 	hp, maxHP := o.hitPoints()

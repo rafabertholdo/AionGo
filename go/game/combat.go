@@ -88,6 +88,9 @@ func (p *player) shieldEquipped() bool {
 func (s *Server) physicalAttack(attacker, target creature) []attackResult {
 	list := s.physicalAttackHits(attacker, target)
 	target.fxc().applyShields(list)
+	for i := range list {
+		list[i].damage = darkPoetaDamage(target, list[i].damage)
+	}
 	return list
 }
 
@@ -440,12 +443,8 @@ func (s *Server) playerAttack(p *player, target creature) {
 	}
 	s.attacking(p, target)
 	results := s.physicalAttack(p, target)
-	var damage int32
-	for _, hit := range results {
-		damage += hit.damage
-	}
 	p.broadcast(attackPacket(p, target, p.attackCounter, int32(time.Now().UnixMilli()), 0, results), true)
-	s.gotHit(target, p, 0, statusRegular, damage)
+	s.applyAttackHits(target, p, results)
 	p.attackCounter++
 }
 
@@ -459,6 +458,9 @@ func (p *player) canAttack() bool {
 func (s *Server) canAttackNpc(p *player, o *object) bool {
 	if o.kisk != nil {
 		return o.kisk.ownerRace != p.Race
+	}
+	if isNochsanaGate(o) {
+		return p.WorldID == o.worldID && p.instance == o.instance
 	}
 	switch o.npc.Type {
 	case "ATTACKABLE", "AGGRESSIVE":

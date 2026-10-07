@@ -16,8 +16,22 @@ func (c *conn) javaEventFirst(ids []int32, run func(id int32) bool) bool {
 
 // javaKill is QuestEngine.onKill: the npc o died and the player has the kill.
 func (c *conn) javaKill(o *object) bool {
-	return c.javaEventFirst(javaKills[o.npc.ID], func(id int32) bool {
+	if c.javaEventFirst(javaKills[o.npc.ID], func(id int32) bool {
 		return javaKillHandlers[id](c, o, c.s.data.QuestScripts[id], 0)
+	}) {
+		return true
+	}
+	// Both Fire Temple Kromede variants share the client's quest AI. Restrict
+	// the compatibility event to this quest and map; keep the real NPC unchanged.
+	if o.worldID != 320100000 || o.npc.ID != 214621 || c.s.data.QuestScripts[1470] == nil {
+		return false
+	}
+	questObject := *o
+	questTemplate := *o.npc
+	questTemplate.ID = 212846
+	questObject.npc = &questTemplate
+	return c.javaPort(func() bool {
+		return c.javaKill1470(&questObject, c.s.data.QuestScripts[1470], 0)
 	})
 }
 

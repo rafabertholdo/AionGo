@@ -239,6 +239,7 @@ func (s *Server) npcHit(o *object, attacker creature, skillID int32, kind byte, 
 	if p, ok := attacker.(*player); ok && p.conn != nil {
 		damage = p.conn.ascensionBossDamage(o, damage)
 	}
+	damage = darkPoetaDamage(o, damage)
 	s.cancelOnHit(o, damage)
 	o.fx.attacked(attacker)
 	s.addDamage(o, attacker, damage)
@@ -282,12 +283,8 @@ func (s *Server) npcAttack(o *object, target creature) {
 		return
 	}
 	results := s.physicalAttack(o, target)
-	var damage int32
-	for _, hit := range results {
-		damage += hit.damage
-	}
 	o.broadcast(attackPacket(o, target, o.attackCounter, 274, 0, results), true)
-	s.gotHit(target, o, 0, statusRegular, damage)
+	s.applyAttackHits(target, o, results)
 	o.attackCounter++
 }
 
@@ -341,12 +338,15 @@ func (s *Server) despawnNpc(o *object, forced bool) {
 	if forced {
 		o.decay.cancel()
 	}
-	o.ai.handleEvent(evDespawn)
 	s.removeObject(o)
+	o.ai.handleEvent(evDespawn)
 }
 
 // respawnNpc is RespawnService's task: the npc stands again where it spawned.
 func (s *Server) respawnNpc(o *object) {
+	if in := s.darkPoetaOf(o.worldID, o.instance); in != nil {
+		delete(in.dp.credited, o)
+	}
 	o.decay.cancel()
 	s.moveObject(o, o.homeX, o.homeY, o.homeZ, o.heading)
 	o.dead = false

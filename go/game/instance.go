@@ -98,6 +98,7 @@ func (s *Server) destroyInstance(in *instance) {
 	in.check.cancel()
 	if in.dp != nil {
 		in.dp.start.cancel()
+		in.dp.expire.cancel()
 	}
 	delete(s.instances, [2]int32{in.world, in.id})
 	for _, id := range sortedKeys(s.byID) {
@@ -110,10 +111,10 @@ func (s *Server) destroyInstance(in *instance) {
 		}
 		o.respawn.cancel()
 		o.decay.cancel()
+		s.removeObject(o)
 		if o.npc != nil && o.ai != nil {
 			o.ai.handleEvent(evDespawn)
 		}
-		s.removeObject(o)
 		delete(s.byID, id)
 		s.ids.release(id)
 	}

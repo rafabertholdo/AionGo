@@ -170,6 +170,16 @@ func (a *npcAI) run() {
 
 // handleEvent is NpcAi.handleEvent, with the handlers each kind of AI has.
 func (a *npcAI) handleEvent(ev aiEvent) {
+	if ev == evDespawn {
+		a.setState(aiNone)
+		a.clearDesires()
+		a.stop()
+		a.talkTask.cancel()
+		a.o.move.stop()
+		a.s.cancelSkill(a.o)
+		a.o.fx.removeAll()
+		return
+	}
 	if ev != evDied && a.o.dead {
 		return
 	}
@@ -183,8 +193,6 @@ func (a *npcAI) handleEvent(ev aiEvent) {
 	case evRespawned:
 		a.setState(aiActive)
 		a.analyzeState()
-	case evDespawn:
-		a.handleEvent(evNothingToDo)
 	case evTalk:
 		if a.s.hasWalkRoutes(a.o) {
 			a.setState(aiTalking)

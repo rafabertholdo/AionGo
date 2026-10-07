@@ -22,6 +22,11 @@ For VPS deployments, read the private operational runbook at
 `../the-one/docs/AION_VPS_DEPLOYMENT.md`. Keep its connection details and
 operational records out of this public repository.
 
+For Nochsana Training Camp (NTC) gameplay, data, quests, or server behavior,
+read `.agents/skills/aion-instance-nochsana/SKILL.md`. Keep each future Aion
+instance's version-specific skill separate so later client changes do not
+silently change this repository's 1.9 target.
+
 For Go coding, review, debugging and setup, read `.agents/skills/golang-how-to/SKILL.md`
 and the relevant topic skills. Apply them within the module's Go 1.25 target,
 preserving Aion 1.9 packet bytes, opcodes, ordering, rounding and login crypto.

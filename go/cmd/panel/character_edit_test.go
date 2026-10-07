@@ -38,14 +38,16 @@ func TestAscensionPreparation(t *testing.T) {
 
 func TestNTCPreparation(t *testing.T) {
 	plan, err := prepareNTC("ELYOS", "WARRIOR", "TEMPLAR")
-	if err != nil || plan.class != "TEMPLAR" || plan.world != 400010000 || plan.x != 2890 || len(plan.quests) != 28 {
+	if err != nil || plan.class != "TEMPLAR" || plan.world != 400010000 || plan.x != 2890 || len(plan.quests) != 28 ||
+		plan.siegeQuest != 3702 || plan.siegeItem != 182202179 {
 		t.Fatalf("Elyos warrior: %+v, %v", plan, err)
 	}
 	if got := plan.gear[len(plan.gear)-2:]; got[0] != (equipItem{1, 100000975}) || got[1] != (equipItem{2, 115001027}) {
 		t.Fatalf("Templar weapons: %v", got)
 	}
 	plan, err = prepareNTC("ASMODIANS", "SPIRIT_MASTER", "")
-	if err != nil || plan.class != "SPIRIT_MASTER" || plan.x != 876.7211 || plan.quests[len(plan.quests)-1] != 2947 {
+	if err != nil || plan.class != "SPIRIT_MASTER" || plan.x != 876.7211 || plan.quests[len(plan.quests)-1] != 2947 ||
+		plan.siegeQuest != 4702 || plan.siegeItem != 182205676 {
 		t.Fatalf("Asmodian spiritmaster: %+v, %v", plan, err)
 	}
 	if plan.gear[0] != (equipItem{1 << 3, 110101127}) || plan.gear[5] != (equipItem{1, 100600815}) {
@@ -443,6 +445,11 @@ func TestNTCDatabase(t *testing.T) {
 	if err := db.QueryRow(`SELECT COUNT(*) FROM ` + schema + `.player_quests WHERE status='COMPLETE' AND complete_count=1`).Scan(&completed); err != nil || completed != 28 {
 		t.Fatal("completed quests", completed, err)
 	}
+	var siegeStatus string
+	var siegeCount int
+	if err := db.QueryRow(`SELECT status,complete_count FROM `+schema+`.player_quests WHERE player_id=1 AND quest_id=3702`).Scan(&siegeStatus, &siegeCount); err != nil || siegeStatus != "START" || siegeCount != 0 {
+		t.Fatal("siege quest", siegeStatus, siegeCount, err)
+	}
 	skills := map[int32]int32{}
 	rows, err := db.Query(`SELECT skillId, skillLevel FROM ` + schema + `.player_skills`)
 	if err != nil {
@@ -480,7 +487,7 @@ func TestNTCDatabase(t *testing.T) {
 	if len(equipped) != 7 || equipped[1] != 101500760 || equipped[4] != 125000001 || equipped[8] != 110501041 {
 		t.Fatalf("equipped: %v", equipped)
 	}
-	if slices.Sort(cube); !slices.Equal(cube, []int32{100100001, 115000001}) {
+	if slices.Sort(cube); !slices.Equal(cube, []int32{100100001, 115000001, 182202179}) {
 		t.Fatalf("cube: %v", cube)
 	}
 }

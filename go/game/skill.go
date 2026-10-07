@@ -286,6 +286,7 @@ func (sk *skill) endCast() {
 	for _, e := range effects {
 		e.apply()
 	}
+	s.darkPoetaSpell(sk)
 	if penalty := sk.tmpl.PenaltySkill; penalty != 0 {
 		if t := s.data.Skills[penalty]; t != nil {
 			(&skill{s: s, tmpl: t, effector: sk.effector, level: 1, first: sk.first}).use()
@@ -570,12 +571,15 @@ func (s *Server) isEnemyOf(a, b creature) bool {
 	case *player:
 		switch y := b.(type) {
 		case *object:
-			return isMonster(y) || s.aggressiveTo(y, x)
+			return isMonster(y) || isNochsanaGate(y) && s.canAttackNpc(x, y) || s.aggressiveTo(y, x)
 		case *player:
 			return s.isEnemyPlayer(x, y)
 		}
 	case *object:
 		if x.owner != nil {
+			if isNochsanaSiegeTarget(x, b) {
+				return true
+			}
 			return s.isEnemyOf(x.owner, b)
 		}
 		return s.isEnemy(x, b)

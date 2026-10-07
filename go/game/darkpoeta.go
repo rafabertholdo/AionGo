@@ -51,7 +51,9 @@ type darkPoeta struct {
 	left                  time.Duration // the time left when the run ended
 	points, kills, gather int32
 	rank                  int32
-	generators            int
+	generators            map[int32]bool
+	credited              map[*object]bool
+	expire                *task
 	start                 *task
 }
 
@@ -115,13 +117,27 @@ func (s *Server) darkPoetaDoor(p *player) {
 }
 
 func (s *Server) darkPoetaStart(in *instance) {
+	if s.instances[[2]int32{in.world, in.id}] != in {
+		return
+	}
 	d := in.dp
 	if d.state != scorePreparing {
 		return
 	}
 	d.start.cancel()
 	d.state, d.since = scoreStarted, time.Now()
+	d.expire = s.later(darkPoetaRun, func() { s.darkPoetaExpire(in) })
 	s.darkPoetaSend(in, darkPoetaScore(d))
+}
+
+// darkPoetaExpire ends an exhausted run even if nobody sends another event.
+func (s *Server) darkPoetaExpire(in *instance) {
+	if s.instances[[2]int32{in.world, in.id}] != in || in.dp.state != scoreStarted {
+		return
+	}
+	in.dp.expire.cancel()
+	in.dp.left, in.dp.state, in.dp.rank = 0, scoreEnded, rankFailed
+	s.darkPoetaSend(in, darkPoetaScore(in.dp))
 }
 
 // darkPoetaKill is onDie: the npc's points, and the end of the run when it is Anuhart.
@@ -134,6 +150,17 @@ func (s *Server) darkPoetaKill(o *object) {
 	if d.state != scoreStarted {
 		return
 	}
+	if d.timeLeft() == 0 {
+		s.darkPoetaExpire(in)
+		return
+	}
+	if d.credited[o] {
+		return
+	}
+	if d.credited == nil {
+		d.credited = map[*object]bool{}
+	}
+	d.credited[o] = true
 	if points := darkPoetaPoints(o); points != 0 {
 		d.kills++
 		d.points += points
@@ -141,18 +168,40 @@ func (s *Server) darkPoetaKill(o *object) {
 	}
 	switch o.npc.ID {
 	case 214895, 214896, 214897: // the generators
-		if d.generators++; d.generators == 3 {
+		if d.generators == nil {
+			d.generators = map[int32]bool{}
+		}
+		if d.generators[o.npc.ID] {
+			break
+		}
+		d.generators[o.npc.ID] = true
+		if len(d.generators) == 3 {
 			s.darkPoetaSpawn(in, npcAnuhart, 275.34537, 323.02072, 130.9302, 52)
 		}
 	case npcAnuhart:
+		d.expire.cancel()
 		d.left = d.timeLeft()
 		d.state = scoreEnded
 		var boss int32
 		if d.rank, boss = darkPoetaRank(d.left, d.points); boss != 0 {
-			s.darkPoetaSpawn(in, boss, 1188.1594, 1241.2809, 142.61472, 34) // Tahabata's place in the map's spawns
+			s.darkPoetaSpawnRankBoss(in, boss)
 		}
 	}
 	s.darkPoetaSend(in, darkPoetaScore(d))
+}
+
+// Use each boss's authored 1.9 spawn. Chramati has no spawn in this data set,
+// so retain the existing room placement for that rank until its location is verified.
+func (s *Server) darkPoetaSpawnRankBoss(in *instance, boss int32) {
+	for _, group := range s.data.Spawns[darkPoetaWorld] {
+		if group.NpcID != boss || len(group.Spots) == 0 {
+			continue
+		}
+		spot := group.Spots[0]
+		s.darkPoetaSpawn(in, boss, spot.X, spot.Y, spot.Z, byte(spot.Heading))
+		return
+	}
+	s.darkPoetaSpawn(in, boss, 1188.1594, 1241.2809, 142.61472, 34)
 }
 
 // darkPoetaRank is checkRank: the run's rank and its boss, none when the time ran out.
@@ -168,6 +217,13 @@ func darkPoetaRank(left time.Duration, points int32) (rank, boss int32) {
 // darkPoetaGather is onGather.
 func (s *Server) darkPoetaGather(p *player) {
 	if in := s.darkPoetaOf(p.WorldID, p.instance); in != nil {
+		if in.dp.state != scoreStarted {
+			return
+		}
+		if in.dp.timeLeft() == 0 {
+			s.darkPoetaExpire(in)
+			return
+		}
 		in.dp.gather++
 		s.darkPoetaSend(in, darkPoetaScore(in.dp))
 	}

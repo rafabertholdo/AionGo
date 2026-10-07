@@ -177,6 +177,32 @@ Delays can reach 43,200,000 ms. This documentation update does not apply migrati
 Validate disabled paths before deciding to expand their scope. Day/night event
 scheduling and broader dungeon mechanics likewise need source-backed scope.
 
+## Dungeon correctness roadmap
+
+Added 2026-10-05 from a bounded Go/data audit and recovered 4.6 main-server
+function inspection. Source corrections and automated validation are tracked in
+[the dungeon handoff](../docs/aion-dungeon-fixes/README.md); no new 1.9 client
+gameplay verification is claimed. The 4.6 reference supplies investigation leads; compatibility must
+be established independently. Scope and acceptance criteria live in
+[the dungeon correctness plan](../docs/DUNGEON_CORRECTNESS_PLAN.md).
+This table is the authoritative task status; keep the public product roadmap
+synchronized when it changes.
+
+| ID | Outcome | Status |
+| --- | --- | --- |
+| D0 | Evidence-backed 1.9 dungeon/content inventory | In progress |
+| D1 | Correct party admission, isolation, reconnect and run cleanup | In progress |
+| D2 | Validated doors, keys and objective transitions | Planned |
+| D3 | Dark Poeta timing, scoring and progression verified against 1.9 | In progress |
+| D4 | Verified boss phases, adds and wipe/reset behavior | Planned |
+| D5 | Nochsana, Fire Temple, Adma and Steel Rake routes verified | Planned |
+| D6 | Correct dungeon credit, loot and persistence edges | Planned |
+| D7 | Version-correct Dredgion admission, objectives and results | Planned |
+
+Prioritize D0–D3, then encounter/content and reward verification; Dredgion
+follows the shared foundation. Existing instance and Dark Poeta implementations
+remain implemented but do not satisfy these broader verification outcomes.
+
 ## Development checks
 
 Run from the repository root, sequentially on this host:

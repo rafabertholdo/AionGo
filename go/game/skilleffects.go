@@ -312,7 +312,8 @@ func (e *effect) calculateDamage(t *effectTemplate, magical bool) {
 		}
 		e.setResult(damage, status)
 	} else {
-		damage := s.physicalDamage(e.effector, e.effected, value)
+		// An npc's physical damage ignores the skill value, so the door bonus is added to the blow.
+		damage := s.physicalDamage(e.effector, e.effected, value) + e.siegeDoorBonus()
 		status := s.physicalStatus(e.effector, e.effected)
 		switch status {
 		case statusBlock:
@@ -336,7 +337,7 @@ func (e *effect) calculateDamage(t *effectTemplate, magical bool) {
 func (e *effect) setResult(damage int32, status int8) {
 	list := []attackResult{{damage: damage, status: status}}
 	e.effected.fxc().applyShields(list)
-	e.r1, e.attackStatus, e.shield = list[0].damage, list[0].status, list[0].shield
+	e.r1, e.attackStatus, e.shield = darkPoetaDamage(e.effected, list[0].damage), list[0].status, list[0].shield
 }
 
 // applyActionModifiers is EffectTemplate.applyActionModifiers: the first modifier that fits changes the value.
@@ -358,7 +359,7 @@ func (e *effect) applyActionModifiers(t *effectTemplate, value int32) int32 {
 			fits = e.effected.fxc().isSet(effectStumble)
 		case "poisondamage":
 			fits = e.effected.fxc().isSet(effectPoison)
-		case "targetracedamage":
+		case "targetrace":
 			fits = e.targetRace(m)
 		}
 		if fits {
@@ -368,10 +369,10 @@ func (e *effect) applyActionModifiers(t *effectTemplate, value int32) int32 {
 	return value
 }
 
-// targetRace is TargetRaceDamageModifier.check: the target's race (of an npc) is the one the modifier is for.
+// targetRace is TargetRaceDamageModifier.check: the target is a player of the modifier's race.
 func (e *effect) targetRace(m *data.Node) bool {
-	o, ok := e.effected.(*object)
-	return ok && o.npc.Race == m.Str("race")
+	p, ok := e.effected.(*player)
+	return ok && p.Race == m.Str("race")
 }
 
 // isBehind is PositionUtil.isBehindTarget.

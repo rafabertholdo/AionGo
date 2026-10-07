@@ -73,11 +73,13 @@ var advancedClasses = map[string][]string{
 const ntcLevel = 25
 
 type instancePreparation struct {
-	class   string
-	quests  []int // completed, rewards not granted
-	gear    []equipItem
-	world   int
-	x, y, z float64
+	class      string
+	quests     []int // completed, rewards not granted
+	siegeQuest int
+	siegeItem  int32
+	gear       []equipItem
+	world      int
+	x, y, z    float64
 }
 
 type equipItem struct {
@@ -143,8 +145,10 @@ func prepareNTC(race, class, choice string) (instancePreparation, error) {
 	switch race {
 	case "ELYOS":
 		plan.x, plan.y, plan.z = 2890, 754, 1498.5786
+		plan.siegeQuest, plan.siegeItem = 3702, 182202179
 	case "ASMODIANS":
 		plan.x, plan.y, plan.z = 876.7211, 3079.2874, 1644.5786
+		plan.siegeQuest, plan.siegeItem = 4702, 182205676
 		raceOffset = 1
 	default:
 		return instancePreparation{}, errors.New("Unsupported character race.")
@@ -234,7 +238,7 @@ func (p *panel) editCharacter(u *user, w http.ResponseWriter, r *http.Request) {
 	case "ntc":
 		var class string
 		class, err = p.prepareNTC(r, name, r.FormValue("class"))
-		message = fmt.Sprintf("Ready for Nochsana Training Camp: level %d %s with the campaign below level 25 and Abyss access completed, the level's skills learned and Recruit's gear equipped. Log in beside the camp's portal in the Abyss; entering takes a group. Quest rewards were not granted.", ntcLevel, title(class))
+		message = fmt.Sprintf("Ready for Nochsana Training Camp: level %d %s with the campaign and Abyss access completed, the General quest started, one siege weapon item in the cube, skills learned and Recruit's gear equipped. Log in beside the camp's portal in the Abyss; entering takes a group. Completed campaign quest rewards were not granted.", ntcLevel, title(class))
 	case "kinah":
 		var amount int64
 		amount, err = positiveAmount(r.FormValue("amount"), math.MaxInt64)
@@ -634,6 +638,11 @@ func (p *panel) prepareNTC(r *http.Request, name, choice string) (string, error)
 			return "", p.editDatabaseError(err)
 		}
 	}
+	if _, err = tx.ExecContext(ctx, `INSERT INTO `+p.gsDB+`.player_quests (player_id, quest_id, status, quest_vars, complete_count)
+		VALUES (?, ?, 'START', 0, 0) ON DUPLICATE KEY UPDATE status = IF(status = 'COMPLETE', status, 'START')`,
+		record.id, plan.siegeQuest); err != nil {
+		return "", p.editDatabaseError(err)
+	}
 	for id, level := range p.assets.skillsAt(plan.class, record.race, ntcLevel) {
 		if _, err = tx.ExecContext(ctx, `INSERT INTO `+p.gsDB+`.player_skills (player_id, skillId, skillLevel) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE skillLevel = GREATEST(skillLevel, VALUES(skillLevel))`, record.id, id, level); err != nil {
 			return "", p.editDatabaseError(err)
@@ -642,10 +651,45 @@ func (p *panel) prepareNTC(r *http.Request, name, choice string) (string, error)
 	if err = p.equip(ctx, tx, record, plan.gear); err != nil {
 		return "", err
 	}
+	if err = p.grantNTCSiegeItem(ctx, tx, record, plan.siegeItem); err != nil {
+		return "", err
+	}
 	if err = tx.Commit(); err != nil {
 		return "", p.editDatabaseError(err)
 	}
 	return plan.class, nil
+}
+
+func (p *panel) grantNTCSiegeItem(ctx context.Context, tx *sql.Tx, record characterEditRecord, itemID int32) error {
+	var existing int32
+	err := tx.QueryRowContext(ctx, `SELECT itemUniqueId FROM `+p.gsDB+
+		`.inventory WHERE itemOwner = ? AND itemId = ? AND isEquiped = 0 AND COALESCE(itemLocation, 0) = 0 LIMIT 1 FOR UPDATE`,
+		record.id, itemID).Scan(&existing)
+	if err == nil {
+		return nil
+	}
+	if !errors.Is(err, sql.ErrNoRows) {
+		return p.editDatabaseError(err)
+	}
+	var usedSlots int
+	if err = tx.QueryRowContext(ctx, `SELECT COUNT(*) FROM `+p.gsDB+
+		`.inventory WHERE itemOwner = ? AND isEquiped = 0 AND COALESCE(itemLocation, 0) = 0 AND itemId <> ?`,
+		record.id, kinahID).Scan(&usedSlots); err != nil {
+		return p.editDatabaseError(err)
+	}
+	if usedSlots >= baseCubeSlots+record.cubeSize*9 {
+		return errors.New("The character's cube needs one free slot for the siege weapon item.")
+	}
+	ids, err := p.reserveAdminItemIDs(ctx, tx, 1)
+	if err != nil {
+		return err
+	}
+	if _, err = tx.ExecContext(ctx, `INSERT INTO `+p.gsDB+`.inventory
+		(itemUniqueId, itemId, itemCount, itemColor, itemOwner, isEquiped, isSoulBound, slot, itemLocation, enchant, itemSkin, fusionedItem)
+		VALUES (?, ?, 1, 0, ?, 0, 0, ?, 0, 0, 0, 0)`, ids[0], itemID, record.id, adminItemSlot); err != nil {
+		return p.editDatabaseError(err)
+	}
+	return nil
 }
 
 // equip puts gear in its slots. What those slots and the off hand held goes to the cube, unless it is the same item.

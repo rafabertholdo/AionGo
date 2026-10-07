@@ -36,3 +36,30 @@ func TestAlwaysBlock(t *testing.T) {
 		t.Errorf("wrong guarantees")
 	}
 }
+
+// TestTargetRaceModifier adds skill 1135's bonus against Asmodian players only (TargetRaceDamageModifier).
+func TestTargetRaceModifier(t *testing.T) {
+	d := staticDataOrSkip(t)
+	s := testServer(d)
+	tmpl := d.Skills[1135]
+	if tmpl == nil {
+		t.Skip("no skill 1135")
+	}
+	p, _ := fighter(t, s, 1000)
+	other, _ := fighter(t, s, 1005)
+	fx := s.skillEffects(tmpl)[0]
+	e := &effect{s: s, tmpl: tmpl, level: 1, effector: p, effected: other}
+	for _, c := range []struct {
+		race string
+		want int32
+	}{{"ELYOS", 100}, {"ASMODIANS", 100 + 2043 + 53}} {
+		other.Race = c.race
+		if got := e.applyActionModifiers(fx, 100); got != c.want {
+			t.Errorf("against %s: %d, want %d", c.race, got, c.want)
+		}
+	}
+	e.effected = monster(t, s, 1005)
+	if got := e.applyActionModifiers(fx, 100); got != 100 {
+		t.Errorf("against an npc: %d, want 100", got)
+	}
+}

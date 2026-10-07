@@ -30,7 +30,7 @@ func init() {
 	extendedAdminCommands = map[string]func(*Server, *player, []string){
 		"notice": (*Server).adminNotice, "announcefaction": (*Server).adminFaction,
 		"movetoplayer": (*Server).adminMoveToPlayer, "movetome": (*Server).adminMoveToMe, "moveplayertoplayer": (*Server).adminMovePlayers, "movetonpc": (*Server).adminMoveToNPC,
-		"invis": (*Server).adminInvisible, "invul": (*Server).adminInvulnerable, "speed": (*Server).adminSpeed,
+		"invis": (*Server).adminInvisible, "invul": (*Server).adminInvulnerable, "dps": (*Server).adminDPS, "speed": (*Server).adminSpeed,
 		"addskill": (*Server).adminSkill, "givemissingskills": (*Server).adminMissingSkills, "addtitle": (*Server).adminTitle, "addset": (*Server).adminItemSet, "remove": (*Server).adminRemove,
 		"info": (*Server).adminInfo, "playerinfo": (*Server).adminPlayerInfo, "zone": (*Server).adminZone, "weather": (*Server).adminWeather,
 		"quest": (*Server).adminQuest, "legion": (*Server).adminLegion, "ai": (*Server).adminAI,

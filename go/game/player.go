@@ -14,6 +14,7 @@ import (
 type player struct {
 	*character
 	adminInvulnerable bool
+	adminDPS          *task // //dps hitting the current target each second
 	adminAppearance   *store.Appearance
 	level             int
 	stats             *gameStats

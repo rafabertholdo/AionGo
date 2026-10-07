@@ -1,0 +1,53 @@
+# Nochsana Training Camp: original gameplay and version evidence
+
+Scope: original Aion 1.5/1.9 NTC, map **300030000**. Terms below: **local 1.9** means the repository's 1.9 static data or the installed 1.9.0.1 client; **period report** means a guide published in 2009–2010; **unverified** means no 1.9 execution or packet capture establishes the rule. Names differ between old English translations and the repository's quest XML.
+
+## Version and entry
+
+| Question | Evidence for the original instance | Boundary |
+| --- | --- | --- |
+| Who enters? | Local portal XML declares faction-specific, grouped entry at levels **25–28**; a [2009 instance overview](https://www.daevasreport.com/2009/11/10/instancje-2/) and [2009 Korean 1.5 guide](https://www.inven.co.kr/webzine/news/?news=84721&vtype=pc) describe six players and 25–28. | A [2009 English guide](https://www.tentonhammer.com/guides/aion-nochsana-training-camp-instance-guide) says “25–29” but also says entry stops at 29. Use 25–28 for this build. |
+| Where? | Lower Abyss near each faction's landing: Elyos portal statue **700413**, `(2884.7407, 742.9055, 1503.2267)` near Teminon; Asmodian portal **700414**, `(883.3619, 3078.529, 1645.2096)` near Primum. Both deliver the party to `(513, 668, 331)`. Confirmed by local spawn and portal XML; [2010 Elyos guide](https://www.alteredgamer.com/aion/67889-nochsana-training-camp-instance-guide/) describes the excavated statue northwest of Teminon. | [Official 3.5 notes](https://cmsstatic.aionfreetoplay.com/Patchnotes_3_5final_EN.pdf) added Eltnen/Morheim entry NPCs. Those are not 1.9 entrances. |
+| Entrance quest? | [2009 overview](https://www.daevasreport.com/2009/11/10/instancje-2/) and [Korean 1.5 guide](https://www.inven.co.kr/webzine/news/?news=84721&vtype=pc) report an access quest. The local 1.9 portal XML declares no quest prerequisite. | Resolve with a 1.9 client run or original quest script before adding a gate. Do not infer it from later Classic. |
+| Re-entry? | Two 2009 sources report **18 hours** ([overview](https://www.daevasreport.com/2009/11/10/instancje-2/), [Korean 1.5 guide](https://www.inven.co.kr/webzine/news/?news=84721&vtype=pc)); a [2010 English guide](https://www.alteredgamer.com/aion/67889-nochsana-training-camp-instance-guide/) says **15 hours**. | The local portal has no cooldown declaration. Exact 1.9 rule is unresolved. |
+
+The later [Aion Wiki page](https://aion.fandom.com/wiki/Nochsana_Training_Camp) mixes the 7.0 solo remake and Classic with the original walkthrough. Use only its explicitly versioned history, and prefer period sources and local 1.9 evidence for mechanics. Later Classic weekly entries and transformation rules do not apply here.
+
+## Route and encounters
+
+This route combines local placement with [the October 2009 firsthand route](https://www.tentonhammer.com/guides/aion-nochsana-training-camp-instance-guide) and [the March 2010 walkthrough](https://www.alteredgamer.com/aion/67889-nochsana-training-camp-instance-guide/). The coordinates are server spawn coordinates, not proven walkable waypoints.
+
+1. **Entry and outer ring.** From `(513,668,331)`, clear clockwise patrols or choose a side. Period guides describe packs with one or two elites plus Recruits, and optional center Drakes. The local catalog has Drakes, Recruits, Recondos, Pickets, Runners, and Docs; their spawn spots alone do not prove patrol paths or linked aggro.
+2. **Artifact and Protector.** The artifact **700437** stands at `(312.7441,596.1464,373.5324)`; Protector **256690** is nearby at `(309.5292,588.6102,373.0334)`. The 2009 guide calls this caster a route boss and says the artifact provides a party damage shield for 60 seconds. Local skill **1872** declares a 3,000-point shield, 60-second duration, 25-metre area and maxcount 6. Verify click timing, targets, reuse, visual state, and whether mobs can receive it.
+3. **Fortress approach.** Guard **256689** stands at `(357.3891,438.6934,361.7398)` and Aetheric Field Guard **256692** at `(381.6838,409.1176,376.8271)`. Period accounts describe a damaging caster and a guard with a strong protective shield; local skill lists support fire/damage-over-time for the Guard and shield **17547** for the Aetheric Field Guard. The latter's exact 1.9 trigger and shield math are unverified.
+4. **Fortress gate.** Gate **256694** is at `(346.237,356.817,379.363)`, matching the installed 1.9 client's door marker and the local spawn. [Period siege instructions](https://www.tentonhammer.com/guides/aion-nochsana-training-camp-instance-guide) say deploy the quest weapon at melee range, then command it using the pet bar; each questing player should get gate credit. [Another 2010 guide](https://www.alteredgamer.com/aion/67889-nochsana-training-camp-instance-guide/) says to target the gate and use the item. Period accounts report **at least two elites** rushing out when it falls. The later `MiDoor` AI also spawns two reinforcements, but its exact IDs, paths, and timing need 1.9 validation.
+5. **Fortress interior.** Clear the crowded ground floor, then the right-side ramp, upper bridge, Docs, and final named elite before the General. Period guides warn that uncleared nearby mobs can join the General pull. Teleporter **256691** is at `(352.5582,270.6880,392.4811)` near the top and has root/stun/water skills. The 2009 guide reports an add summoned by the last named elite that disappears when it dies; identify the exact 1.9 actor and trigger before implementing.
+6. **Nochsana General.** General **256693**, level 27 HERO, stands at `(331.0966,269.3597,384.5534)` with local template max HP **77,860**. A [2009 firsthand account](https://www.tentonhammer.com/guides/aion-nochsana-training-camp-instance-guide) describes a physical-defense debuff, area knockdown, and fear below roughly 30% HP; the [2010 guide](https://www.alteredgamer.com/aion/67889-nochsana-training-camp-instance-guide/) corroborates debuff and area knockdown. Local skill declarations include debuffs **16796/16531**, knockdown-named **17305/16736**, fear **16704**, stun **16684**, and protection **17290**. Skill presence does not prove phase timing or target choice.
+7. **Exit.** Object **700438** is at `(466.89075,708.46313,346.6602)` and the 1.9 client identifies it as `IDAB1_MiniCastle_exit` / `ReturnToEntrance`. The current worktree handles faction-specific return. Check in-client activation and reconnect behavior.
+
+## Quests and siege item
+
+The repository's `quest_data.xml` declares these level-25 faction pairs. A period guide calls the gate/General chain “The Siege of Nochsana”; use IDs to disambiguate localized names.
+
+| Elyos | Asmodian | Local declared purpose |
+| --- | --- | --- |
+| **3701** Teach Them a Lesson | **4701** An Important Message | Introductory task; exact 1.9 admission role unverified. |
+| **3702** Killing the Guardian Deity General of the Training Camp | **4702** Killing the Nochsana Fortress Guardian Deity General | One work item: **182202179** Elyos / **182205676** Asmodian. Item skills **9953/9954** summon weapons **201054/201055**; their attack skills are **18008/17814**. Quest script is TODO in Java reference and not implemented as a complete Go objective/reward chain. |
+| **3703** Cut Off the Head of the Class | **4703** The Draconute Instructor | Named-elite quest; period guides describe four guardians, but verify exact kill IDs and reward eligibility. |
+| **3704** Weapons Inspection | **4704** Prototype Weapon | Collect 4 items **182202180/182205680** from weapons chest **700415** per local quest-drop metadata. Current camp spawn data instead uses chest **700419** at 28 spots. This is a concrete identity mismatch requiring a 1.9 chest interaction check before correcting spawns. |
+
+The 2009 guide says siege-quest gate credit should precede the General stage and should be obtained by each participating player. Exact packet and party-credit rules are not established in this worktree. Do not mark the quest complete merely because the gate and General can die.
+
+## Loot and rewards
+
+- Period guides emphasize XP and rare blue weapons; General loot is **not guaranteed**. The local `droplist.sql` has **36 seed-drop rows** for General **256693**, including ten weapon IDs: `100000761`, `100200696`, `100500404`, `100500594`, `100600241`, `100600631`, `100900586`, `101300559`, `101500600`, `101700615`. These are seed probabilities, not a verified final per-player drop rate.
+- Local General quests **3702/4702** each declare 160,000 XP and one choice among four faction-specific helms. Quest **3703/4703** declares 157,600 XP and a belt choice. Quest **3704/4704** declares 74,900 XP and 34,700 Kinah. Treat period guide reward numbers as localization/build-dependent when they disagree with this XML.
+- The 2009 overview reports level-25 blue weapons and an 18-hour return; neither proves current Go loot eligibility or lockout implementation. Test party ownership, rolls, repeated kills, relog, and full cube with disposable fixtures.
+
+## Online source register
+
+- [Ten Ton Hammer, original NTC guide, October 25 2009](https://www.tentonhammer.com/guides/aion-nochsana-training-camp-instance-guide): firsthand route, artifact, siege pet, gate adds, elite behavior, General tactics. Page later shows an update timestamp, so retain the original publication context and corroborate version-sensitive claims.
+- [Daeva's Report, instance overview, November 10 2009](https://www.daevasreport.com/2009/11/10/instancje-2/): Polish period summary of entrance, six players, 25–28, 18-hour re-entry, and loot.
+- [Inven, Korean 1.5 NTC guide, August 4 2009](https://www.inven.co.kr/webzine/news/?news=84721&vtype=pc): period 1.5 level, party, quest and re-entry report; search result text was available when the page itself did not load reliably.
+- [Altered Gamer, NTC guide, March 31 2010](https://www.alteredgamer.com/aion/67889-nochsana-training-camp-instance-guide/): Elyos entrance, route, siege item, quests and General. Its 15-hour lockout conflicts with the 2009 reports.
+- [Official Aion 3.5 patch notes, Old Instances and Quests sections](https://cmsstatic.aionfreetoplay.com/Patchnotes_3_5final_EN.pdf): explicitly adds entry NPCs and related quests in Eltnen/Morheim; used only to exclude them from 1.9.

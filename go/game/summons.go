@@ -23,6 +23,15 @@ func (s *Server) spawnOwned(owner *player, npcID int32, objectType uint16) *obje
 
 // spawnOwnedAt is spawnOwned facing a given way.
 func (s *Server) spawnOwnedAt(owner *player, npcID int32, objectType uint16, heading byte) *object {
+	o := s.newOwned(owner, npcID, objectType, heading)
+	if o != nil {
+		s.addObject(o)
+	}
+	return o
+}
+
+// newOwned is the owned npc before it is put in the world.
+func (s *Server) newOwned(owner *player, npcID int32, objectType uint16, heading byte) *object {
 	t := s.data.Npcs[npcID]
 	if t == nil {
 		return nil
@@ -31,7 +40,6 @@ func (s *Server) spawnOwnedAt(owner *player, npcID int32, objectType uint16, hea
 		npc: t, homeX: owner.X, homeY: owner.Y, homeZ: owner.Z, owner: owner, objectType: objectType}
 	s.initNpc(o)
 	s.byID[o.id] = o
-	s.addObject(o)
 	return o
 }
 
