@@ -60,6 +60,36 @@ func TestNTCPreparation(t *testing.T) {
 	}
 }
 
+func TestDungeonPreparation(t *testing.T) {
+	tests := []struct {
+		action, race, class, choice string
+		level, world                int
+		x, y, z                     float64
+	}{
+		{"fire_temple", "ELYOS", "WARRIOR", "TEMPLAR", 30, 210020000, 1343.28, 350.96, 348.67},
+		{"fire_temple", "ASMODIANS", "RANGER", "", 27, 220020000, 1592.178, 977.2572, 140.75},
+		{"aether_lab", "ELYOS", "CLERIC", "", 41, 210040000, 233.95, 533.53, 158.75},
+		{"aether_lab", "ASMODIANS", "MAGE", "SORCERER", 41, 210040000, 233.95, 533.53, 158.75},
+	}
+	for _, tt := range tests {
+		plan, level, err := prepareDungeon(tt.action, tt.race, tt.class, tt.choice)
+		if err != nil || level != tt.level || plan.world != tt.world || plan.x != tt.x || plan.y != tt.y || plan.z != tt.z ||
+			len(plan.quests) != 0 || len(plan.gear) != 0 || plan.siegeItem != 0 {
+			t.Errorf("%s %s: plan=%+v level=%d err=%v", tt.action, tt.race, plan, level, err)
+		}
+	}
+	for _, tt := range [][4]string{
+		{"fire_temple", "ELYOS", "WARRIOR", ""},
+		{"aether_lab", "ELYOS", "WARRIOR", "RANGER"},
+		{"fire_temple", "UNKNOWN", "CLERIC", ""},
+		{"unknown", "ELYOS", "CLERIC", ""},
+	} {
+		if _, _, err := prepareDungeon(tt[0], tt[1], tt[2], tt[3]); err == nil {
+			t.Errorf("accepted %v", tt)
+		}
+	}
+}
+
 // The preset's item ids must stay level-25 gear of the server's item data.
 func TestNTCGearData(t *testing.T) {
 	dir := os.Getenv("AION_DATA")

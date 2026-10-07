@@ -168,8 +168,18 @@ func (a *npcAI) run() {
 	}
 }
 
+// npcEventHooks run an npc's scripted behaviour after its AI handled an event, by template.
+// They are registered in init so the scripts' skills don't form an initialization cycle.
+var npcEventHooks = map[int32]func(*Server, *object, aiEvent){}
+
+// scriptedCasters cast only from their scripts (4.6 skill_rate 0), never the random skill desire.
+var scriptedCasters = map[int32]bool{}
+
 // handleEvent is NpcAi.handleEvent, with the handlers each kind of AI has.
 func (a *npcAI) handleEvent(ev aiEvent) {
+	if a.o.npc != nil && npcEventHooks[a.o.npc.ID] != nil {
+		defer npcEventHooks[a.o.npc.ID](a.s, a.o, ev)
+	}
 	if ev == evDespawn {
 		a.setState(aiNone)
 		a.clearDesires()
@@ -289,7 +299,7 @@ func (a *npcAI) analyzeState() {
 		o.broadcast(s.emote(o, emoteAttackMode, target.cid()), true)
 		o.move.speed = float32(o.stats.current(data.Speed)) / 1000
 		o.move.distance = float32(o.stats.current(data.AttackRange)) / 1000
-		if len(s.data.NpcSkills[o.npc.ID]) != 0 {
+		if len(s.data.NpcSkills[o.npc.ID]) != 0 && !scriptedCasters[o.npc.ID] {
 			a.addDesire(&skillUseDesire{})
 		}
 		a.addDesire(&attackDesire{target: target.cid(), counter: 1})
@@ -422,6 +432,9 @@ func (d *attackDesire) handle(a *npcAI) bool {
 		o.ai.handleEvent(evTiredAttacking)
 		return false
 	}
+	if o.script.fleeing() {
+		return true
+	}
 	d.counter++
 	if d.counter%2 == 0 && s.mostHated(o) != target {
 		o.ai.handleEvent(evTiredAttacking)
@@ -472,6 +485,9 @@ func (d *moveToTargetDesire) handle(a *npcAI) bool {
 	target := s.creatureByID(d.target)
 	if o.dead || target == nil || target.isDead() {
 		return false
+	}
+	if o.script.fleeing() {
+		return true
 	}
 	o.move.follow = true
 	if !o.move.scheduled() {
@@ -676,7 +692,8 @@ func (d *skillUseDesire) same(o desire) bool { _, ok := o.(*skillUseDesire); ret
 func (d *skillUseDesire) handle(a *npcAI) bool {
 	s, o := a.s, a.o
 	d.interval, d.strength = 1, 3 // AIState.USESKILL's priority
-	if o.cast != nil {
+	// A running script's sequence or flee comes before random skills.
+	if o.cast != nil || o.script != nil && (len(o.script.queue) > 0 || o.script.fleeing()) {
 		return true
 	}
 	skills := s.data.NpcSkills[o.npc.ID]

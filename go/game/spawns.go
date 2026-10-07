@@ -46,6 +46,10 @@ type object struct {
 	gathering               *interaction // a player gathering it
 	owner                   *player      // who made it, if it is a trap or a servant
 	siegeTask               *task        // the Nochsana siege weapon pursuing its assigned gate
+	reservists              []*object    // the Nochsana Teleporter's adds
+	reserveTask             *task        // her 30-second reservist timer
+	script                  *npcScript   // a scripted boss fight or flee in progress
+	fled                    bool         // it has used its once-a-life flee
 	kisk                    *kisk        // what it is besides, if it is a kisk
 	rift                    *rift        // what it is besides, if it is a rift
 	objectType              uint16       // NpcObjectType, if it isn't a normal npc
@@ -116,7 +120,7 @@ func (s *Server) spawnMap(id, inst int32) (npcs, gatherables int) {
 				}
 				gatherables++
 			} else {
-				if o.npc = s.data.Npcs[group.NpcID]; o.npc == nil {
+				if o.npc = s.data.Npcs[fireTempleVariant(id, group.NpcID)]; o.npc == nil {
 					s.ids.release(o.id)
 					continue
 				}

@@ -278,6 +278,20 @@ input:checked + .tab { color:#f1ead0; }
 {{with advanced .Class}}<label>Ascend to <select name="class" required><option value="">Choose a class…</option>{{range .}}<option value="{{.}}">{{title .}}</option>{{end}}</select></label>{{end}}
 <button{{if .Online}} disabled{{end}}>Prepare for Nochsana Training Camp</button>
 </form>
+<form method="post" action="/admin/character">
+<input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
+<input type="hidden" name="action" value="fire_temple">
+<p>Fire Temple tester: set level 30 (Elyos) or 27 (Asmodian), learn available class skills, and move beside the entrance in Eltnen or Morheim. Enter with a group. Existing quests and equipment stay in place.</p>
+{{with advanced .Class}}<label>Ascend to <select name="class" required><option value="">Choose a class…</option>{{range .}}<option value="{{.}}">{{title .}}</option>{{end}}</select></label>{{end}}
+<button{{if .Online}} disabled{{end}}>Prepare for Fire Temple</button>
+</form>
+<form method="post" action="/admin/character">
+<input type="hidden" name="name" value="{{.Name}}"><input type="hidden" name="token" value="{{.Token}}">
+<input type="hidden" name="action" value="aether_lab">
+<p>Aetherogenetics Lab tester: set level 41, learn available class skills, and move beside the entrance in Heiron. Enter with a group. Existing quests and equipment stay in place.</p>
+{{with advanced .Class}}<label>Ascend to <select name="class" required><option value="">Choose a class…</option>{{range .}}<option value="{{.}}">{{title .}}</option>{{end}}</select></label>{{end}}
+<button{{if .Online}} disabled{{end}}>Prepare for Aetherogenetics Lab</button>
+</form>
 </details>
 </section>
 {{end}}

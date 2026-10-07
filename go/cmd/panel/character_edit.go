@@ -162,6 +162,40 @@ func prepareNTC(race, class, choice string) (instancePreparation, error) {
 	return plan, nil
 }
 
+// prepareDungeon positions a character at the race's entrance using the portal data.
+// These instances have no verified universal access quest or equipment preset.
+func prepareDungeon(action, race, class, choice string) (instancePreparation, int, error) {
+	if options, ok := advancedClasses[class]; ok {
+		if !slices.Contains(options, choice) {
+			return instancePreparation{}, 0, errors.New("Choose the advanced class this character ascends to.")
+		}
+		class = choice
+	}
+	if _, ok := ntcClassGear[class]; !ok {
+		return instancePreparation{}, 0, errors.New("Unsupported character class.")
+	}
+	plan := instancePreparation{class: class}
+	switch action {
+	case "fire_temple":
+		switch race {
+		case "ELYOS":
+			plan.world, plan.x, plan.y, plan.z = 210020000, 1343.28, 350.96, 348.67
+			return plan, 30, nil
+		case "ASMODIANS":
+			plan.world, plan.x, plan.y, plan.z = 220020000, 1592.178, 977.2572, 140.75
+			return plan, 27, nil
+		}
+	case "aether_lab":
+		if race == "ELYOS" || race == "ASMODIANS" {
+			plan.world, plan.x, plan.y, plan.z = 210040000, 233.95, 533.53, 158.75
+			return plan, 41, nil
+		}
+	default:
+		return instancePreparation{}, 0, errors.New("Unsupported instance.")
+	}
+	return instancePreparation{}, 0, errors.New("Unsupported character race.")
+}
+
 // skillsAt is every non-stigma skill a class of race knows at level, at its highest level: the
 // autolearned ones and the spellbook ones. Base-class entries end at level 9.
 func (a *assets) skillsAt(class, race string, level int32) map[int32]int32 {
@@ -239,6 +273,15 @@ func (p *panel) editCharacter(u *user, w http.ResponseWriter, r *http.Request) {
 		var class string
 		class, err = p.prepareNTC(r, name, r.FormValue("class"))
 		message = fmt.Sprintf("Ready for Nochsana Training Camp: level %d %s with the campaign and Abyss access completed, the General quest started, one siege weapon item in the cube, skills learned and Recruit's gear equipped. Log in beside the camp's portal in the Abyss; entering takes a group. Completed campaign quest rewards were not granted.", ntcLevel, title(class))
+	case "fire_temple", "aether_lab":
+		var class string
+		var level int
+		class, level, err = p.prepareDungeon(r, name, action, r.FormValue("class"))
+		instance := "Fire Temple"
+		if action == "aether_lab" {
+			instance = "Aetherogenetics Lab"
+		}
+		message = fmt.Sprintf("Ready for %s: level %d %s with skills learned. Log in beside the entrance portal with a group. Existing quests and equipment were preserved.", instance, level, title(class))
 	case "kinah":
 		var amount int64
 		amount, err = positiveAmount(r.FormValue("amount"), math.MaxInt64)
@@ -658,6 +701,43 @@ func (p *panel) prepareNTC(r *http.Request, name, choice string) (string, error)
 		return "", p.editDatabaseError(err)
 	}
 	return plan.class, nil
+}
+
+func (p *panel) prepareDungeon(r *http.Request, name, action, choice string) (string, int, error) {
+	if len(p.assets.skills) == 0 {
+		return "", 0, errors.New("The panel's skill tree is missing. Refresh the panel assets before preparing an instance.")
+	}
+	tx, err := p.db.BeginTx(r.Context(), nil)
+	if err != nil {
+		return "", 0, errors.New("Unable to save the character.")
+	}
+	defer tx.Rollback()
+	record, err := p.lockOfflineCharacter(r.Context(), tx, name)
+	if err != nil {
+		return "", 0, err
+	}
+	plan, level, err := prepareDungeon(action, record.race, record.class, choice)
+	if err != nil {
+		return "", 0, err
+	}
+	exp, err := p.assets.experienceForLevel(level)
+	if err != nil {
+		return "", 0, err
+	}
+	ctx := r.Context()
+	if _, err = tx.ExecContext(ctx, `UPDATE `+p.gsDB+`.players SET player_class = ?, exp = ?, recoverexp = 0, world_id = ?, x = ?, y = ?, z = ?, heading = 0 WHERE id = ?`,
+		plan.class, exp, plan.world, plan.x, plan.y, plan.z, record.id); err != nil {
+		return "", 0, p.editDatabaseError(err)
+	}
+	for id, skillLevel := range p.assets.skillsAt(plan.class, record.race, int32(level)) {
+		if _, err = tx.ExecContext(ctx, `INSERT INTO `+p.gsDB+`.player_skills (player_id, skillId, skillLevel) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE skillLevel = GREATEST(skillLevel, VALUES(skillLevel))`, record.id, id, skillLevel); err != nil {
+			return "", 0, p.editDatabaseError(err)
+		}
+	}
+	if err = tx.Commit(); err != nil {
+		return "", 0, p.editDatabaseError(err)
+	}
+	return plan.class, level, nil
 }
 
 func (p *panel) grantNTCSiegeItem(ctx context.Context, tx *sql.Tx, record characterEditRecord, itemID int32) error {

@@ -611,12 +611,44 @@ func (s *Server) cancelOnHit(c creature, damage int32) {
 	if sk == nil || sk.tmpl.CancelRate <= 0 {
 		return
 	}
+	if o, ok := c.(*object); ok {
+		s.npcCancelOnHit(o, sk, damage)
+		return
+	}
 	concentration := c.gameStats().current(data.Concentration) / 10
 	_, maxHP := c.hitPoints()
 	cancel := float32(sk.tmpl.CancelRate-concentration) + float32(damage)/float32(max(maxHP, 1))*50
 	if float32(rnd(0, 99)) < cancel {
 		s.cancelSkill(c)
 	}
+}
+
+// npcCancelOnHit is the 4.6 server's Creature::CheckCancelCurrentSkill_WhenDamaged for an
+// npc: the chance, in thousandths, is the share of its HP the hit took times the skill's
+// cancel rate times the npc's cancel_level, less its concentration. The emulator's flat
+// cancel rate on every hit made mob casts break far too often.
+// ponytail: 1.9 data has no cancel_level, so it comes from rank (4.6's usual values);
+// the attacking skill's interrupt bonus and the damage-type check are not modelled.
+func (s *Server) npcCancelOnHit(o *object, sk *skill, damage int32) {
+	level := npcCancelLevel(o.npc.Rank)
+	_, maxHP := o.hitPoints()
+	chance := float32(damage)/float32(max(maxHP, 1))*float32(sk.tmpl.CancelRate)*level -
+		float32(o.gameStats().current(data.Concentration))
+	if float32(rnd(1, 1000)) <= chance {
+		s.cancelSkill(o)
+	}
+}
+
+// npcCancelLevel is the cancel_level 4.6 gives most npcs of a rank: heroes and legends
+// shrug off damage, elites seldom break, ordinary mobs break readily.
+func npcCancelLevel(rank string) float32 {
+	switch rank {
+	case "HERO", "LEGENDARY":
+		return 0
+	case "ELITE":
+		return 30
+	}
+	return 100
 }
 
 var _ = math.Pi

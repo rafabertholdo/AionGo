@@ -1,6 +1,10 @@
 package game
 
-import "testing"
+import (
+	"testing"
+
+	"aionlightning/game/data"
+)
 
 // TestTransformSkill has a player use a transform skill (Grave Knight food) on itself: it looks like the model, and
 // it changes back when the effect ends.
@@ -61,5 +65,35 @@ func TestTargetRaceModifier(t *testing.T) {
 	e.effected = monster(t, s, 1005)
 	if got := e.applyActionModifiers(fx, 100); got != 100 {
 		t.Errorf("against an npc: %d, want 100", got)
+	}
+}
+
+// TestNpcCastInterruptFollowsDamageShare checks the 4.6 rule: a hero is never
+// interrupted, an elite seldom by small hits, and big hits break casts more often.
+func TestNpcCastInterruptFollowsDamageShare(t *testing.T) {
+	d := staticDataOrSkip(t)
+	s := testServer(d)
+	tmpl := d.Skills[16729] // NAS_Disease_Bl, cancel_rate 35
+	if tmpl == nil || tmpl.CancelRate == 0 {
+		t.Skip("no cancellable skill 16729")
+	}
+	interrupts := func(rank string, share float32) (n int) {
+		o := &object{id: 0x30001, npc: &data.NpcTemplate{Rank: rank}, maxHP: 10000, hp: 10000, stats: &gameStats{}}
+		o.fx = newEffectController(o)
+		for range 2000 {
+			o.cast = &skill{s: s, tmpl: tmpl, effector: o}
+			s.cancelOnHit(o, int32(share*10000))
+			if o.cast == nil {
+				n++
+			}
+		}
+		return n
+	}
+	if n := interrupts("HERO", 0.5); n != 0 {
+		t.Errorf("a hero was interrupted %d times in 2000 half-HP hits", n)
+	}
+	small, big := interrupts("ELITE", 0.02), interrupts("ELITE", 0.3)
+	if small > 60 || big < 3*small || big == 0 {
+		t.Errorf("elite interrupts: %d for 2%% hits, %d for 30%% hits", small, big)
 	}
 }

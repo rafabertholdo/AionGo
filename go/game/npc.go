@@ -312,6 +312,7 @@ func (s *Server) npcDied(o *object, attacker creature) {
 	o.broadcast(emotionPacket(o.id, emoteDie, o.state, 0, 0, by, 0, 0, 0, 0, 0, 0), true)
 	s.reward(o)
 	s.darkPoetaKill(o)
+	s.nochsanaGateFell(o, attacker)
 	o.ai.handleEvent(evDied)
 	o.targetID = 0
 	o.broadcast(s.lookAt(o), true)

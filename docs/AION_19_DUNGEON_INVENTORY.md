@@ -139,9 +139,33 @@ catalog or reset/cooldown specification was established.
   has **no static spawn anywhere in the inspected spawn tree**. The Fire Temple
   catalog instead spawns **214621**. This is a concrete catalog/quest-ID mismatch;
   do not alias IDs or swap the boss without version-specific evidence.
+  The 4.6 spawn territory `DF2_C5Dg_F_FireSanctuaryQueenBoss_37_1` resolves
+  it: group G1 (Kromede the Corrupt 212846, default) at select_prob 900 and
+  G2 (Vile Judge Kromede 214621) at 100, same spot. Go rolls that 90/10 when
+  the run spawns (`go/game/firetemple.go`).
+- Mob AI: every spawned template has the same AI name in the 1.9 client and
+  4.6 data, and 27 of 29 have identical skill lists. Go runs Kromede's
+  `ND2_Sum_B` (knockback opening, trap 280501 bursts every 35 s / 25 s below
+  half HP, last stand below 20%) and the `ND2_AnN` obscuras' once-a-life flee
+  below half HP. Other mobs use generic rotations approximated by random casts.
 - Three quest metadata entries have matching drop NPCs; XML monster-hunt **2374**
   also matches current dungeon NPCs. The generated manifest contains their IDs.
   Quest/loot existence does not establish that the boss variant selection works.
+
+### Aetherogenetics Lab — 310050000
+
+- Mob AI: all 37 spawned templates have the same AI name in the 1.9 client and
+  4.6 data. 4.6 added skills to most Lepharist lists, so their pattern skill
+  slots do not map onto 1.9 lists; Go runs only the patterns' structural
+  actions (`go/game/aetherlab.go`): Lepharists flee their target for 5 s once
+  below 35% HP and call allies within 10 m; scholars (NLehpar_WeA) summon
+  pretor 280262 once between 36% and 70%; snipers (XLehpar_ReB_S1) drop
+  ice-snare trap 280466 and flee 4 s; Perfected Pretor 212205 leaves Perfected
+  Mudthorn 212206 for 600 s; RM-78c 212211 leaves burst creature 280790.
+  The seven named mobs (Perfected Pretor, Pretor Key Keeper, Keykeeper, Key
+  Eater, Head Chef Pamsey, RM-108c, RM-78c) run their full 4.6 timer patterns,
+  skill slots matched by name to their 1.9 lists; the three 4.6-only skills
+  (RM-108c/RM-78c idle poison stance, RM-78c self buff) are skipped.
 
 ### Adma Stronghold — 320130000
 

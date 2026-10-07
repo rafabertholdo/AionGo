@@ -289,3 +289,170 @@ func TestNochsanaSiegeCommandMovesAndHitsOwnGate(t *testing.T) {
 		}
 	})
 }
+
+func TestNochsanaTeleporterReservistsJoinAndLeaveWithHer(t *testing.T) {
+	d := staticDataOrSkip(t)
+	synctest.Test(t, func(t *testing.T) {
+		s := testServer(d)
+		p, _ := fighter(t, s, 1000)
+		s.visMu.Lock()
+		in := s.newInstance(nochsanaWorld)
+		defer func() {
+			s.visMu.Lock()
+			s.destroyInstance(in)
+			s.visMu.Unlock()
+		}()
+		var tele *object
+		for _, o := range s.byID {
+			if o.npc != nil && o.npc.ID == nochsanaTeleporter && o.instance == in.id {
+				tele = o
+			}
+		}
+		if tele == nil {
+			t.Fatal("Teleporter is not spawned")
+		}
+		p.WorldID, p.instance = in.world, in.id
+		p.X, p.Y, p.Z = tele.x+3, tele.y, tele.z
+		p.adminInvulnerable = true
+		s.spawnLocked(p)
+		reservists := func() (n int) {
+			for _, o := range s.byID {
+				if o.npc != nil && o.npc.ID == nochsanaReservist && o.instance == in.id {
+					n++
+					if distance3D(o.x, o.y, o.z, p.X, p.Y, p.Z) > 5.01 {
+						t.Errorf("reservist %.1f m from the target, want within 5", distance3D(o.x, o.y, o.z, p.X, p.Y, p.Z))
+					}
+				}
+			}
+			return n
+		}
+		s.npcHit(tele, p, 0, statusDamage, 1)
+		s.visMu.Unlock()
+		if n := reservists(); n != 1 {
+			t.Fatalf("%d reservists when the fight started, want 1", n)
+		}
+		time.Sleep(30 * time.Second)
+		synctest.Wait()
+		if n := reservists(); n != 2 {
+			t.Fatalf("%d reservists after 30s above 71%% HP, want 2", n)
+		}
+		s.visMu.Lock()
+		tele.hp = tele.maxHP / 2
+		s.visMu.Unlock()
+		time.Sleep(30 * time.Second)
+		synctest.Wait()
+		if n := reservists(); n != 2 {
+			t.Fatalf("%d reservists after 30s below 71%% HP, want still 2", n)
+		}
+		s.visMu.Lock()
+		s.npcHit(tele, p, 0, statusDamage, tele.hp)
+		s.visMu.Unlock()
+		if !tele.dead || reservists() != 0 {
+			t.Fatalf("dead=%v with %d reservists left, want none", tele.dead, reservists())
+		}
+	})
+}
+
+func TestNochsanaGateFallReleasesTwoElitesAtItsBreaker(t *testing.T) {
+	d := staticDataOrSkip(t)
+	synctest.Test(t, func(t *testing.T) {
+		s := testServer(d)
+		p, _ := fighter(t, s, 1000)
+		s.visMu.Lock()
+		in := s.newInstance(nochsanaWorld)
+		defer func() {
+			s.visMu.Lock()
+			s.destroyInstance(in)
+			s.visMu.Unlock()
+		}()
+		var gate *object
+		for _, o := range s.byID {
+			if o.npc != nil && o.npc.ID == nochsanaGate && o.instance == in.id {
+				gate = o
+			}
+		}
+		p.WorldID, p.instance = in.world, in.id
+		p.X, p.Y, p.Z = gate.x, gate.y+5, gate.z
+		p.adminInvulnerable = true
+		s.spawnLocked(p)
+		before := map[int32]bool{}
+		for id := range s.byID {
+			before[id] = true
+		}
+		s.npcHit(gate, p, 0, statusDamage, gate.hp)
+		elites := map[int32]*object{}
+		for id, o := range s.byID {
+			if !before[id] && o.npc != nil && o.instance == in.id && (o.npc.ID == 256686 || o.npc.ID == 256682) {
+				elites[o.npc.ID] = o
+			}
+		}
+		s.visMu.Unlock()
+		if !gate.dead || len(elites) != 2 {
+			t.Fatalf("gate dead=%v, %d elites inside the fort, want an assassin and a fighter", gate.dead, len(elites))
+		}
+		for _, e := range elites {
+			if e.aggro[p.ID] == nil {
+				t.Errorf("elite %d does not hate the gate's breaker", e.npc.ID)
+			}
+		}
+		time.Sleep(601 * time.Second)
+		synctest.Wait()
+		for _, e := range elites {
+			if s.byID[e.id] == e {
+				t.Errorf("elite %d outlived its 600 seconds", e.npc.ID)
+			}
+		}
+	})
+}
+
+func TestNochsanaGeneralScriptCastsHisThresholdsOnce(t *testing.T) {
+	d := staticDataOrSkip(t)
+	synctest.Test(t, func(t *testing.T) {
+		s := testServer(d)
+		p, tap := fighter(t, s, 1000)
+		s.visMu.Lock()
+		in := s.newInstance(nochsanaWorld)
+		defer func() {
+			s.visMu.Lock()
+			s.destroyInstance(in)
+			s.visMu.Unlock()
+		}()
+		var gen *object
+		for _, o := range s.byID {
+			if o.npc != nil && o.npc.ID == nochsanaGeneral && o.instance == in.id {
+				gen = o
+			}
+		}
+		p.WorldID, p.instance = in.world, in.id
+		p.X, p.Y, p.Z = gen.x+2, gen.y, gen.z
+		p.adminInvulnerable = true
+		s.spawnLocked(p)
+		s.npcHit(gen, p, 0, statusDamage, 1)
+		if gen.script == nil || gen.ai.has(&skillUseDesire{}) {
+			t.Fatal("the General's script did not start, or he still casts at random")
+		}
+		s.visMu.Unlock()
+		for _, step := range []struct{ hp, at int32 }{{80, 85}, {60, 70}, {22, 25}, {10, 20}} {
+			s.visMu.Lock()
+			gen.hp = gen.maxHP * step.hp / 100
+			s.visMu.Unlock()
+			time.Sleep(5 * time.Second)
+			synctest.Wait()
+			s.visMu.Lock()
+			used := gen.script != nil && gen.script.used[int(step.at)]
+			s.visMu.Unlock()
+			if !used {
+				t.Fatalf("at %d%% HP the %d%% threshold did not fire", step.hp, step.at)
+			}
+		}
+		if tap.count(smCastspell) == 0 {
+			t.Fatal("the General's script cast nothing")
+		}
+		s.visMu.Lock()
+		s.npcHit(gen, p, 0, statusDamage, gen.hp)
+		s.visMu.Unlock()
+		if !gen.dead || gen.script != nil {
+			t.Fatal("the script outlived the General")
+		}
+	})
+}
