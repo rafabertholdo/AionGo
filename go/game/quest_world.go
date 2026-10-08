@@ -82,6 +82,10 @@ func (s *Server) recordQuestKill(o *object, p *player) {
 			p.conn.klawThreatKill(o)
 			continue
 		}
+		if _, ok := nochsanaGeneralQuests[script.ID]; ok {
+			p.conn.nochsanaGeneralKill(script.ID, o)
+			continue
+		}
 		if script.ID == lepharistPoisonResearchQuestID {
 			p.conn.lepharistPoisonResearchKill(o.npc.ID)
 			continue

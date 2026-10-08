@@ -157,6 +157,7 @@ func (s *Server) nochsanaGateFell(o *object, attacker creature) {
 	if o.worldID != nochsanaWorld || o.npc.ID != nochsanaGate {
 		return
 	}
+	s.nochsanaGeneralGateCredit(o)
 	if summon, ok := attacker.(*object); ok && summon.owner != nil {
 		attacker = summon.owner
 	}

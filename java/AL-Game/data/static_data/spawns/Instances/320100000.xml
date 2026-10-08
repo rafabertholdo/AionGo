@@ -20,6 +20,10 @@
 	@author formatme (walker)
  -->
 <spawns>
+	<!-- Fire Temple Exit: DF2_DragonDoor_Out (ReturnToEntrance) -->
+	<spawn map="320100000" npcid="730048" pool="1" interval="60">
+		<object x="148.854584" y="465.935089" z="142.0" h="0" staticid="647"/>
+	</spawn>
 	<!-- Vengeful Obscura -->
 	<spawn map="320100000" npcid="212795" pool="5" interval="105">
 		<object x="270.5976" y="257.77185" z="122.71352" h="5"/>

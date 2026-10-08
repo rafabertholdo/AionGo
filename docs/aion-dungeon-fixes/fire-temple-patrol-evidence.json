@@ -1,0 +1,1050 @@
+{
+  "recorded": "2026-10-07",
+  "world_id": 320100000,
+  "npc_id": 212844,
+  "route_id": 13,
+  "source": {
+    "client_version": "1.9.0.1",
+    "level_archive": "Levels/iddf2_dflame/Level.pak",
+    "level_archive_sha256": "5b0e08713af482e77d01a8e2d619d6965bf68c71a630c18891cced6bdde46048",
+    "route_file": "java/AL-Game/data/static_data/npc_walker.xml",
+    "route_file_sha256": "09ee7cc6b010fb91c613839458e57484d3ba24378d556a221fc72d3cc334251e",
+    "extractor": "https://github.com/beyond-aion/aion-geobuilder",
+    "extractor_revision": "e0ce8375c525c86f264ff93352652bfc4723e682",
+    "extractor_adaptations": [
+      "Skip housing lookup: housing does not exist in the 1.9 client.",
+      "Brush block size 14: no trailing event-type integer; record size is 88 bytes."
+    ],
+    "models_mesh_sha256": "ff27b30a8bbf1be9ae6c8c1c1076e34b81a73b11a5e7262c1ab350c5894fdecb",
+    "level_geo_sha256": "bc57b956f9ddac95d94d9315fe75559580cb4e9df9f2be2119040eeedcf5fc0d"
+  },
+  "geometry": {
+    "terrain_rendered": false,
+    "brush_mesh_references": 257,
+    "brush_placements": 2025,
+    "total_mesh_references_including_entities": 261,
+    "valid_mesh_references": 193,
+    "empty_mesh_references": 68,
+    "missing_mesh_references": 0,
+    "world_collision_triangles": 107333
+  },
+  "method": {
+    "segments": "Consecutive route points including cyclic last-to-first connection.",
+    "ray_offsets_above_recorded_z_m": [
+      0.1,
+      0.5,
+      1.0,
+      1.5
+    ],
+    "intersection": "Double-sided segment/triangle intersections; exclude endpoints at fraction <= 0.0001 or >= 0.9999. Apply mesh-local transforms followed by world placement transforms.",
+    "collision_intention_bits": [
+      1,
+      8,
+      128
+    ],
+    "floor_probe": "Vertical intersections; floor candidates use abs(normal.z)/length(normal) >= 0.65, compared against recorded Z. This slope cutoff is an audit filter, not an established 1.9 walking limit.",
+    "limits": [
+      "Centre-line probes do not establish body-radius clearance.",
+      "Clear obstacle rays do not establish continuous ground contact.",
+      "Projected outlines combine mesh heights.",
+      "This is a geometry audit, not a new real-client gameplay observation.",
+      "The client navigation path file was located but not decoded or used."
+    ]
+  },
+  "waypoints": [
+    {
+      "step": 1,
+      "position": [
+        272.46545,
+        201.89696,
+        119.234886
+      ],
+      "matching_collision_floor_z": 119.2349,
+      "matches_floor_within_0_001_m": true
+    },
+    {
+      "step": 2,
+      "position": [
+        285.90567,
+        210.4403,
+        119.686676
+      ],
+      "matching_collision_floor_z": 119.6867,
+      "matches_floor_within_0_001_m": true
+    },
+    {
+      "step": 3,
+      "position": [
+        285.26807,
+        231.48059,
+        119.11023
+      ],
+      "matching_collision_floor_z": 119.1102,
+      "matches_floor_within_0_001_m": true
+    },
+    {
+      "step": 4,
+      "position": [
+        256.05463,
+        195.1985,
+        117.46713
+      ],
+      "matching_collision_floor_z": 117.4671,
+      "matches_floor_within_0_001_m": true
+    },
+    {
+      "step": 5,
+      "position": [
+        224.38875,
+        190.98651,
+        114.34763
+      ],
+      "matching_collision_floor_z": null,
+      "matches_floor_within_0_001_m": false,
+      "vertical_collision_surfaces_z": [
+        108.0395,
+        109.9478,
+        112.1785,
+        115.6009
+      ]
+    },
+    {
+      "step": 6,
+      "position": [
+        237.07484,
+        186.11015,
+        111.99673
+      ],
+      "matching_collision_floor_z": 111.9967,
+      "matches_floor_within_0_001_m": true
+    },
+    {
+      "step": 7,
+      "position": [
+        221.89069,
+        183.74089,
+        108.97251
+      ],
+      "matching_collision_floor_z": 108.9725,
+      "matches_floor_within_0_001_m": true
+    },
+    {
+      "step": 8,
+      "position": [
+        208.16281,
+        190.87318,
+        107.78945
+      ],
+      "matching_collision_floor_z": 107.7895,
+      "matches_floor_within_0_001_m": true
+    },
+    {
+      "step": 9,
+      "position": [
+        195.39989,
+        210.87285,
+        109.17538
+      ],
+      "matching_collision_floor_z": 109.1754,
+      "matches_floor_within_0_001_m": true
+    },
+    {
+      "step": 10,
+      "position": [
+        195.12996,
+        223.16008,
+        111.07573
+      ],
+      "matching_collision_floor_z": 111.0757,
+      "matches_floor_within_0_001_m": true
+    },
+    {
+      "step": 11,
+      "position": [
+        222.29643,
+        257.04764,
+        120.30293
+      ],
+      "matching_collision_floor_z": 120.3029,
+      "matches_floor_within_0_001_m": true
+    },
+    {
+      "step": 12,
+      "position": [
+        221.43166,
+        277.81894,
+        125.087
+      ],
+      "matching_collision_floor_z": 125.087,
+      "matches_floor_within_0_001_m": true
+    }
+  ],
+  "segments": [
+    {
+      "from": 1,
+      "to": 2,
+      "distance": 15.932,
+      "hits": {
+        "0.1": [],
+        "0.5": [],
+        "1.0": [],
+        "1.5": []
+      }
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "distance": 21.058,
+      "hits": {
+        "0.1": [],
+        "0.5": [],
+        "1.0": [],
+        "1.5": []
+      }
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "distance": 46.61,
+      "hits": {
+        "0.1": [
+          [
+            0.07218382596520638,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame29a_col.cgf",
+            [
+              283.159,
+              228.862,
+              119.092
+            ]
+          ],
+          [
+            0.2773998677481839,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock08b.cgf",
+            [
+              277.164,
+              221.416,
+              118.754
+            ]
+          ],
+          [
+            0.9754269789858173,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame12a_col.cgf",
+            [
+              256.772,
+              196.09,
+              117.608
+            ]
+          ]
+        ],
+        "0.5": [
+          [
+            0.22457846547737315,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame29a_col.cgf",
+            [
+              278.707,
+              223.332,
+              119.241
+            ]
+          ],
+          [
+            0.27937517715370475,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock08b.cgf",
+            [
+              277.107,
+              221.344,
+              119.151
+            ]
+          ],
+          [
+            0.42905442519225917,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock08b.cgf",
+            [
+              272.734,
+              215.914,
+              118.905
+            ]
+          ],
+          [
+            0.5849842337146146,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame29a_col.cgf",
+            [
+              268.179,
+              210.256,
+              118.649
+            ]
+          ],
+          [
+            0.7930647195704245,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame29a_col.cgf",
+            [
+              262.1,
+              202.707,
+              118.307
+            ]
+          ],
+          [
+            0.9108485360229424,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame29a_col.cgf",
+            [
+              258.659,
+              198.433,
+              118.114
+            ]
+          ]
+        ],
+        "1.0": [
+          [
+            0.2859281333893334,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock08b.cgf",
+            [
+              276.915,
+              221.107,
+              119.64
+            ]
+          ],
+          [
+            0.4228502294717369,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock08b.cgf",
+            [
+              272.915,
+              216.139,
+              119.415
+            ]
+          ]
+        ],
+        "1.5": [
+          [
+            0.2953028653878124,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock08b.cgf",
+            [
+              276.641,
+              220.766,
+              120.125
+            ]
+          ],
+          [
+            0.41675203525055904,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock08b.cgf",
+            [
+              273.093,
+              216.36,
+              119.925
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "distance": 32.097,
+      "hits": {
+        "0.1": [
+          [
+            0.8969671210927326,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              227.651,
+              191.42,
+              114.769
+            ]
+          ],
+          [
+            0.9422211353379475,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              226.218,
+              191.23,
+              114.628
+            ]
+          ]
+        ],
+        "0.5": [
+          [
+            0.8964384227095156,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              227.668,
+              191.423,
+              115.171
+            ]
+          ],
+          [
+            0.9416924369547308,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              226.235,
+              191.232,
+              115.03
+            ]
+          ]
+        ],
+        "1.0": [
+          [
+            0.8957775497304944,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              227.689,
+              191.425,
+              115.673
+            ]
+          ],
+          [
+            0.9410315639757098,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              226.256,
+              191.235,
+              115.532
+            ]
+          ]
+        ],
+        "1.5": [
+          [
+            0.8951166767514732,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              227.71,
+              191.428,
+              116.175
+            ]
+          ],
+          [
+            0.9403706909966885,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              226.277,
+              191.238,
+              116.034
+            ]
+          ],
+          [
+            0.9984100143397874,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame12a_col.cgf",
+            [
+              224.439,
+              190.993,
+              115.853
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "from": 5,
+      "to": 6,
+      "distance": 13.793,
+      "hits": {
+        "0.1": [
+          [
+            0.09795879923115,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              225.631,
+              190.509,
+              114.217
+            ]
+          ],
+          [
+            0.17468285606022355,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              226.605,
+              190.135,
+              114.037
+            ]
+          ]
+        ],
+        "0.5": [
+          [
+            0.09885515915580939,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              225.643,
+              190.504,
+              114.615
+            ]
+          ],
+          [
+            0.17557921598488296,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              226.616,
+              190.13,
+              114.435
+            ]
+          ]
+        ],
+        "1.0": [
+          [
+            0.09997560906163362,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              225.657,
+              190.499,
+              115.113
+            ]
+          ],
+          [
+            0.1766996658907072,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              226.63,
+              190.125,
+              114.932
+            ]
+          ]
+        ],
+        "1.5": [
+          [
+            0.003165874411719089,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame12a_col.cgf",
+            [
+              224.429,
+              190.971,
+              115.84
+            ]
+          ],
+          [
+            0.10109605896745792,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              225.671,
+              190.494,
+              115.61
+            ]
+          ],
+          [
+            0.17782011579653148,
+            "levels/common/collision_wall/nodraw/nowalk_obstacle4_08m.cgf",
+            [
+              226.645,
+              190.119,
+              115.43
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "from": 6,
+      "to": 7,
+      "distance": 15.663,
+      "hits": {
+        "0.1": [
+          [
+            0.30936535651291724,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame12a_col.cgf",
+            [
+              232.377,
+              185.377,
+              111.161
+            ]
+          ],
+          [
+            0.6616028807242412,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame12a_col.cgf",
+            [
+              227.029,
+              184.543,
+              110.096
+            ]
+          ]
+        ],
+        "0.5": [],
+        "1.0": [],
+        "1.5": []
+      }
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "distance": 15.515,
+      "hits": {
+        "0.1": [],
+        "0.5": [],
+        "1.0": [],
+        "1.5": []
+      }
+    },
+    {
+      "from": 8,
+      "to": 9,
+      "distance": 23.766,
+      "hits": {
+        "0.1": [
+          [
+            0.626542711543299,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame12a_col.cgf",
+            [
+              200.166,
+              203.404,
+              108.758
+            ]
+          ],
+          [
+            0.8110354940209442,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame12a_col.cgf",
+            [
+              197.812,
+              207.094,
+              109.013
+            ]
+          ]
+        ],
+        "0.5": [],
+        "1.0": [],
+        "1.5": []
+      }
+    },
+    {
+      "from": 9,
+      "to": 10,
+      "distance": 12.436,
+      "hits": {
+        "0.1": [],
+        "0.5": [],
+        "1.0": [],
+        "1.5": []
+      }
+    },
+    {
+      "from": 10,
+      "to": 11,
+      "distance": 44.402,
+      "hits": {
+        "0.1": [
+          [
+            0.45278660869803883,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame34a_col.cgf",
+            [
+              207.431,
+              238.504,
+              115.354
+            ]
+          ],
+          [
+            0.9499798471929556,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              220.938,
+              255.353,
+              119.941
+            ]
+          ]
+        ],
+        "0.5": [
+          [
+            0.5522810753737755,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame34a_col.cgf",
+            [
+              210.133,
+              241.876,
+              116.672
+            ]
+          ],
+          [
+            0.7939127912562081,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              216.698,
+              250.064,
+              118.901
+            ]
+          ]
+        ],
+        "1.0": [],
+        "1.5": []
+      }
+    },
+    {
+      "from": 11,
+      "to": 12,
+      "distance": 21.333,
+      "hits": {
+        "0.1": [
+          [
+            0.8215663299708236,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              221.586,
+              274.113,
+              124.333
+            ]
+          ],
+          [
+            0.9292911677446806,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              221.493,
+              276.35,
+              124.849
+            ]
+          ]
+        ],
+        "0.5": [],
+        "1.0": [],
+        "1.5": []
+      }
+    },
+    {
+      "from": 12,
+      "to": 1,
+      "distance": 91.667,
+      "hits": {
+        "0.1": [
+          [
+            0.007234553511560143,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              221.801,
+              277.27,
+              125.145
+            ]
+          ],
+          [
+            0.05057918508650144,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock14b.cgf",
+            [
+              224.013,
+              273.979,
+              124.891
+            ]
+          ],
+          [
+            0.14513372657763965,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              228.838,
+              266.8,
+              124.338
+            ]
+          ],
+          [
+            0.16266082460222864,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              229.733,
+              265.469,
+              124.235
+            ]
+          ],
+          [
+            0.18215327281119184,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock14b.cgf",
+            [
+              230.728,
+              263.99,
+              124.121
+            ]
+          ],
+          [
+            0.22832784739007367,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              233.084,
+              260.484,
+              123.851
+            ]
+          ],
+          [
+            0.24518147312168684,
+            "levels/common/light/natural/plants/etc/na_l_fence_01a.cgf",
+            [
+              233.944,
+              259.204,
+              123.752
+            ]
+          ],
+          [
+            0.24651802317382196,
+            "levels/common/light/natural/plants/etc/na_l_fence_01a.cgf",
+            [
+              234.012,
+              259.103,
+              123.744
+            ]
+          ],
+          [
+            0.2611455471776465,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              234.759,
+              257.992,
+              123.659
+            ]
+          ],
+          [
+            0.7769992711536844,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame29a_col.cgf",
+            [
+              261.085,
+              218.828,
+              120.64
+            ]
+          ]
+        ],
+        "0.5": [
+          [
+            0.034801144974020946,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              223.208,
+              275.177,
+              125.383
+            ]
+          ],
+          [
+            0.04799435307518226,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock14b.cgf",
+            [
+              223.881,
+              274.175,
+              125.306
+            ]
+          ],
+          [
+            0.14278876088018752,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              228.719,
+              266.978,
+              124.751
+            ]
+          ],
+          [
+            0.16466944899956296,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              229.835,
+              265.317,
+              124.623
+            ]
+          ],
+          [
+            0.18304094979487073,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock14b.cgf",
+            [
+              230.773,
+              263.922,
+              124.516
+            ]
+          ],
+          [
+            0.22584090709435695,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              232.957,
+              260.673,
+              124.265
+            ]
+          ],
+          [
+            0.24436641814990082,
+            "levels/common/light/natural/plants/etc/na_l_fence_01a.cgf",
+            [
+              233.903,
+              259.266,
+              124.157
+            ]
+          ],
+          [
+            0.2458819720731721,
+            "levels/common/light/natural/plants/etc/na_l_fence_01a.cgf",
+            [
+              233.98,
+              259.151,
+              124.148
+            ]
+          ],
+          [
+            0.26467648490827983,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              234.939,
+              257.724,
+              124.038
+            ]
+          ],
+          [
+            0.7765421520818255,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame29a_col.cgf",
+            [
+              261.062,
+              218.862,
+              121.043
+            ]
+          ]
+        ],
+        "1.0": [
+          [
+            0.04476331306103333,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock14b.cgf",
+            [
+              223.716,
+              274.42,
+              125.825
+            ]
+          ],
+          [
+            0.06355771164467244,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              224.675,
+              272.994,
+              125.715
+            ]
+          ],
+          [
+            0.13951473954217716,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              228.552,
+              267.227,
+              125.271
+            ]
+          ],
+          [
+            0.16539769963022732,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              229.873,
+              265.262,
+              125.119
+            ]
+          ],
+          [
+            0.18420564734811887,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock14b.cgf",
+            [
+              230.832,
+              263.834,
+              125.009
+            ]
+          ],
+          [
+            0.2260039490592663,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              232.965,
+              260.66,
+              124.764
+            ]
+          ],
+          [
+            0.2703376988275745,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              235.228,
+              257.294,
+              124.505
+            ]
+          ],
+          [
+            0.77600192368828,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame29a_col.cgf",
+            [
+              261.034,
+              218.903,
+              121.546
+            ]
+          ]
+        ],
+        "1.5": [
+          [
+            0.04153227304688441,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock14b.cgf",
+            [
+              223.551,
+              274.666,
+              126.344
+            ]
+          ],
+          [
+            0.06814256206334904,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              224.909,
+              272.645,
+              126.188
+            ]
+          ],
+          [
+            0.1360989773936215,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              228.377,
+              267.486,
+              125.791
+            ]
+          ],
+          [
+            0.16470199600412247,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              229.837,
+              265.314,
+              125.623
+            ]
+          ],
+          [
+            0.1854380724850561,
+            "levels/common/light/structures/buildings/dungeon/dungeon_lf3/bu_l_drake_cave_rock14b.cgf",
+            [
+              230.895,
+              263.74,
+              125.502
+            ]
+          ],
+          [
+            0.2261890899652599,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              232.975,
+              260.646,
+              125.263
+            ]
+          ],
+          [
+            0.27368994639216365,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame42a_col.cgf",
+            [
+              235.399,
+              257.04,
+              124.985
+            ]
+          ],
+          [
+            0.7759859683939301,
+            "levels/common/dark/structures/buildings/dungeon/df2_flame/bu_d_iddf2_dflame29a_col.cgf",
+            [
+              261.033,
+              218.905,
+              122.046
+            ]
+          ]
+        ]
+      }
+    }
+  ],
+  "confirmed_chest_height_blocked_segments": [
+    [
+      3,
+      4
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      12,
+      1
+    ]
+  ],
+  "conclusion": "The existing route is not a collision-safe closed loop. Eleven waypoint heights match the client collision floor; step 5 does not. Four connections cross collision geometry at +1 metre, including the 91.667-metre cyclic return. Other connections also need ground-following checks.",
+  "audit_state": "Pre-correction route; see fire-temple-patrol-correction.json for the applied out-and-back route."
+}

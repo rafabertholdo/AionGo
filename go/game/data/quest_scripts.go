@@ -384,6 +384,8 @@ func (d *Data) loadQuestScripts(dir string) error {
 		{ID: 3968, Kind: QuestCustom, StartNPC: 798390, EndNPC: 798390, NPCStart: true, TalkNPCs: []int32{798176, 204528, 203927}},
 		{ID: 3969, Kind: QuestCustom, StartNPC: 798390, EndNPC: 798390, NPCStart: true, TalkNPCs: []int32{798391}},
 		{ID: 4015, Kind: QuestCustom, StartNPC: 205130, EndNPC: 205130, NPCStart: true},
+		{ID: 3702, Kind: QuestCustom, StartNPC: 278517, EndNPC: 278517, NPCStart: true, MonsterInfos: []QuestMonster{{NPCID: 256693, VarID: 0, MaxKill: 1}}},
+		{ID: 4702, Kind: QuestCustom, StartNPC: 278016, EndNPC: 278016, NPCStart: true, MonsterInfos: []QuestMonster{{NPCID: 256693, VarID: 0, MaxKill: 1}}},
 		{ID: 4060, Kind: QuestCustom, EndNPC: 205204, ItemID: 182209037, ItemUseDelay: 3000, TalkNPCs: []int32{205156, 204143, 204731}},
 		{ID: 3093, Kind: QuestCustom, StartNPC: 798185, EndNPC: 798185, NPCStart: true, TalkNPCs: []int32{798177, 798179, 203784}},
 		{ID: 3200, Kind: QuestCustom, StartNPC: 204658, EndNPC: 798322, NPCStart: true, ItemID: 182209082, ActionNPC: 700522, TalkNPCs: []int32{798332, 279006}},

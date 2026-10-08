@@ -232,11 +232,11 @@ func (a *npcAI) handleEvent(ev aiEvent) {
 		case !a.scheduled():
 			a.analyzeState()
 		case busy && !a.has(&aggressionDesire{}):
-			// AL-Game doesn't look again here, so a monster that is already walking never notices anyone.
-			a.changed = true
+			// Watch for aggro without restarting the current patrol leg.
+			a.addDesire(&aggressionDesire{paced: paced{strength: aiActive.priority()}})
 		}
 	case evNotSeePlayer:
-		if a.kind == aiAggressive && len(a.o.watchers) == 0 {
+		if a.kind == aiAggressive && len(a.o.watchers) == 0 && a.state != aiActive {
 			a.setState(aiThinking)
 		}
 	}
@@ -261,10 +261,13 @@ func (a *npcAI) analyzeState() {
 		switch {
 		case aerialBattleActor(o):
 			a.addDesire(&aerialBattleDesire{})
-		case aggressive:
-			a.addDesire(&aggressionDesire{})
-		case s.hasWalkRoutes(o):
-			a.addDesire(newWalkDesire(s, o))
+		default:
+			if aggressive {
+				a.addDesire(&aggressionDesire{paced: paced{strength: aiActive.priority()}})
+			}
+			if s.hasWalkRoutes(o) {
+				a.addDesire(newWalkDesire(s, o))
+			}
 		}
 		if len(a.desires) == 0 {
 			a.handleEvent(evNothingToDo)
@@ -381,6 +384,9 @@ func (d *aggressionDesire) same(o desire) bool { _, ok := o.(*aggressionDesire);
 func (d *aggressionDesire) handle(a *npcAI) bool {
 	s, o := a.s, a.o
 	d.interval, d.strength = 2, aiActive.priority()
+	if len(o.watchers) == 0 {
+		return false
+	}
 	for _, p := range o.watchers {
 		if p.dead || !inRange3D(o, p, float32(o.npc.SRange)) || !s.canSee(o, p) || !s.aggressiveTo(o, p) {
 			continue
@@ -577,6 +583,8 @@ type walkDesire struct {
 func newWalkDesire(s *Server, o *object) *walkDesire {
 	d := &walkDesire{s: s, o: o, random: o.randomWalk != 0, walkArea: 10, halfArea: 5, minRandomDist: 2}
 	d.strength, d.interval = aiActive.priority(), 1
+	o.move.follow = false
+	o.move.distance = 2
 	if route, ok := s.data.Walkers[o.walker]; ok {
 		d.route = route
 		o.move.speed = o.npc.Stats.WalkSpeed
@@ -600,6 +608,9 @@ func (d *walkDesire) same(o desire) bool { _, ok := o.(*walkDesire); return ok }
 func (d *walkDesire) clear() { d.o.move.stop() }
 
 func (d *walkDesire) handle(a *npcAI) bool {
+	if a.state != aiActive {
+		return false
+	}
 	if d.route == nil && !d.random {
 		return false
 	}

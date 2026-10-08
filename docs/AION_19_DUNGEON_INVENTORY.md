@@ -131,7 +131,18 @@ catalog or reset/cooldown specification was established.
 - Proposed route: establish the faction-specific entrance and any access quest →
   eligible party enters → navigates to the correct Kromede variant and other
   required encounters → obtains credit/loot → leaves. Alternate boss selection,
-  keys, ordinary exit, wipe and lockout rules are unknown.
+  keys, wipe and lockout rules are unknown; the ordinary exit correction is
+  recorded below.
+- Exit correction (2026-10-07): **730048**, `DF2_DragonDoor_Out`, is now
+  spawned beside the arrival point at `(148.854584, 465.935089, 142.0)`,
+  heading 0, static ID 647. The 1.9 client declares `ReturnToEntrance` AI;
+  the 4.6 `iddf2_dflame/world.xml` territory
+  `DF2_DFlame_FObj_DF2_DragonDoor_Out` supplies this placement. Go uses the
+  existing three-second interaction and faction-specific instance return to
+  Eltnen or Morheim, with delayed distance/object/run revalidation. The added
+  regression covers spawn visibility from arrival, both returns, and moving
+  away during use. Placement and interaction still need real 1.9 client QA;
+  the historical population snapshot above predates this additional spawn.
 - Explicit quest evidence: Java **1355**, The Fire Temple Key, handles item
   **182201400** and NPC **203933**; no corresponding quest check is present
   in the generic portal admission. Quest **1470**, Hannet's Vengeance,

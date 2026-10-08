@@ -1,0 +1,69 @@
+{
+  "recorded": "2026-10-07",
+  "route_id": 13,
+  "world_id": 320100000,
+  "npc_id": 212844,
+  "behavior": "Back-and-forth on the same corridor; the spawn is between the two physical endpoints.",
+  "behavior_authority": "User description of live-server patrol behavior. Geometry selects safe connections; it does not independently establish live-server timing.",
+  "original_audit": "fire-temple-patrol-evidence.json",
+  "source_file": "java/AL-Game/data/static_data/npc_walker.xml",
+  "source_file_sha256": "0ebc4354dfed361e1df715e68f94d9c9eacadffa599ff484bd67d968ef08e4bd",
+  "waypoint_count": 76,
+  "near_endpoint_step": 8,
+  "far_endpoint_step": 46,
+  "original_anchor_order": [
+    1,
+    2,
+    3,
+    2,
+    1,
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    11,
+    10,
+    9,
+    8,
+    7,
+    6,
+    4
+  ],
+  "floor_sampling": "Intermediate XYZ samples about 5.2 to 6.3 m apart, with Z projected to the corresponding client collision floor. Spacing avoids repeated half-second stops caused by the 2 m arrival radius.",
+  "removed_invalid_point": 5,
+  "movement_simulation": {
+    "walk_speed_m_per_s": 4.5,
+    "movement_period_seconds": 0.5,
+    "ai_period_seconds": 1,
+    "arrival_radius_m": 2,
+    "ai_movement_tick_orders": [
+      "ai-first",
+      "move-first"
+    ],
+    "visited_waypoints_each": 76,
+    "movement_ticks_each": 219,
+    "collision_ray_vertical_offsets_m": [
+      0.5,
+      1.0,
+      1.5
+    ],
+    "collision_ray_lateral_offsets_m": [
+      -0.5,
+      0,
+      0.5
+    ],
+    "obstacle_intersections_each": 0,
+    "min_feet_minus_floor_m": -0.251824,
+    "max_feet_minus_floor_m": 0.223214,
+    "numeric_model": "Route coordinates and simulated positions rounded to float32. Collision triangles retain extractor precision."
+  },
+  "limitations": [
+    "The 0.5 m side probes are a clearance check, not a full swept capsule collision implementation.",
+    "The mover still has no general collision/pathfinding engine; chase, return-home and other routes are outside this correction.",
+    "Real-client playback and live-server timing remain unverified."
+  ]
+}

@@ -38,7 +38,9 @@ func (c *conn) portalDialog(id int32) bool {
 	if o.worldID == 300030000 && o.npc.ID == 700437 {
 		return c.nochsanaArtifact(p, o)
 	}
-	returnToEntrance := o.worldID == 300030000 && o.npc.ID == 700438
+	// The 1.9 client assigns ReturnToEntrance to the Fire Temple exit.
+	returnToEntrance := o.worldID == 300030000 && o.npc.ID == 700438 ||
+		o.worldID == fireTempleWorld && o.npc.ID == 730048
 	if !returnToEntrance && (o.npc.Type != "PORTAL" || s.data.Portals[o.npc.ID] == nil) {
 		return false
 	}

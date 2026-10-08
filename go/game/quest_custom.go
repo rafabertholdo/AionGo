@@ -69,6 +69,9 @@ func (c *conn) customQuestDialogID(o *object, script *data.QuestScript, d int32)
 	case 1053:
 		c.dialogResult(c.klawThreatDialog(o, script, d))
 		return
+	case 3702, 4702:
+		c.dialogResult(c.nochsanaGeneralQuestDialog(o, script, d))
+		return
 	case 1054:
 		c.dialogResult(c.powerOfElimDialog(o, script, d))
 		return
@@ -352,6 +355,8 @@ func (c *conn) customQuestShowDialog(o *object, script *data.QuestScript) bool {
 		return c.rootOfRotDialog(o, script, -1)
 	case 1053:
 		return c.klawThreatDialog(o, script, -1)
+	case 3702, 4702:
+		return c.nochsanaGeneralQuestDialog(o, script, -1)
 	case 1054:
 		return c.powerOfElimDialog(o, script, -1)
 	case 1055:
