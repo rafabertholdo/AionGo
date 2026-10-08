@@ -86,6 +86,30 @@ func TestAggroWhenEnteringTheWorld(t *testing.T) {
 	}
 }
 
+func TestNoAggroWhileBlinking(t *testing.T) {
+	s := testServer(staticDataOrSkip(t))
+	p, _ := fighter(t, s, 1000)
+	o := aggressiveMonster(t, s, 1002)
+	s.spawn(p)
+	s.visMu.Lock()
+	s.startProtection(p)
+	s.visMu.Unlock()
+	if waitHate(s, o, p, 5*time.Second) {
+		t.Fatal("aggro on a blinking player")
+	}
+	s.visMu.Lock()
+	s.playerHit(p, o, 0, 0, 10)
+	hp := p.life.HP
+	s.stopProtection(p)
+	s.visMu.Unlock()
+	if hp != p.stats.current(data.MaxHP) {
+		t.Fatal("a blinking player took damage")
+	}
+	if !waitHate(s, o, p, 6*time.Second) {
+		t.Fatal("no aggro once the blinking stopped")
+	}
+}
+
 func TestNoAggroOutOfRange(t *testing.T) {
 	s := testServer(staticDataOrSkip(t))
 	p, _ := fighter(t, s, 1000)

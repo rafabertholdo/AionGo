@@ -179,6 +179,9 @@ func (s *Server) startProtection(p *player) {
 	p.protection = s.later(protectionDelay, func() { s.stopProtection(p) })
 }
 
+// protected is Player.isProtectionActive: npcs neither aggro on nor hurt a blinking player.
+func (p *player) protected() bool { return p.visualState == visualBlinking }
+
 // stopProtection is PlayerController.stopProtectionActiveTask.
 func (s *Server) stopProtection(p *player) {
 	p.protection.cancel()

@@ -52,7 +52,7 @@ func (s *Server) startWorldTasks() {
 
 // playerHit is PlayerController.onAttack: the player takes the damage.
 func (s *Server) playerHit(p *player, attacker creature, skillID int32, kind byte, damage int32) {
-	if p.dead || p.adminInvulnerable {
+	if p.dead || p.adminInvulnerable || p.protected() {
 		return
 	}
 	// Damage is cut to what kills, so that the aggro list doesn't count a hit's excess.

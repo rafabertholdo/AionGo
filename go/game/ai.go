@@ -406,7 +406,7 @@ func (d *aggressionDesire) handle(a *npcAI) bool {
 
 // canSee is Npc.canSeePlayer: an npc doesn't notice a player who isn't standing up, or who is hiding from it.
 func (s *Server) canSee(o *object, p *player) bool {
-	return p.state&stateActive != 0 && !(p.visualState == 1 && o.npc.Rank == "NORMAL")
+	return p.state&stateActive != 0 && !p.protected() && !(p.visualState == 1 && o.npc.Rank == "NORMAL")
 }
 
 // attackDesire is AttackDesire: hit the target when it is near, give up when it isn't.

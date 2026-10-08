@@ -141,6 +141,9 @@ func (s *Server) addHate(o *object, c creature, hate int32) {
 	if c == nil || c.cid() == o.id || !s.isEnemy(o, c) {
 		return
 	}
+	if p, ok := c.(*player); ok && p.protected() {
+		return
+	}
 	o.aggroFor(c).hate += hate
 	o.ai.handleEvent(evAttacked)
 }
@@ -160,7 +163,7 @@ func (s *Server) mostHated(o *object) creature {
 	var most int32
 	for id, info := range o.aggro {
 		c := s.creatureByID(id)
-		if c == nil || c.isDead() || !o.sees(c) {
+		if p, ok := c.(*player); c == nil || c.isDead() || !o.sees(c) || ok && p.protected() {
 			info.hate = 0
 		}
 		if info.hate > most && c != nil {
