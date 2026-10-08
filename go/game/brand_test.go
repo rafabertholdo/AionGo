@@ -40,6 +40,8 @@ func TestShowBrandRecipients(t *testing.T) {
 			want := []byte{0xf7, 1, 0, 7, 0, 0, 0, 0x78, 0x56, 0x34, 0x12}
 			counts := []int{0, 0, 0, 0}
 			switch kind {
+			case "solo":
+				counts = []int{1, 0, 0, 0} // echoed so the client draws it
 			case "group":
 				counts = []int{1, 1, 0, 0}
 			case "alliance":

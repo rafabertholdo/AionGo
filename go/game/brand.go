@@ -15,6 +15,11 @@ func (c *conn) showBrand(r *wire.Reader) {
 	}
 	c.withPlayer(func(s *Server, p *player) {
 		w := showBrand(brandID, targetID)
+		// Java drops solo brands; the client only draws on SM_SHOW_BRAND, so echo it back.
+		if p.group == nil && p.alliance == nil {
+			c.send(w)
+			return
+		}
 		if p.group != nil {
 			for _, m := range p.group.members {
 				m.conn.send(w)
