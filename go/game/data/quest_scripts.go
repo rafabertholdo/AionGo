@@ -801,7 +801,8 @@ func (d *Data) loadQuestScripts(dir string) error {
 			}
 		}
 		if script.ID == 2002 {
-			for _, npcID := range []int32{700045, 203537} {
+			// 205020 is in the Asmodian instance the quest teleports to, and 790002 is where the flight back lands.
+			for _, npcID := range []int32{700045, 203537, 205020, 790002} {
 				d.QuestCustomTalks[npcID] = append(d.QuestCustomTalks[npcID], script)
 			}
 			for _, npcID := range []int32{210377, 210378} {

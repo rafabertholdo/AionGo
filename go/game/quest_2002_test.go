@@ -130,3 +130,26 @@ func TestWheresRaeFinalDialogAndReward(t *testing.T) {
 		t.Fatal("reward repeat")
 	}
 }
+
+// The NPCs a teleport lands the player next to must be talk npcs of the quest, or a click there offers nothing.
+func TestTeleportDestinationNPCsTalkToQuest(t *testing.T) {
+	d := staticDataOrSkip(t)
+	c := &conn{s: testServer(d)}
+	for _, tc := range []struct {
+		npcID   int32
+		questID int32
+	}{
+		{205020, 2002}, // Asmodian instance (320010000) and the flight to 220010000
+		{790002, 2002}, // where the flight back lands
+		{205020, 2008}, // Asmodian Ascension trial instance
+		{790002, 2008},
+	} {
+		found := false
+		for _, script := range c.npcTalkScripts(tc.npcID) {
+			found = found || script.ID == tc.questID
+		}
+		if !found {
+			t.Errorf("npc %d is not a talk npc of quest %d", tc.npcID, tc.questID)
+		}
+	}
+}
